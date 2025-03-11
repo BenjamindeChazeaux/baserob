@@ -7,4 +7,11 @@ class GeoScoringsController < ApplicationController
 
   def update
   end
+
+  private
+
+  def set_geo_scoring
+    @geo_scoring = GeoScoring.find(params[:id])
+  end
 end
+
