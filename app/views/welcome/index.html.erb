@@ -9,12 +9,7 @@
           <h1>Welcome on Baserob</h1>
           <p class="date"><%= Date.today.strftime("%A %d %B %Y") %></p>
         </div>
-        <div class="header-actions">
-          <button class="btn-primary">
-            <i class="fas fa-plus"></i>
-            New project
-          </button>
-        </div>
+        
       </div>
       <!-- Modern Search Bar -->
       <div class="search-bar-container">
@@ -44,6 +39,7 @@
         <!-- Quick Start GEO Scoring Card -->
         <div class="action-card">
           <div class="card-header">
+            <div class="card-badge">New</div>
           </div>
           <h3>GEO Scoring</h3>
           <p>Configure the AI requests and LLM you want to watch</p>
@@ -55,7 +51,7 @@
             </button>
           </div>
           <a href="#" class="card-action">
-            Configuration avancée
+            Advanced configuration
             <i class="fas fa-arrow-right"></i>
           </a>
         </div>
@@ -273,10 +269,10 @@
 /* Variables */
 :root {
   --primary-color: #333333;
-  --secondary-color: #0066FF;
+  --secondary-color: #599aaf;
   --background: #f5f5f7;
   --card-bg: #ffffff;
-  --text-primary: #1d1d1f;
+  --text-primary: #599aaf;
   --text-secondary: #86868b;
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
@@ -362,7 +358,7 @@
 }
 
 .card-badge {
-  background: #E3F2FF;
+  background: white;
   color: var(--secondary-color);
   padding: 4px 8px;
   border-radius: 6px;
