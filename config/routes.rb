@@ -51,4 +51,21 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # Routes pour le PagesController
+  get 'pages/home', to: 'pages#home'
+  get 'pages/about', to: 'pages#about'
+  get 'pages/contact', to: 'pages#contact'
+
+  # Routes pour le WelcomeController
+  get 'welcome', to: 'welcome#index'
+
+  # Routes pour d'autres contrôleurs (exemple)
+  resources :users do
+    resources :posts
+  end
+
+  # Autres routes personnalisées
+  get 'dashboard', to: 'dashboard#index'
+  get 'profile', to: 'users#show'
 end
