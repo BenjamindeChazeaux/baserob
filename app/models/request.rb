@@ -15,9 +15,9 @@ class Request < ApplicationRecord
 
   def set_ai_provider
     ai_provider = {
-      'http://ww.mistral.ai': AiProvider.find_by(name: 'Mistral'),
-      'http://ww.openai.ai': AiProvider.find_by(name: 'ChatGPT'),
-      'http://claude.io': AiProvider.find_by(name: 'Claude')
+      'http://www.mistral.ai': AiProvider.find_by(name: 'Mistral'),
+      'http://www.openai.ai': AiProvider.find_by(name: 'ChatGPT'),
+      'http://www.claude.io': AiProvider.find_by(name: 'Claude')
     }[self.referrer]
 
     self.ai_provider = ai_provider
