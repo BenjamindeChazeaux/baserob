@@ -10,9 +10,87 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_10_155441) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_11_101025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ai_providers", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "companies", force: :cascade do |t|
+    t.string "name"
+    t.string "domain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "company_ai_providers", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "ai_provider_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ai_provider_id"], name: "index_company_ai_providers_on_ai_provider_id"
+    t.index ["company_id"], name: "index_company_ai_providers_on_company_id"
+  end
+
+  create_table "competitor_scores", force: :cascade do |t|
+    t.integer "score"
+    t.integer "frequency_score"
+    t.integer "position_score"
+    t.integer "link_score"
+    t.bigint "competitor_id", null: false
+    t.bigint "geo_scoring_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["competitor_id"], name: "index_competitor_scores_on_competitor_id"
+    t.index ["geo_scoring_id"], name: "index_competitor_scores_on_geo_scoring_id"
+  end
+
+  create_table "competitors", force: :cascade do |t|
+    t.string "name"
+    t.string "domain"
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_competitors_on_company_id"
+  end
+
+  create_table "geo_scorings", force: :cascade do |t|
+    t.integer "score"
+    t.integer "frequency_score"
+    t.integer "position_score"
+    t.integer "link_score"
+    t.bigint "keyword_id", null: false
+    t.bigint "ai_provider_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ai_provider_id"], name: "index_geo_scorings_on_ai_provider_id"
+    t.index ["keyword_id"], name: "index_geo_scorings_on_keyword_id"
+  end
+
+  create_table "keywords", force: :cascade do |t|
+    t.string "content"
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_keywords_on_company_id"
+  end
+
+  create_table "requests", force: :cascade do |t|
+    t.string "domain"
+    t.string "path"
+    t.string "referrer"
+    t.string "user_agent"
+    t.bigint "company_id", null: false
+    t.bigint "ai_provider_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ai_provider_id"], name: "index_requests_on_ai_provider_id"
+    t.index ["company_id"], name: "index_requests_on_company_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -26,4 +104,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_10_155441) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "company_ai_providers", "ai_providers"
+  add_foreign_key "company_ai_providers", "companies"
+  add_foreign_key "competitor_scores", "competitors"
+  add_foreign_key "competitor_scores", "geo_scorings"
+  add_foreign_key "competitors", "companies"
+  add_foreign_key "geo_scorings", "ai_providers"
+  add_foreign_key "geo_scorings", "keywords"
+  add_foreign_key "keywords", "companies"
+  add_foreign_key "requests", "ai_providers"
+  add_foreign_key "requests", "companies"
 end
