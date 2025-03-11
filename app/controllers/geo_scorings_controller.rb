@@ -9,4 +9,3 @@ class GeoScoringsController < ApplicationController
   end
 
 end
-
