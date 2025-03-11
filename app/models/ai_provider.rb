@@ -1,0 +1,2 @@
+class AiProvider < ApplicationRecord
+end
