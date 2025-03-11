@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'welcome/index'
+  get 'welcome/show'
+  get 'home/index'
+  get 'home/show'
   get 'company_ai_providers/index'
   get 'company_ai_providers/show'
   get 'company_ai_providers/new'
