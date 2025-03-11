@@ -1,0 +1,56 @@
+.action-button {
+    background: $primary-color;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: $border-radius-lg;
+    font-size: $font-size-md;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $button-shadow;
+    }
+    
+    &.primary {
+      background: $primary-color;
+    }
+    
+    &.secondary {
+      background: transparent;
+      border: 1px solid $primary-color;
+      color: $primary-color;
+      
+      &:hover {
+        background: rgba($primary-color, 0.05);
+      }
+    }
+    
+    &.small {
+      padding: 8px 16px;
+      font-size: $font-size-sm;
+    }
+    
+    &.large {
+      padding: 16px 32px;
+      font-size: $font-size-lg;
+    }
+  }
+  
+  .view-all-btn {
+    background: none;
+    border: none;
+    color: $secondary-color;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  } 

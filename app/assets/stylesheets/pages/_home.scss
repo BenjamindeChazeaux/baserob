@@ -1,1 +1,126 @@
-// Specific CSS for your home-page
+.welcome-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, $background 0%, white 100%);
+  }
+  
+  .welcome-content {
+    text-align: center;
+    max-width: 600px;
+    padding: $spacing-xl;
+    
+    h1 {
+      font-size: 4rem;
+      margin-bottom: $spacing-md;
+      background: linear-gradient(135deg, $primary-color 0%, lighten($primary-color, 15%) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      
+      @media (max-width: $breakpoint-md) {
+        font-size: 3rem;
+      }
+    }
+    
+    p {
+      font-size: $font-size-xl;
+      margin-bottom: $spacing-xl;
+      color: $text-secondary;
+      
+      @media (max-width: $breakpoint-md) {
+        font-size: $font-size-lg;
+      }
+    }
+  }
+  
+  .dashboard-welcome {
+    .welcome-header {
+      margin-bottom: $spacing-xl;
+      
+      h1 {
+        font-size: $font-size-xxl;
+        margin-bottom: $spacing-sm;
+      }
+      
+      p {
+        color: $text-secondary;
+        font-size: $font-size-lg;
+      }
+    }
+    
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: $spacing-lg;
+      margin-bottom: $spacing-xxl;
+      
+      @media (max-width: $breakpoint-lg) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      @media (max-width: $breakpoint-md) {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .help-section {
+      margin-top: $spacing-xxl;
+      
+      h2 {
+        margin-bottom: $spacing-lg;
+      }
+      
+      .help-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: $spacing-lg;
+        
+        @media (max-width: $breakpoint-md) {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      .help-card {
+        background: white;
+        border-radius: $border-radius-lg;
+        padding: $spacing-lg;
+        box-shadow: $card-shadow;
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+        transition: transform 0.2s;
+        
+        &:hover {
+          transform: translateY(-4px);
+        }
+        
+        .help-icon {
+          width: 48px;
+          height: 48px;
+          background: rgba($primary-color, 0.1);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          i {
+            color: $primary-color;
+            font-size: $font-size-lg;
+          }
+        }
+        
+        .help-content {
+          h3 {
+            margin-bottom: $spacing-xs;
+          }
+          
+          p {
+            color: $text-secondary;
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  } // Specific CSS for your home-page

@@ -1,12 +1,36 @@
-// Graphical variables
-@import "config/fonts";
-@import "config/colors";
-@import "config/bootstrap_variables";
+// Configuration globale
+// @import "config";
 
-// External libraries
-@import "bootstrap";
-@import "font-awesome";
+// Base
+@import "base/reset";
+@import "base/typography";
+@import "base/utilities";
+@import "config/variables";
 
-// Your CSS partials
-@import "components/index";
-@import "pages/index";
+// Components
+@import "components/buttons";
+@import "components/cards";
+// @import "components/charts";
+// @import "components/forms";
+// @import "components/modals";
+@import "components/navigation";
+@import "components/sidebar";
+// @import "components/tables";
+// @import "components/modal";
+// @import "components/notifications";
+
+// Layouts
+// @import "layouts/dashboard";
+@import "layouts/header";
+@import "layouts/footer";
+
+// Pages
+@import "pages/home";
+// @import "pages/ai_analytics";
+// @import "pages/geo_scoring";
+// @import "pages/website_crawling";
+// @import "pages/settings";
+
+// Responsive
+// @import "responsive/mobile";
+// @import "responsive/tablet"; 

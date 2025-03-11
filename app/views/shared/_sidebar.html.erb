@@ -1,0 +1,88 @@
+<%#
+  Barre latérale principale de l'application
+
+  Cette barre latérale contient les liens de navigation principaux et les sous-menus.
+  Elle est incluse dans toutes les pages du tableau de bord.
+%>
+
+
+<div class="sidebar" id="sidebar" data-controller="sidebar" data-sidebar-target="sidebar">
+  <button class="pin-button" id="pin-sidebar">
+    <i class="fas fa-thumbtack"></i>
+  </button>
+
+  <div class="logo">
+    <span class="logo-letter">B</span>
+    <div class="dot"></div>
+    <span class="full-logo">Baserob</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="<%= welcome_index_path %>" class="<%= current_page?(welcome_index_path) ? 'active' : '' %>">
+      <i class="fi fi-tr-house-window"></i><span>Home</span>
+    </a>
+
+    <a href="<%= ai_analytics_path %>" class="<%= current_page?(ai_analytics_path) ? 'active' : '' %>">
+      <i class="fi fi-tr-chart-network"></i><span>AI Analytics</span>
+    </a>
+
+    <a href="<%= geo_scorings_index_path %>" class="<%= current_page?(geo_scorings_index_path) ? 'active' : '' %>">
+      <i class="fi fi-tr-pan"></i><span>Performance</span>
+    </a>
+
+    <a href="">
+      <i class="fi fi-tr-onboarding"></i><span>Resources</span>
+    </a>
+
+    <a href="">
+      <i class="fi fi-tr-customization-cogwheel"></i><span>Settings</span>
+    </a>
+  </nav>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sidebar = document.getElementById('sidebar');
+  const pinButton = document.getElementById('pin-sidebar');
+
+  // Vérifier si l'état est enregistré dans localStorage
+  if (localStorage.getItem('sidebarExpanded') === 'true') {
+    sidebar.classList.add('expanded');
+  }
+
+  pinButton.addEventListener('click', function() {
+    sidebar.classList.toggle('expanded');
+
+    // Enregistrer l'état dans localStorage
+    if (sidebar.classList.contains('expanded')) {
+      localStorage.setItem('sidebarExpanded', 'true');
+    } else {
+      localStorage.setItem('sidebarExpanded', 'false');
+    }
+  });
+
+  // Masquer tous les sous-menus au chargement
+  document.querySelectorAll('.submenu').forEach(submenu => {
+    submenu.style.display = "none";
+  });
+
+  // Ajouter des écouteurs pour les liens avec sous-menus
+  document.querySelectorAll('.nav-item-with-submenu > a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const submenuId = this.dataset.sidebarSubmenuId;
+      const submenu = document.getElementById(submenuId);
+
+      if (submenu) {
+        if (submenu.style.display === "none" || submenu.style.display === "") {
+          submenu.style.display = "block";
+          this.classList.add('active-parent');
+        } else {
+          submenu.style.display = "none";
+          this.classList.remove('active-parent');
+        }
+      }
+    });
+  });
+});
+</script>
