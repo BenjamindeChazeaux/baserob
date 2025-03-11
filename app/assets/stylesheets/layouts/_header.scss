@@ -1,0 +1,61 @@
+.app-header {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: $spacing-md $spacing-lg;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      
+      img {
+        height: 32px;
+        margin-right: $spacing-sm;
+      }
+      
+      span {
+        font-size: $font-size-lg;
+        font-weight: 600;
+        color: $text-primary;
+      }
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+    }
+    
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      cursor: pointer;
+      
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: $primary-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+      }
+      
+      .user-name {
+        font-weight: 500;
+      }
+    }
+  } 
