@@ -42,6 +42,6 @@ class CompanyAiProvidersController < ApplicationController
   private
 
   def company_ai_provider_params
-    params.require(:company_ai_provider).permit(:name, :description)
+    params.require(:company_ai_provider).permit(:name, :domain)
   end
 end
