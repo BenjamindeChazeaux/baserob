@@ -1,8 +1,4 @@
-
-
 <div class="dashboard-container" data-controller="quick-start">
-  <!-- Sidebar -->
-  <%= render 'shared/sidebar' %>
 
   <!-- Main Content -->
   <div class="main-content">
@@ -38,24 +34,24 @@
           <div class="card-header">
             <div class="card-badge">New</div>
           </div>
-          <h3>Quick Start</h3>
-          <p>Generate and custom dashboard in one click from your own data.</p>
+          <h3>Quick tracking setup</h3>
+          <p>Generate your tracking dashboard in one click from your own data</p>
           <a href="#" class="card-action open-quick-start-modal" style="font-size: 1.5em;">
             <i class="fi fi-rr-angle-square-right"></i>
           </a>
         </div>
 
-        <!-- Web Crawler Card -->
+        <!-- Quick Start GEO Scoring Card -->
         <div class="action-card">
           <div class="card-header">
           </div>
-          <h3>Web Crawler</h3>
-          <p>Crawlez et structurez vos données web</p>
+          <h3>GEO Scoring</h3>
+          <p>Configure the AI requests and LLM you want to watch</p>
           <div class="url-input">
-            <input type="url" placeholder="https://votre-site.com">
+            <input type="url" placeholder="Tape your AI request">
             <button class="btn-secondary">
               <i class="fas fa-play"></i>
-              Crawler
+              Score
             </button>
           </div>
           <a href="#" class="card-action">
@@ -69,12 +65,11 @@
           <div class="card-header">
           </div>
           <h3>GEO Scoring</h3>
-          <p>Analysez la répartition géographique</p>
           <div class="geo-preview">
             <canvas id="geoChart" height="120"></canvas>
           </div>
           <a href="<%= geo_scorings_index_path %>" class="card-action">
-            Voir les détails
+            See details
             <i class="fas fa-arrow-right"></i>
           </a>
         </div>
@@ -84,8 +79,8 @@
     <!-- Help & Resources -->
     <section class="resources-section">
       <div class="section-header">
-        <h2>Ressources & Support</h2>
-        <p>Obtenez de l'aide pour démarrer</p>
+        <h2>Resources & Support</h2>
+        <p>Get help to start</p>
       </div>
 
       <div class="resources-grid">
@@ -96,7 +91,7 @@
           </div>
           <div class="resource-content">
             <h3>Documentation</h3>
-            <p>Guides détaillés et références API</p>
+            <p>Detailed guides and API references</p>
             <a href="#" class="resource-link">Consulter <i class="fas fa-chevron-right"></i></a>
           </div>
         </div>
@@ -107,9 +102,9 @@
             <i class="fas fa-video"></i>
           </div>
           <div class="resource-content">
-            <h3>Tutoriels vidéo</h3>
-            <p>Apprenez par l'exemple</p>
-            <a href="#" class="resource-link">Regarder <i class="fas fa-chevron-right"></i></a>
+            <h3>Video Tutorials</h3>
+            <p>Learn by example</p>
+            <a href="#" class="resource-link">Watch <i class="fas fa-chevron-right"></i></a>
           </div>
         </div>
 
@@ -120,8 +115,8 @@
           </div>
           <div class="resource-content">
             <h3>Support</h3>
-            <p>Obtenez de l'aide personnalisée</p>
-            <a href="#" class="resource-link">Contacter <i class="fas fa-chevron-right"></i></a>
+            <p>Get personalized help</p>
+            <a href="#" class="resource-link">Contact <i class="fas fa-chevron-right"></i></a>
           </div>
         </div>
       </div>

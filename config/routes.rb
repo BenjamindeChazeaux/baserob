@@ -72,11 +72,13 @@ Rails.application.routes.draw do
   end
 
   # Modules principaux
-  resources :ai_analytics, only: [:index]
+  resources :requests, only: [:index]
   resources :geo_scoring, only: [:index]
   get 'geo_scoring', to: 'geo_scoring#index', as: 'geo_scoring'
 
   # Autres routes personnalisées
   get 'dashboard', to: 'dashboard#index'
   get 'profile', to: 'users#show'
+
+  get 'requests', to: 'requests#index', as: 'requests_index'
 end

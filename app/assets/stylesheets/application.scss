@@ -12,15 +12,15 @@
 @import "components/cards";
 // @import "components/charts";
 // @import "components/forms";
-// @import "components/modals";
+@import "components/modals";
 @import "components/navigation";
 @import "components/sidebar";
 // @import "components/tables";
-// @import "components/modal";
+@import "components/modal";
 // @import "components/notifications";
 
 // Layouts
-// @import "layouts/dashboard";
+@import "layouts/dashboard";
 @import "layouts/header";
 @import "layouts/footer";
 
@@ -32,5 +32,5 @@
 // @import "pages/settings";
 
 // Responsive
-// @import "responsive/mobile";
-// @import "responsive/tablet"; 
+@import "responsive/mobile";
+@import "responsive/tablet"; 
