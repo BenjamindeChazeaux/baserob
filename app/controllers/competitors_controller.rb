@@ -5,9 +5,9 @@ class CompetitorsController < ApplicationController
   end
   def new
   end
-  def update
-  end
   def create
+  end
+  def update
   end
   def edit
   end
