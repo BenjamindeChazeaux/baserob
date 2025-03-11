@@ -62,7 +62,7 @@ requests = Request.create!([
     path: "/learn",
     referrer: "google.com",
     user_agent: "Mozilla/5.0",
-    company: companies.first,
+    company: company,
     ai_provider: ai_providers.first
   },
   {
@@ -70,7 +70,7 @@ requests = Request.create!([
     path: "/host",
     referrer: "facebook.com",
     user_agent: "Mozilla/5.0",
-    company: companies.second,
+    company: company,
     ai_provider: ai_providers.second
   },
   {
@@ -78,7 +78,7 @@ requests = Request.create!([
     path: "/ride",
     referrer: "twitter.com",
     user_agent: "Mozilla/5.0",
-    company: companies.third,
+    company: company,
     ai_provider: ai_providers.third
   },
   {
@@ -86,7 +86,7 @@ requests = Request.create!([
     path: "/premium",
     referrer: "youtube.com",
     user_agent: "Mozilla/5.0",
-    company: companies.fourth,
+    company: company,
     ai_provider: ai_providers.fourth
   },
   {
@@ -94,7 +94,7 @@ requests = Request.create!([
     path: "/repos",
     referrer: "linkedin.com",
     user_agent: "Mozilla/5.0",
-    company: companies.fifth,
+    company: company,
     ai_provider: ai_providers.fifth
   }
 ])
@@ -112,46 +112,11 @@ competitors = Competitor.create!([
 keywords = Keyword.all
 
 geo_scorings = GeoScoring.create!([
-  {
-    score: 85,
-    frequency_score: 90,
-    position_score: 80,
-    link_score: 75,
-    keyword: keywords.first,
-    ai_provider: ai_providers.first
-  },
-  {
-    score: 70,
-    frequency_score: 65,
-    position_score: 72,
-    link_score: 80,
-    keyword: keywords.second,
-    ai_provider: ai_providers.second
-  },
-  {
-    score: 90,
-    frequency_score: 88,
-    position_score: 85,
-    link_score: 92,
-    keyword: keywords.third,
-    ai_provider: ai_providers.third
-  },
-  {
-    score: 65,
-    frequency_score: 60,
-    position_score: 70,
-    link_score: 65,
-    keyword: keywords.fourth,
-    ai_provider: ai_providers.fourth
-  },
-  {
-    score: 78,
-    frequency_score: 80,
-    position_score: 75,
-    link_score: 70,
-    keyword: keywords.fifth,
-    ai_provider: ai_providers.fifth
-  }
+  { score: 85, frequency_score: 90, position_score: 80, link_score: 75, keyword: keywords.first, ai_provider: ai_providers.first},
+  { score: 70, frequency_score: 65, position_score: 72, link_score: 80, keyword: keywords.second, ai_provider: ai_providers.second},
+  { score: 90, frequency_score: 88, position_score: 85, link_score: 92, keyword: keywords.third, ai_provider: ai_providers.third},
+  { score: 65, frequency_score: 60, position_score: 70, link_score: 65, keyword: keywords.fourth, ai_provider: ai_providers.fourth},
+  { score: 78, frequency_score: 80, position_score: 75, link_score: 70, keyword: keywords.fifth, ai_provider: ai_providers.fifth}
 ])
 
 competitor_scores = CompetitorScore.create!([
