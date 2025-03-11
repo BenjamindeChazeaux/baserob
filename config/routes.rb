@@ -59,11 +59,22 @@ Rails.application.routes.draw do
 
   # Routes pour le WelcomeController
   get 'welcome', to: 'welcome#index'
+  get 'welcome/index'
+  get 'welcome/home', to: 'welcome#home'
+  get 'welcome/ai_analytics', to: 'welcome#ai_analytics'
+  get 'welcome/geo_scoring', to: 'welcome#geo_scoring'
+  get 'welcome/website_crawling', to: 'welcome#website_crawling'
+  get 'welcome/settings', to: 'welcome#settings'
 
   # Routes pour d'autres contrôleurs (exemple)
   resources :users do
     resources :posts
   end
+
+  # Modules principaux
+  resources :ai_analytics, only: [:index]
+  resources :geo_scoring, only: [:index]
+  get 'geo_scoring', to: 'geo_scoring#index', as: 'geo_scoring'
 
   # Autres routes personnalisées
   get 'dashboard', to: 'dashboard#index'
