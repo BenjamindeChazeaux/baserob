@@ -3,6 +3,7 @@ class KeywordsController < ApplicationController
     @keywords = Keyword.all
   end
 
+
   def show
     @keyword = Keyword.find(params[:id])
   end
@@ -11,14 +12,21 @@ class KeywordsController < ApplicationController
     @keyword = Keyword.new
   end
 
+
+
   def create
-    @keyword = Keyword.new(keyword_params)
-    if @keyword.save
-      redirect_to @keyword
-    else
-      render :new
+    @keyword = Keyword.find_or_create_by(content: params[:content], company: current_user.company)
+
+    respond_to do |format|
+      if @keyword.persisted?
+        format.turbo_stream
+        format.html { redirect_to geo_scorings_path, notice: " Added!" }
+      else
+        format.html { redirect_to geo_scorings_path, alert: "Opps somethioing whent wrong" }
+      end
     end
   end
+
 
   def edit
     @keyword = Keyword.find(params[:id])
