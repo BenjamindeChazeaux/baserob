@@ -1,2 +1,12 @@
 <h1>Welcome#index</h1>
 <p>Find me in app/views/welcome/index.html.erb</p>
+
+<div>
+  <%= link_to 'Home', pages_home_path, class: 'btn btn-primary' %>
+  <%= link_to 'About', pages_about_path, class: 'btn btn-secondary' %>
+  <%= link_to 'Contact', pages_contact_path, class: 'btn btn-info' %>
+  <%= link_to 'AI Analytics', welcome_ai_analytics_path, class: 'btn btn-success' %>
+  <%= link_to 'Geo Scoring', welcome_geo_scoring_path, class: 'btn btn-warning' %>
+  <%= link_to 'Website Crawling', welcome_website_crawling_path, class: 'btn btn-danger' %>
+  <%= link_to 'Settings', welcome_settings_path, class: 'btn btn-light' %>
+</div>
