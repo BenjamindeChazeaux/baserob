@@ -34,10 +34,29 @@
       <i class="fi fi-tr-onboarding"></i><span>Resources</span>
     </a>
 
-    <a href="">
+    <a href="javascript:void(0);" onclick="openSettingsModal()">
       <i class="fi fi-tr-customization-cogwheel"></i><span>Settings</span>
     </a>
+
+    <div class="sidebar-footer">
+      <% if user_signed_in? %>
+          <div style="margin-top: auto;">
+            <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", 
+                         class: "avatar avatar-bordered", 
+                         id: "sidebarDropdown", 
+                         data: { bs_toggle: "dropdown" }, 
+                         'aria-haspopup': true, 
+                         'aria-expanded': false, 
+                         style: "width: 25px; height: 25px; margin-left: 8px; border-radius: 50%; object-fit: cover;" %>
+          </div>
+      <% else %>
+        <div class="login-link">
+          <%= link_to "Connexion", new_user_session_path, class: "btn btn-sm btn-outline-primary" %>
+        </div>
+      <% end %>
+    </div>
   </nav>
+  
 </div>
 
 <script>
@@ -85,4 +104,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+
+// Fonction pour ouvrir la modal des paramètres
+function openSettingsModal(tab) {
+  console.log("openSettingsModal called with tab:", tab);
+  
+  // Trouver la modal de Settings
+  const modal = document.getElementById('settingsModal');
+  if (!modal) {
+    console.error("Settings Modal not found");
+    return;
+  }
+  
+  // Ouvrir la modal de Settings
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
 </script>
