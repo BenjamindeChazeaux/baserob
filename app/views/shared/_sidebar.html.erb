@@ -1,0 +1,123 @@
+<%#
+  Barre latérale principale de l'application
+
+  Cette barre latérale contient les liens de navigation principaux et les sous-menus.
+  Elle est incluse dans toutes les pages du tableau de bord.
+%>
+
+
+<div class="sidebar" id="sidebar" data-controller="sidebar" data-sidebar-target="sidebar">
+  <button class="pin-button" id="pin-sidebar">
+    <i class="fas fa-thumbtack"></i>
+  </button>
+
+  <div class="logo">
+    <span class="logo-letter">B</span>
+    <div class="dot"></div>
+    <span class="full-logo">Baserob</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="<%= welcome_index_path %>" class="<%= current_page?(welcome_index_path) ? 'active' : '' %>">
+      <i class="fi fi-tr-house-window"></i><span>Home</span>
+    </a>
+
+    <a href="<%= requests_index_path %>" class="<%= current_page?(requests_index_path) ? 'active' : '' %>">
+      <i class="fi fi-tr-chart-network"></i><span>AI Analytics</span>
+    </a>
+
+    <a href="<%= geo_scorings_path %>" class="<%= current_page?(geo_scorings_path) ? 'active' : '' %>">
+      <i class="fi fi-tr-pan"></i><span>Performance</span>
+    </a>
+
+    <a href="">
+      <i class="fi fi-tr-onboarding"></i><span>Resources</span>
+    </a>
+
+    <a href="javascript:void(0);" onclick="openSettingsModal()">
+      <i class="fi fi-tr-customization-cogwheel"></i><span>Settings</span>
+    </a>
+
+    <div class="sidebar-footer">
+      <% if user_signed_in? %>
+          <div style="margin-top: auto;">
+            <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", 
+                         class: "avatar avatar-bordered", 
+                         id: "sidebarDropdown", 
+                         data: { bs_toggle: "dropdown" }, 
+                         'aria-haspopup': true, 
+                         'aria-expanded': false, 
+                         style: "width: 25px; height: 25px; margin-left: 8px; border-radius: 50%; object-fit: cover;" %>
+          </div>
+      <% else %>
+        <div class="login-link">
+          <%= link_to "Connexion", new_user_session_path, class: "btn btn-sm btn-outline-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </nav>
+  
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sidebar = document.getElementById('sidebar');
+  const pinButton = document.getElementById('pin-sidebar');
+
+  // Vérifier si l'état est enregistré dans localStorage
+  if (localStorage.getItem('sidebarExpanded') === 'true') {
+    sidebar.classList.add('expanded');
+  }
+
+  pinButton.addEventListener('click', function() {
+    sidebar.classList.toggle('expanded');
+
+    // Enregistrer l'état dans localStorage
+    if (sidebar.classList.contains('expanded')) {
+      localStorage.setItem('sidebarExpanded', 'true');
+    } else {
+      localStorage.setItem('sidebarExpanded', 'false');
+    }
+  });
+
+  // Masquer tous les sous-menus au chargement
+  document.querySelectorAll('.submenu').forEach(submenu => {
+    submenu.style.display = "none";
+  });
+
+  // Ajouter des écouteurs pour les liens avec sous-menus
+  document.querySelectorAll('.nav-item-with-submenu > a').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const submenuId = this.dataset.sidebarSubmenuId;
+      const submenu = document.getElementById(submenuId);
+
+      if (submenu) {
+        if (submenu.style.display === "none" || submenu.style.display === "") {
+          submenu.style.display = "block";
+          this.classList.add('active-parent');
+        } else {
+          submenu.style.display = "none";
+          this.classList.remove('active-parent');
+        }
+      }
+    });
+  });
+});
+
+// Fonction pour ouvrir la modal des paramètres
+function openSettingsModal(tab) {
+  console.log("openSettingsModal called with tab:", tab);
+  
+  // Trouver la modal de Settings
+  const modal = document.getElementById('settingsModal');
+  if (!modal) {
+    console.error("Settings Modal not found");
+    return;
+  }
+  
+  // Ouvrir la modal de Settings
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+</script>

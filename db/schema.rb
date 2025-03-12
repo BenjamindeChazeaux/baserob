@@ -20,6 +20,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "ai_providers_geo_scorings", id: false, force: :cascade do |t|
+    t.bigint "geo_scoring_id", null: false
+    t.bigint "ai_provider_id", null: false
+  end
+
   create_table "companies", force: :cascade do |t|
     t.string "name"
     t.string "domain"
