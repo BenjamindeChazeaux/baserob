@@ -74,3 +74,8 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+# Ajoutez ces gems
+gem 'sass-rails'
+gem 'animate.css-rails'
+gem 'hover-rails'

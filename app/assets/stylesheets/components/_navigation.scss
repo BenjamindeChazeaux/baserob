@@ -1,0 +1,87 @@
+.nav {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    
+    &.nav-tabs {
+      border-bottom: 1px solid $card-border;
+      
+      .nav-item {
+        margin-bottom: -1px;
+      }
+      
+      .nav-link {
+        padding: $spacing-sm $spacing-md;
+        border: 1px solid transparent;
+        border-top-left-radius: $border-radius-md;
+        border-top-right-radius: $border-radius-md;
+        
+        &.active {
+          border-color: $card-border $card-border white;
+          background-color: white;
+        }
+        
+        &:hover:not(.active) {
+          border-color: rgba($card-border, 0.5);
+          background-color: rgba($card-border, 0.1);
+        }
+      }
+    }
+    
+    &.nav-pills {
+      .nav-link {
+        padding: $spacing-sm $spacing-md;
+        border-radius: $border-radius-md;
+        
+        &.active {
+          background-color: $primary-color;
+          color: white;
+        }
+        
+        &:hover:not(.active) {
+          background-color: rgba($primary-color, 0.1);
+        }
+      }
+    }
+  }
+  
+  .nav-item {
+    margin-right: $spacing-md;
+    
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  
+  .nav-link {
+    display: block;
+    color: $text-secondary;
+    text-decoration: none;
+    transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+    
+    &:hover, &.active {
+      color: $primary-color;
+    }
+  }
+  
+  .navbar {
+    display: flex;
+    align-items: center;
+    padding: $spacing-md $spacing-lg;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    
+    .navbar-brand {
+      font-size: $font-size-lg;
+      font-weight: 600;
+      color: $text-primary;
+      margin-right: $spacing-xl;
+    }
+    
+    .navbar-nav {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+  } 

@@ -88,6 +88,7 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
+    animate.css-rails (3.2.0)
     autoprefixer-rails (10.4.19.0)
       execjs (~> 2)
     base64 (0.2.0)
@@ -144,6 +145,8 @@ GEM
       sassc (~> 2.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    hover-rails (2.3.2.1)
+      railties (>= 3.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.1.0)
@@ -262,6 +265,8 @@ GEM
       railties (>= 5.2)
     rexml (3.4.1)
     rubyzip (2.4.1)
+    sass-rails (6.0.0)
+      sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -324,6 +329,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  animate.css-rails
   autoprefixer-rails
   bootsnap
   bootstrap (~> 5.2)
@@ -333,12 +339,14 @@ DEPENDENCIES
   devise
   dotenv-rails
   font-awesome-sass (~> 6.1)
+  hover-rails
   importmap-rails
   jbuilder
   ostruct
   pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.1.5, >= 7.1.5.1)
+  sass-rails
   sassc-rails
   selenium-webdriver
   simple_form!
