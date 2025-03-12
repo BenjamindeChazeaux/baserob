@@ -38,12 +38,10 @@ puts "Users created"
 
 ai_providers = AiProvider.create!([
   { name: "OpenAI" },
-  { name: "Google DeepMind" },
   { name: "Anthropic" },
-  { name: "Cohere" },
-  { name: "Mistral" }
+  { name: "Perplexity" }
 ])
-puts "Ai providers created"
+puts ai_providers.inspect
 
 companies = Company.all
 keywords = Keyword.create!([
@@ -60,48 +58,21 @@ AiProvider.find_each do |ai_provider|
 end
 puts "Association done"
 
-requests = Request.create!([
-  {
-    domain: "https://www.lewagon.com",
-    path: "/learn",
-    referrer: "google.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.first
-  },
-  {
-    domain: "https://www.airbnb.com",
-    path: "/host",
-    referrer: "facebook.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.second
-  },
-  {
-    domain: "https://www.uber.com",
-    path: "/ride",
-    referrer: "twitter.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.third
-  },
-  {
-    domain: "https://www.spotify.com",
-    path: "/premium",
-    referrer: "youtube.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.fourth
-  },
-  {
-    domain: "https://www.github.com",
-    path: "/repos",
-    referrer: "linkedin.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.fifth
-  }
-])
+
+(Date.new(2025, 1, 1)..Date.today).each do |date|
+  ["https://www.openai.com", "http://www.anthropic.com", "http://www.perplexity.ai"].each do |referrer|
+    rand(10).times do |i|
+      Request.create!(
+        domain: ["https://www.lewagon.com", "https://www.airbnb.com", "https://www.uber.com", "https://www.github.com"].sample,
+        path: ["/learn", "/repos"],
+        user_agent: "Mozilla/5.0",
+        company: company,
+        created_at: date,
+        referrer: referrer
+      )
+    end
+  end
+end
 puts "requests created"
 
 competitors = Competitor.create!([
@@ -118,8 +89,8 @@ geo_scorings = GeoScoring.create!([
   { score: 85, frequency_score: 90, position_score: 80, link_score: 75, keyword: keywords.first, ai_provider: ai_providers.first, ai_responses: ["Le Wagon", "Ironhack", "App Academy"] },
   { score: 70, frequency_score: 65, position_score: 72, link_score: 80, keyword: keywords.second, ai_provider: ai_providers.second, ai_responses: ["DataCamp", "Springboard", "Udacity"] },
   { score: 90, frequency_score: 88, position_score: 85, link_score: 92, keyword: keywords.third, ai_provider: ai_providers.third, ai_responses: ["General Assembly", "Thinkful", "Lambda School"] },
-  { score: 65, frequency_score: 60, position_score: 70, link_score: 65, keyword: keywords.fourth, ai_provider: ai_providers.fourth, ai_responses: ["AWS Training", "Microsoft Learn", "Google Cloud Skills"] },
-  { score: 78, frequency_score: 80, position_score: 75, link_score: 70, keyword: keywords.fifth, ai_provider: ai_providers.fifth, ai_responses: ["Zapier", "Automate.io", "Parabola"] }
+  { score: 65, frequency_score: 60, position_score: 70, link_score: 65, keyword: keywords.fourth, ai_provider: ai_providers.second, ai_responses: ["AWS Training", "Microsoft Learn", "Google Cloud Skills"] },
+  { score: 78, frequency_score: 80, position_score: 75, link_score: 70, keyword: keywords.fifth, ai_provider: ai_providers.first, ai_responses: ["Zapier", "Automate.io", "Parabola"] }
 ])
 puts "goe_scoring created"
 

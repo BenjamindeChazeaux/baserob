@@ -34,7 +34,7 @@ Rails.application.routes.draw do
   resources :geo_scorings, only: [:index] do
     get "history/:keyword_id", to: "geo_scorings#history", on: :collection
   end
-
+  resources :requests, only: [:index]
   resources :keywords, only: [:index, :show, :new, :create, :edit, :update, :destroy]
 
   # Autres routes personnalisées
