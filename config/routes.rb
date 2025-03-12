@@ -81,4 +81,7 @@ Rails.application.routes.draw do
   get 'profile', to: 'users#show'
 
   get 'requests', to: 'requests#index', as: 'requests_index'
+
+  # Route pour les analytics IA
+  get 'ai_analytics', to: 'analytics#ai', as: :ai_analytics
 end
