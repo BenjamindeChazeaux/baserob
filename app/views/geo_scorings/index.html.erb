@@ -1,11 +1,32 @@
-
-<div class="container w-50">
+<div class="container w-50" data-controller="geo-scoring">
   <h2 class="text-center">📊 AI Visibility Score</h2>
+
+  <!-- 📌 Bouton pour afficher le champ du prompt -->
+  <div class="mt-4 text-center">
+    <button class="btn btn-success" data-action="click->geo-scoring#togglePrompt">+</button>
+  </div>
+
+  <!-- 📌 Formulaire de saisie du prompt (caché par défaut) -->
+  <div class="mt-4" data-geo-scoring-target="promptFormContainer" style="display: none;">
+    <form id="prompt-form" data-action="submit->geo-scoring#addPrompt">
+      <div class="input-group">
+        <input type="text" id="prompt-input" class="form-control" placeholder="Enter your prompt...">
+        <button type="submit" class="btn btn-primary">Add</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 📌 Liste des prompts saisis -->
+  <div class="mt-4">
+    <h3>Entered Prompts</h3>
+    <ul id="prompt-list" class="list-group" data-geo-scoring-target="promptList">
+      <!-- Les prompts seront ajoutés ici dynamiquement -->
+    </ul>
+  </div>
 
   <!-- 📌 Sélection du mot-clé -->
   <div class="mt-4">
     <select id="keyword-dropdown" class="form-control"
-      data-controller="geo-scoring"
       data-action="change->geo-scoring#loadScores"
       data-geo-scoring-target="keywordDropdown">
       <option value="">Select a keyword</option>
@@ -14,45 +35,4 @@
       <% end %>
     </select>
   </div>
-
-  <!-- 📌 Affichage du Score Global -->
-  <% if @global_score.present? %>
-    <div class="mt-4 text-center">
-      <h3>Global Score: <span class="badge bg-primary"><%= @global_score %></span></h3>
-    </div>
-  <% else %>
-    <div class="mt-4 text-center text-muted">
-      <p>Select a keyword to see the global score</p>
-    </div>
-  <% end %>
-
-  <% if @position_scores.present? %>
-  <div class="mt-4">
-    <h3>Top 3 AI Providers for <%= @selected_keyword.content %></h3>
-    <ul class="list-group">
-      <% @position_scores.each do |score| %>
-        <% if score.ai_provider.present? %>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <strong><%= score.ai_provider.name %></strong>
-            <span class="badge bg-secondary">Position: <%= score.position_score %></span>
-          </li>
-        <% else %>
-          <li class="list-group-item text-danger">
-            AI Provider Missing for Score ID: <%= score.id %>
-          </li>
-        <% end %>
-      <% end %>
-    </ul>
-  </div>
-<% else %>
-  <div class="mt-4 text-center text-muted">
-    <p>No AI data available for this keyword.</p>
-  </div>
-<% end %>
-
-
-
-  <!-- 📌 Section de l’historique -->
-  <div id="history" data-geo-scoring-target="history"></div>
 </div>
-

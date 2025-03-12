@@ -20,7 +20,7 @@ module Ai
           "messages": [
             {
               "role": "system",
-              "content": "Answer me in a table of 10 only a list not even a sentence "
+              "content": "give me the answer only with a list "
             },
             {
               "role": "user",

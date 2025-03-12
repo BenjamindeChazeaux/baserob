@@ -16,12 +16,12 @@ module Ai
 
       def body
         {
-          "model": @model,
+          "model": self.class::DEFAULT_MODEL,
           "max_tokens": 1024,
           "messages": [
             {
               "role": "user",
-              "content": "Answer me in a table of 10 only a list not even a sentence " + @prompt
+              "content": "give me the answer only with a list " + @prompt
             }
           ]
         }
