@@ -2,6 +2,7 @@ class RequestsController < ApplicationController
   def index
     @requests = Request.all
 
+    # search AI Provider
     ai_provider_id_param = params.dig(:search, :ai_provider)
     if ai_provider_id_param.present?
       @ai_provider = AiProvider.find(ai_provider_id_param)
@@ -14,14 +15,14 @@ class RequestsController < ApplicationController
     if timeline_param.present?
        case timeline_param
        when "today"
-        @requests = @requests.where("created_at >= ?", today)
-       when "1 week"
+        @requests = @requests.where("created_at >= ?", Date.today)
+       when "1_week"
         @requests = @requests.where("created_at >= ?", 1.week.ago)
-       when "1 month"
+       when "1_month"
         @requests = @requests.where("created_at >= ?", 1.month.ago)
-       when "3 months"
+       when "3_months"
         @requests = @requests.where("created_at >= ?", 3.months.ago)
-       when "6 months"
+       when "6_months"
         @requests = @requests.where("created_at >= ?", 6.months.ago)
        end
     end
@@ -31,13 +32,7 @@ class RequestsController < ApplicationController
   end
 end
 
-# if params[:start_date].present? && params[:end_date].present?
-#   @requests = @requests.where(created_at: params[:start_date]..params[:end_date])
-# elsif params[:start_date].present?
-#   @requests = @requests.where('created_at >= ?', params[:start_date])
-# elsif params[:end_date].present?
-#   @requests = @requests.where('created_at <= ?', params[:end_date])
-# end
+
 
   # def show
   #   @request = Request.find(params[:id])

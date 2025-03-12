@@ -9,7 +9,7 @@
         <div class="card-header bg-primary text-white">
           <h5 class="mb-0">AI Performance Overview</h5>
         </div>
-        <div class="card-body">
+        <div class="card-body m-5">
           <p>Welcome to your AI Analytics dashboard. Here you can monitor and evaluate various AI metrics and performance indicators.</p>
 
           <div class="alert alert-info">
@@ -17,11 +17,11 @@
           </div>
 
           <!-- Analytic section with chart -->
-          <div class="row mt-4">
+          <div class="row mt-4 ">
             <div class="col-md-6">
               <div class="card mb-3">
                 <div class="card-header">Usage Metrics</div>
-                <div class="card-body">
+                <div class="card-body m-5">
                   <p>AI usage statistics and frequency analysis would appear here.</p>
                   <div class="filter-container mb-4">
                     <%= simple_form_for :search, url: requests_path, method: :get, local: true do |f| %>
@@ -30,7 +30,7 @@
                           <%= f.input :ai_provider, collection: AiProvider.all, include_blank: "All AI Providers", class: "form-control" %>
                         </div>
                         <div class="col-md-4">
-                          <%= f.input :Timeline, collection: [['Today', 'today']['1 Week', '1_week'], ['1 Month', '1_month'], ['3 Months', '3_months'], ['6 Months', '6_months']], include_blank: "Select Time ", class: "form-control" %>
+                          <%= f.input :timeline, collection: [['Today', 'today'],['1 Week', '1_week'], ['1 Month', '1_month'], ['3 Months', '3_months'], ['6 Months', '6_months']], include_blank: "Select Time ", class: "form-control" %>
                         </div>
                         <div class="col-md-2 text-center">
                           <%= f.submit "Filter", class: "btn btn-primary" %>
