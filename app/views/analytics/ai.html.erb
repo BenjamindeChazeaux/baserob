@@ -1,0 +1,317 @@
+<div class="container">
+  <div class="page-header">
+    <h1>Analyse des requêtes IA</h1>
+    <p>Visualisez les performances et l'utilisation de vos requêtes d'intelligence artificielle.</p>
+  </div>
+  
+  <div class="analytics-dashboard">
+    <div class="filters-section">
+      <%= form_tag ai_analytics_path, method: :get, class: "filters-form" do %>
+        <div class="filters-container">
+          <div class="filter-group">
+            <%= label_tag :provider, "Fournisseur" %>
+            <%= select_tag :provider, 
+                options_for_select([
+                  ["Tous les fournisseurs", "all"],
+                  ["OpenAI", "openai"],
+                  ["Anthropic", "anthropic"],
+                  ["Google", "google"]
+                ], @provider),
+                class: "form-control" %>
+          </div>
+          
+          <div class="filter-group">
+            <%= label_tag :period, "Période" %>
+            <%= select_tag :period, 
+                options_for_select([
+                  ["Aujourd'hui", "today"],
+                  ["Cette semaine", "week"],
+                  ["Ce mois", "month"],
+                  ["Cette année", "year"],
+                  ["Personnalisé", "custom"]
+                ], @period),
+                class: "form-control",
+                id: "period-select" %>
+          </div>
+          
+          <div class="filter-group date-range" id="custom-date-range" style="<%= @period == 'custom' ? '' : 'display: none;' %>">
+            <div class="date-input">
+              <%= label_tag :start_date, "Du" %>
+              <%= date_field_tag :start_date, @start_date, class: "form-control" %>
+            </div>
+            <div class="date-input">
+              <%= label_tag :end_date, "Au" %>
+              <%= date_field_tag :end_date, @end_date, class: "form-control" %>
+            </div>
+          </div>
+          
+          <div class="filter-actions">
+            <%= submit_tag "Appliquer", class: "btn btn-primary" %>
+            <%= link_to "Réinitialiser", ai_analytics_path, class: "btn btn-secondary" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    
+    <div class="analytics-cards">
+      <div class="analytics-card">
+        <div class="card-header">
+          <h3>Total des requêtes</h3>
+          <div class="card-icon">
+            <i class="fas fa-server"></i>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="metric">
+            <span class="value">1,234</span>
+            <span class="change positive">
+              <i class="fas fa-arrow-up"></i>
+              12.5%
+            </span>
+          </div>
+          <div class="metric-period">vs période précédente</div>
+        </div>
+      </div>
+      
+      <div class="analytics-card">
+        <div class="card-header">
+          <h3>Coût total</h3>
+          <div class="card-icon">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="metric">
+            <span class="value">$89.50</span>
+            <span class="change negative">
+              <i class="fas fa-arrow-up"></i>
+              8.3%
+            </span>
+          </div>
+          <div class="metric-period">vs période précédente</div>
+        </div>
+      </div>
+      
+      <div class="analytics-card">
+        <div class="card-header">
+          <h3>Temps moyen</h3>
+          <div class="card-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="metric">
+            <span class="value">1.8s</span>
+            <span class="change positive">
+              <i class="fas fa-arrow-down"></i>
+              5.2%
+            </span>
+          </div>
+          <div class="metric-period">vs période précédente</div>
+        </div>
+      </div>
+      
+      <div class="analytics-card">
+        <div class="card-header">
+          <h3>Taux de réussite</h3>
+          <div class="card-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="metric">
+            <span class="value">98.7%</span>
+            <span class="change positive">
+              <i class="fas fa-arrow-up"></i>
+              0.5%
+            </span>
+          </div>
+          <div class="metric-period">vs période précédente</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="chart-container">
+      <div class="chart-header">
+        <h2>Évolution des requêtes</h2>
+        <div class="chart-actions">
+          <button class="btn btn-sm btn-outline" data-chart-type="daily">Jour</button>
+          <button class="btn btn-sm btn-outline active" data-chart-type="weekly">Semaine</button>
+          <button class="btn btn-sm btn-outline" data-chart-type="monthly">Mois</button>
+        </div>
+      </div>
+      <div class="chart" id="requests-chart" style="height: 300px;">
+        <!-- Le graphique sera inséré ici par JavaScript -->
+      </div>
+    </div>
+    
+    <div class="chart-container">
+      <div class="chart-header">
+        <h2>Répartition par modèle</h2>
+      </div>
+      <div class="chart" id="models-chart" style="height: 300px;">
+        <!-- Le graphique sera inséré ici par JavaScript -->
+      </div>
+    </div>
+    
+    <div class="table-container">
+      <div class="table-header">
+        <h2>Dernières requêtes</h2>
+        <a href="#" class="view-all-btn">Voir tout</a>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Modèle</th>
+            <th>Timestamp</th>
+            <th>Durée</th>
+            <th>Tokens</th>
+            <th>Coût</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#12345</td>
+            <td>gpt-4</td>
+            <td>2023-06-15 14:32:45</td>
+            <td>1.2s</td>
+            <td>1,450</td>
+            <td>$0.12</td>
+            <td><span class="status success">Succès</span></td>
+          </tr>
+          <tr>
+            <td>#12344</td>
+            <td>claude-2</td>
+            <td>2023-06-15 14:30:12</td>
+            <td>0.9s</td>
+            <td>980</td>
+            <td>$0.08</td>
+            <td><span class="status success">Succès</span></td>
+          </tr>
+          <tr>
+            <td>#12343</td>
+            <td>gpt-3.5-turbo</td>
+            <td>2023-06-15 14:28:55</td>
+            <td>0.7s</td>
+            <td>750</td>
+            <td>$0.03</td>
+            <td><span class="status success">Succès</span></td>
+          </tr>
+          <tr>
+            <td>#12342</td>
+            <td>gpt-4</td>
+            <td>2023-06-15 14:25:18</td>
+            <td>2.1s</td>
+            <td>2,200</td>
+            <td>$0.18</td>
+            <td><span class="status error">Erreur</span></td>
+          </tr>
+          <tr>
+            <td>#12341</td>
+            <td>palm-2</td>
+            <td>2023-06-15 14:20:33</td>
+            <td>1.5s</td>
+            <td>1,100</td>
+            <td>$0.05</td>
+            <td><span class="status success">Succès</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Afficher/masquer la sélection de dates personnalisées
+    const periodSelect = document.getElementById('period-select');
+    const customDateRange = document.getElementById('custom-date-range');
+    
+    if (periodSelect && customDateRange) {
+      periodSelect.addEventListener('change', function() {
+        if (this.value === 'custom') {
+          customDateRange.style.display = 'flex';
+        } else {
+          customDateRange.style.display = 'none';
+        }
+      });
+    }
+    
+    // Initialisation des graphiques (exemple avec Chart.js)
+    if (typeof Chart !== 'undefined') {
+      // Graphique d'évolution des requêtes
+      const requestsCtx = document.getElementById('requests-chart');
+      if (requestsCtx) {
+        new Chart(requestsCtx, {
+          type: 'line',
+          data: {
+            labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+            datasets: [{
+              label: 'Nombre de requêtes',
+              data: [65, 78, 52, 91, 85, 42, 73],
+              borderColor: '#0A84FF',
+              backgroundColor: 'rgba(10, 132, 255, 0.1)',
+              tension: 0.4,
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: false
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.05)'
+                }
+              },
+              x: {
+                grid: {
+                  display: false
+                }
+              }
+            }
+          }
+        });
+      }
+      
+      // Graphique de répartition par modèle
+      const modelsCtx = document.getElementById('models-chart');
+      if (modelsCtx) {
+        new Chart(modelsCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['GPT-4', 'GPT-3.5', 'Claude', 'PaLM'],
+            datasets: [{
+              data: [45, 30, 15, 10],
+              backgroundColor: [
+                '#0A84FF',
+                '#30D158',
+                '#FF9F0A',
+                '#FF453A'
+              ],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'right'
+              }
+            },
+            cutout: '70%'
+          }
+        });
+      }
+    }
+  });
+</script> 
