@@ -1,0 +1,6 @@
+<h3>Position Score for <%= @keyword.content %></h3>
+<ul>
+  <% position_scores.each do |score| %>
+    <li><strong><%= score.ai_provider.name %>:</strong> Position <%= score.position_score %></li>
+  <% end %>
+</ul>
