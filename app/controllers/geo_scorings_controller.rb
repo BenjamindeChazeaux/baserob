@@ -13,9 +13,10 @@ class GeoScoringsController < ApplicationController
     else
       @selected_keyword = nil
       @all_scores = []
-    end
 
     # Calcul du score global
+    end
+
     scores = @all_scores.pluck(:position_score)
     @global_score = scores.present? ? (scores.sum.to_f / scores.size).round(2) : nil
   end
@@ -54,8 +55,10 @@ class GeoScoringsController < ApplicationController
   def set_keyword
     @keyword = Keyword.find(params[:keyword_id])
   end
+  end
   def extract_keywords_from_prompt(prompt)
     prompt_words = prompt.split(/\W+/)
     prompt_words.select { |word| Keyword.exists?(content: word) }
-  end 
+  end
+  end
 end
