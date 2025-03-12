@@ -8,18 +8,17 @@ class RequestsController < ApplicationController
       @requests = @requests.where(ai_provider: @ai_provider)
     end
 
-
-    # if params[:start_date].present? && params[:end_date].present?
-    #   @requests = @requests.where(created_at: params[:start_date]..params[:end_date])
-    # elsif params[:start_date].present?
-    #   @requests = @requests.where('created_at >= ?', params[:start_date])
-    # elsif params[:end_date].present?
-    #   @requests = @requests.where('created_at <= ?', params[:end_date])
-    # end
-
-    @ai_crawler_requests_count = @requests.count
+    @ai_crawler_requests_count = @requests.count # calcul the requests
   end
 end
+
+# if params[:start_date].present? && params[:end_date].present?
+#   @requests = @requests.where(created_at: params[:start_date]..params[:end_date])
+# elsif params[:start_date].present?
+#   @requests = @requests.where('created_at >= ?', params[:start_date])
+# elsif params[:end_date].present?
+#   @requests = @requests.where('created_at <= ?', params[:end_date])
+# end
 
   # def show
   #   @request = Request.find(params[:id])
