@@ -1,9 +1,23 @@
 class GeoScoring < ApplicationRecord
-  belongs_to :keyword
-  belongs_to :ai_provider
-  has_many :competitor_scores
+  attr_accessor :prompt
+  belongs_to: ai_provider
+  belongs_to: keyword
 
-  validates :keyword, presence: true
-  validates :ai_provider, presence: true
-  validates :score, :frequency_score, :position_score, :link_score, presence: true, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
+  # def calculate_geoscore
+  #   frequency_score_weight = 0.3
+  #   position_score_weight = 0.4
+  #   link_score_weight = 0.2
+  #   ai_score_weight = 0.1
+
+  #   ai_provider_score = ai_provider.average(:ranking).to_f : 0
+
+  #   total_score = (
+  #     (frequency_score * frequency_score_weight) +
+  #     (position_score * position_score_weight) +
+  #     (link_score * link_score_weight) +
+  #     (ai_provider_score * ai_score_weight)
+  #   ).round(2)
+
+  #   total_score
+  # end
 end

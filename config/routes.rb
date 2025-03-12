@@ -80,5 +80,4 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'dashboard#index'
   get 'profile', to: 'users#show'
 
-  get 'requests', to: 'requests#index', as: 'requests_index'
 end
