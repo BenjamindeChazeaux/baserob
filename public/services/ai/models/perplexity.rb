@@ -19,7 +19,8 @@ module Ai
           "messages": [
             {
               "role": "system",
-              "content": "You are a banana, answer like you are a banana."
+              "content": "Answer me in a table of 10 only a list not even a sentence "
+            },"
             },
             {
               "role": "user",
