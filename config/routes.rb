@@ -36,8 +36,6 @@ Rails.application.routes.draw do
   end
 
 
-
-
   resources :keywords, only: [:index, :show, :new, :create, :edit, :update, :destroy]
 
   # Autres routes personnalisées

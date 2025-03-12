@@ -13,7 +13,7 @@ class GeoScoringsController < ApplicationController
     else
       @selected_keyword = nil
       @all_scores = []
-    end
+    endÈ
 
     # Calcul du score global
     scores = @all_scores.pluck(:position_score)
