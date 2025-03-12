@@ -79,4 +79,5 @@ Rails.application.routes.draw do
   # Autres routes personnalisées
   get 'dashboard', to: 'dashboard#index'
   get 'profile', to: 'users#show'
+  resources :geo_scorings, only: [:new, :create, :show]
 end
