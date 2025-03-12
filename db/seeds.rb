@@ -47,11 +47,11 @@ puts "Ai providers created"
 
 companies = Company.all
 keywords = Keyword.create!([
-  { content: "AI", company: company },
-  { content: "Machine Learning", company: company },
-  { content: "Data Science", company: company },
-  { content: "Cloud Computing", company: company },
-  { content: "Automation", company: company }
+  { content: "Meilleure formation en intelligence artificielle en ligne", company: company },
+  { content: "Meilleur bootcamp de Machine Learning ?", company: company },
+  { content: "Top écoles pour apprendre la Data Science", company: company },
+  { content: "Formation Cloud Computing la plus reconnue en 2025", company: company },
+  { content: "Comparaison des meilleures formations en automatisation des tâches", company: company }
 ])
 puts "Keywords created"
 
@@ -114,13 +114,12 @@ competitors = Competitor.create!([
 puts "Competitors created"
 
 keywords = Keyword.all
-
 geo_scorings = GeoScoring.create!([
-  { score: 85, frequency_score: 90, position_score: 80, link_score: 75, keyword: keywords.first, ai_provider: ai_providers.first},
-  { score: 70, frequency_score: 65, position_score: 72, link_score: 80, keyword: keywords.second, ai_provider: ai_providers.second},
-  { score: 90, frequency_score: 88, position_score: 85, link_score: 92, keyword: keywords.third, ai_provider: ai_providers.third},
-  { score: 65, frequency_score: 60, position_score: 70, link_score: 65, keyword: keywords.fourth, ai_provider: ai_providers.fourth},
-  { score: 78, frequency_score: 80, position_score: 75, link_score: 70, keyword: keywords.fifth, ai_provider: ai_providers.fifth}
+  { score: 85, frequency_score: 90, position_score: 80, link_score: 75, keyword: keywords.first, ai_provider: ai_providers.first, ai_responses: ["Le Wagon", "Ironhack", "App Academy"] },
+  { score: 70, frequency_score: 65, position_score: 72, link_score: 80, keyword: keywords.second, ai_provider: ai_providers.second, ai_responses: ["DataCamp", "Springboard", "Udacity"] },
+  { score: 90, frequency_score: 88, position_score: 85, link_score: 92, keyword: keywords.third, ai_provider: ai_providers.third, ai_responses: ["General Assembly", "Thinkful", "Lambda School"] },
+  { score: 65, frequency_score: 60, position_score: 70, link_score: 65, keyword: keywords.fourth, ai_provider: ai_providers.fourth, ai_responses: ["AWS Training", "Microsoft Learn", "Google Cloud Skills"] },
+  { score: 78, frequency_score: 80, position_score: 75, link_score: 70, keyword: keywords.fifth, ai_provider: ai_providers.fifth, ai_responses: ["Zapier", "Automate.io", "Parabola"] }
 ])
 puts "goe_scoring created"
 
