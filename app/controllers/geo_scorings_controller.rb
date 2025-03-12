@@ -55,8 +55,10 @@ class GeoScoringsController < ApplicationController
   def set_keyword
     @keyword = Keyword.find(params[:keyword_id])
   end
+  end
   def extract_keywords_from_prompt(prompt)
     prompt_words = prompt.split(/\W+/)
     prompt_words.select { |word| Keyword.exists?(content: word) }
-
+  end
+  end
 end
