@@ -1,2 +1,17 @@
-<h1>GeoScorings#show</h1>
-<p>Find me in app/views/geo_scorings/show.html.erb</p>
+<h1>GeoScore: <%= @geo_scoring.score %></h1>
+
+<p><strong>Prompt:</strong> <%= @geo_scoring.prompt %></p>
+
+<p><strong>Keywords:</strong></p>
+<ul>
+  <% @geo_scoring.keywords.each do |keyword| %>
+    <li><%= keyword.content %></li>
+  <% end %>
+</ul>
+
+<p><strong>AI Providers:</strong></p>
+<ul>
+  <% @geo_scoring.ai_providers.each do |ai_provider| %>
+    <li><%= ai_provider.name %></li>
+  <% end %>
+</ul>

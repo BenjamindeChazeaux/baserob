@@ -1,2 +1,58 @@
-<h1>GeoScorings#index</h1>
-<p>Find me in app/views/geo_scorings/index.html.erb</p>
+
+<div class="container w-50">
+  <h2 class="text-center">📊 AI Visibility Score</h2>
+
+  <!-- 📌 Sélection du mot-clé -->
+  <div class="mt-4">
+    <select id="keyword-dropdown" class="form-control"
+      data-controller="geo-scoring"
+      data-action="change->geo-scoring#loadScores"
+      data-geo-scoring-target="keywordDropdown">
+      <option value="">Select a keyword</option>
+      <% @keywords.each do |kw| %>
+        <option value="<%= kw.id %>" <%= "selected" if @selected_keyword&.id == kw.id %>><%= kw.content %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <!-- 📌 Affichage du Score Global -->
+  <% if @global_score.present? %>
+    <div class="mt-4 text-center">
+      <h3>Global Score: <span class="badge bg-primary"><%= @global_score %></span></h3>
+    </div>
+  <% else %>
+    <div class="mt-4 text-center text-muted">
+      <p>Select a keyword to see the global score</p>
+    </div>
+  <% end %>
+
+  <% if @position_scores.present? %>
+  <div class="mt-4">
+    <h3>Top 3 AI Providers for <%= @selected_keyword.content %></h3>
+    <ul class="list-group">
+      <% @position_scores.each do |score| %>
+        <% if score.ai_provider.present? %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <strong><%= score.ai_provider.name %></strong>
+            <span class="badge bg-secondary">Position: <%= score.position_score %></span>
+          </li>
+        <% else %>
+          <li class="list-group-item text-danger">
+            AI Provider Missing for Score ID: <%= score.id %>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+<% else %>
+  <div class="mt-4 text-center text-muted">
+    <p>No AI data available for this keyword.</p>
+  </div>
+<% end %>
+
+
+
+  <!-- 📌 Section de l’historique -->
+  <div id="history" data-geo-scoring-target="history"></div>
+</div>
+

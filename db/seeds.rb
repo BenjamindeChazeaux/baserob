@@ -7,7 +7,7 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-puts "destroy all datas"
+
 CompanyAiProvider.destroy_all
 CompetitorScore.destroy_all
 GeoScoring.destroy_all
@@ -17,6 +17,7 @@ Keyword.destroy_all
 AiProvider.destroy_all
 User.destroy_all
 Company.destroy_all
+puts "seed destroyed"
 
 companies = Company.create!([
   { name: "Le Wagon", domain: "https://www.lewagon.com" },
@@ -33,6 +34,7 @@ Ben = User.create!(email: "ben@gmail.com", password: "password1", company: compa
 Anh = User.create!(email: "anh@gmail.com", password: "password2", company: company)
 Antoine = User.create!(email: "antoine@gmail.com", password: "password3", company: company)
 Yannick = User.create!(email: "yannick@gmail.com", password: "password4", company: company)
+puts "Users created"
 
 ai_providers = AiProvider.create!([
   { name: "OpenAI" },
@@ -41,6 +43,7 @@ ai_providers = AiProvider.create!([
   { name: "Cohere" },
   { name: "Mistral" }
 ])
+puts "Ai providers created"
 
 companies = Company.all
 keywords = Keyword.create!([
@@ -50,11 +53,12 @@ keywords = Keyword.create!([
   { content: "Cloud Computing", company: company },
   { content: "Automation", company: company }
 ])
-
+puts "Keywords created"
 
 AiProvider.find_each do |ai_provider|
   CompanyAiProvider.create!(company: company, ai_provider: ai_provider)
 end
+puts "Association done"
 
 requests = Request.create!([
   {
@@ -98,7 +102,7 @@ requests = Request.create!([
     ai_provider: ai_providers.fifth
   }
 ])
-
+puts "requests created"
 
 competitors = Competitor.create!([
   { name: "Competitor 1", domain: "https://www.competitor1.com", company: company },
@@ -107,7 +111,7 @@ competitors = Competitor.create!([
   { name: "Competitor 4", domain: "https://www.competitor4.com", company: company  },
   { name: "Competitor 5", domain: "https://www.competitor5.com", company: company  }
 ])
-
+puts "Competitors created"
 
 keywords = Keyword.all
 
@@ -118,6 +122,7 @@ geo_scorings = GeoScoring.create!([
   { score: 65, frequency_score: 60, position_score: 70, link_score: 65, keyword: keywords.fourth, ai_provider: ai_providers.fourth},
   { score: 78, frequency_score: 80, position_score: 75, link_score: 70, keyword: keywords.fifth, ai_provider: ai_providers.fifth}
 ])
+puts "goe_scoring created"
 
 competitor_scores = CompetitorScore.create!([
   {
@@ -161,3 +166,4 @@ competitor_scores = CompetitorScore.create!([
     geo_scoring: geo_scorings.fifth
   }
 ])
+puts "Competitor_Score created"

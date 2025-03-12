@@ -1,47 +1,31 @@
 class KeywordsController < ApplicationController
+  before_action :set_company, only: [:index, :create]
+
   def index
-    @keywords = Keyword.all
-  end
-
-  def show
-    @keyword = Keyword.find(params[:id])
-  end
-
-  def new
-    @keyword = Keyword.new
+    @keywords = @company.keywords
   end
 
   def create
-    @keyword = Keyword.new(keyword_params)
+    @keyword = @company.keywords.build(keyword_params)
+
     if @keyword.save
-      redirect_to @keyword
+      respond_to do |format|
+        format.json { render json: { id: @keyword.id, content: @keyword.content }, status: :created }
+      end
     else
-      render :new
+      respond_to do |format|
+        format.json { render json: { error: @keyword.errors.full_messages.join(", ") }, status: :unprocessable_entity }
+      end
     end
-  end
-
-  def edit
-    @keyword = Keyword.find(params[:id])
-  end
-
-  def update
-    @keyword = Keyword.find(params[:id])
-    if @keyword.update(keyword_params)
-      redirect_to @keyword
-    else
-      render :edit
-    end
-  end
-
-  def destroy
-    @keyword = Keyword.find(params[:id])
-    @keyword.destroy
-    redirect_to keywords_path
   end
 
   private
 
+  def set_company
+    @company = current_user.company
+  end
+
   def keyword_params
-    params.require(:keyword).permit(:name, :description)
+    params.require(:keyword).permit(:score, :frequency_score, :position_score, :link_score, :ai_providers)
   end
 end
