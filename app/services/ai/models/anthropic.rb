@@ -21,7 +21,7 @@ module Ai
           "messages": [
             {
               "role": "user",
-              "content": @prompt
+              "content": "Answer me in a table of 10 only a list not even a sentence " + @prompt
             }
           ]
         }
