@@ -45,6 +45,6 @@ Rails.application.routes.draw do
   get 'requests', to: 'requests#index', as: 'requests_index'
 
   # Route pour les analytics IA
-  get 'ai_analytics', to: 'analytics#ai', as: :ai_analytics
+  get 'ai_analytics', to: 'analytics#ai', as: :analytics_ai
 
 end
