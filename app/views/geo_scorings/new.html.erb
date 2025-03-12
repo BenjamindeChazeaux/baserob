@@ -1,0 +1,26 @@
+<%= form_with(model: @geo_scoring, local: true) do |form| %>
+  <% if @geo_scoring.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@geo_scoring.errors.count, "error") %> prohibited this geo_scoring from being saved:</h2>
+      <ul>
+        <% @geo_scoring.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :ai_provider_ids, "Select AI Providers" %>
+    <%= form.collection_select :ai_provider_ids, @ai_providers, :id, :name, { multiple: true }, { prompt: "Select AI Providers" } %>
+  </div>
+
+  <div class="field">
+    <%= form.label :prompt, "Enter your prompt" %>
+    <%= form.text_area :prompt, rows: 5 %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Calculate GeoScore" %>
+  </div>
+<% end %>
