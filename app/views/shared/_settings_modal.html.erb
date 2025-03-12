@@ -1,0 +1,299 @@
+<!-- Settings Modal (copie de Quick Start) -->
+<div id="settingsModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Settings</h2>
+      <button class="close-modal" onclick="closeSettingsModal()">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Stepper navigation -->
+      <div class="stepper">
+        <div class="step active" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-label">General</div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-label">Appearance</div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-label">Account</div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-number">4</div>
+          <div class="step-label">Advanced</div>
+        </div>
+      </div>
+      
+      <!-- Step content -->
+      <div class="step-content-container">
+        <!-- Step 1: General -->
+        <div class="step-content active" data-step="1">
+          <h3>General Settings</h3>
+          <p>Configure your basic preferences for the application.</p>
+          <div class="customize-options">
+            <div class="option-group">
+              <label>Language</label>
+              <select class="form-control">
+                <option selected>English</option>
+                <option>Français</option>
+                <option>Español</option>
+                <option>Deutsch</option>
+              </select>
+            </div>
+            <div class="option-group">
+              <label>Time Zone</label>
+              <select class="form-control">
+                <option selected>UTC (Coordinated Universal Time)</option>
+                <option>Europe/Paris</option>
+                <option>America/New_York</option>
+                <option>Asia/Tokyo</option>
+              </select>
+            </div>
+            <div class="option-group">
+              <label>Date Format</label>
+              <select class="form-control">
+                <option selected>MM/DD/YYYY</option>
+                <option>DD/MM/YYYY</option>
+                <option>YYYY-MM-DD</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 2: Appearance -->
+        <div class="step-content" data-step="2">
+          <h3>Appearance Settings</h3>
+          <div class="customize-options">
+            <div class="option-group">
+              <label>Theme</label>
+              <select class="form-control">
+                <option selected>System Default</option>
+                <option>Light</option>
+                <option>Dark</option>
+              </select>
+            </div>
+            <div class="option-group">
+              <label>Font Size</label>
+              <select class="form-control">
+                <option>Small</option>
+                <option selected>Medium</option>
+                <option>Large</option>
+              </select>
+            </div>
+            <div class="option-group">
+              <label>Color Theme</label>
+              <div class="color-options">
+                <div class="color-option" style="background-color: #3498db;"></div>
+                <div class="color-option" style="background-color: #2ecc71;"></div>
+                <div class="color-option" style="background-color: #e74c3c;"></div>
+                <div class="color-option" style="background-color: #9b59b6;"></div>
+                <div class="color-option" style="background-color: #f1c40f;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 3: Account -->
+        <div class="step-content" data-step="3">
+          <h3>Account Settings</h3>
+          <div class="customize-options">
+            <div class="option-group">
+              <label>Email</label>
+              <input type="email" class="form-control" value="<%= user_signed_in? ? current_user.email : 'user@example.com' %>" placeholder="Your email">
+            </div>
+            <div class="option-group">
+              <label>Password</label>
+              <input type="password" class="form-control" placeholder="••••••••">
+              <button class="btn-secondary mt-2">Change Password</button>
+            </div>
+            <div class="option-group">
+              <label>Profile Picture</label>
+              <div class="d-flex align-items-center">
+                <% if user_signed_in? %>
+                  <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", class: "avatar-large", style: "width: 60px; height: 60px; border-radius: 50%; margin-right: 15px;" %>
+                <% else %>
+                  <div class="avatar-large bg-secondary" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 15px;"></div>
+                <% end %>
+                <button class="btn-secondary">Upload New</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 4: Advanced -->
+        <div class="step-content" data-step="4">
+          <h3>Advanced Settings</h3>
+          <div class="customize-options">
+            <div class="option-group">
+              <label>Data Refresh Rate</label>
+              <select class="form-control">
+                <option>Real-time</option>
+                <option selected>Every 5 minutes</option>
+                <option>Every hour</option>
+                <option>Daily</option>
+              </select>
+            </div>
+            <div class="option-group">
+              <label>Export Data</label>
+              <button class="btn-secondary">Export All Data</button>
+            </div>
+            <div class="option-group">
+              <label>Delete Account</label>
+              <p class="text-danger">This action cannot be undone.</p>
+              <button class="btn-danger">Delete My Account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button id="settingsPrevStep" class="btn-secondary" disabled>Previous</button>
+      <button id="settingsNextStep" class="btn-primary">Next</button>
+      <button id="settingsSave" class="btn-primary" style="display: none;">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Sélectionner les éléments
+  const modal = document.getElementById('settingsModal');
+  const prevButton = document.getElementById('settingsPrevStep');
+  const nextButton = document.getElementById('settingsNextStep');
+  const saveButton = document.getElementById('settingsSave');
+  const steps = modal.querySelectorAll('.step');
+  const stepContents = modal.querySelectorAll('.step-content');
+  
+  let currentStep = 1;
+  const totalSteps = steps.length;
+  
+  // Fonction pour fermer la modal
+  window.closeSettingsModal = function() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  };
+  
+  // Fermer la modal en cliquant à l'extérieur
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeSettingsModal();
+    }
+  });
+  
+  // Navigation entre les étapes
+  function goToStep(stepNumber) {
+    currentStep = stepNumber;
+    
+    // Mettre à jour les indicateurs d'étape
+    steps.forEach((step, index) => {
+      const stepNum = index + 1;
+      
+      if (stepNum === currentStep) {
+        step.classList.add('active');
+        step.classList.remove('completed');
+      } else if (stepNum < currentStep) {
+        step.classList.remove('active');
+        step.classList.add('completed');
+      } else {
+        step.classList.remove('active');
+        step.classList.remove('completed');
+      }
+    });
+    
+    // Mettre à jour le contenu des étapes
+    stepContents.forEach((content) => {
+      if (parseInt(content.dataset.step) === currentStep) {
+        content.classList.add('active');
+      } else {
+        content.classList.remove('active');
+      }
+    });
+    
+    // Mettre à jour les boutons
+    prevButton.disabled = currentStep === 1;
+    
+    if (currentStep === totalSteps) {
+      nextButton.style.display = 'none';
+      saveButton.style.display = 'block';
+    } else {
+      nextButton.style.display = 'block';
+      saveButton.style.display = 'none';
+    }
+  }
+  
+  // Bouton suivant
+  nextButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    if (currentStep < totalSteps) {
+      goToStep(currentStep + 1);
+    }
+  });
+  
+  // Bouton précédent
+  prevButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    if (currentStep > 1) {
+      goToStep(currentStep - 1);
+    }
+  });
+  
+  // Bouton sauvegarder
+  saveButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Fermer la modal
+    closeSettingsModal();
+    
+    // Afficher une notification de succès
+    const notification = document.createElement('div');
+    notification.className = 'notification success';
+    notification.innerHTML = `
+      <i class="fas fa-check-circle"></i>
+      <div class="notification-content">
+        <h4>Settings Saved!</h4>
+        <p>Your settings have been updated successfully.</p>
+      </div>
+      <button class="close-notification">&times;</button>
+    `;
+    document.body.appendChild(notification);
+    
+    // Supprimer la notification après 5 secondes
+    setTimeout(() => {
+      notification.classList.add('fade-out');
+      setTimeout(() => {
+        notification.remove();
+      }, 300);
+    }, 5000);
+  });
+  
+  // Gérer les clics sur les éléments sélectionnables
+  const selectableItems = modal.querySelectorAll('.color-option');
+  selectableItems.forEach(item => {
+    item.addEventListener('click', function() {
+      const parent = this.parentElement;
+      
+      // Si c'est un conteneur à sélection unique
+      if (parent.classList.contains('color-options')) {
+        parent.querySelectorAll('.selected').forEach(el => {
+          el.classList.remove('selected');
+        });
+      }
+      
+      this.classList.toggle('selected');
+    });
+  });
+  
+  // Permettre de cliquer sur les étapes pour naviguer
+  steps.forEach((step, index) => {
+    step.addEventListener('click', function() {
+      goToStep(index + 1);
+    });
+  });
+});
+</script> 
