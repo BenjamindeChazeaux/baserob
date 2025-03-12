@@ -1,7 +1,9 @@
 class GeoScoring < ApplicationRecord
   attr_accessor :prompt
-  belongs_to: ai_provider
-  belongs_to: keyword
+  belongs_to :ai_provider
+  belongs_to :keyword
+  
+end
 
   # def calculate_geoscore
   #   frequency_score_weight = 0.3
@@ -20,4 +22,3 @@ class GeoScoring < ApplicationRecord
 
   #   total_score
   # end
-end
