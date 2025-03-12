@@ -1,0 +1,17 @@
+@media (min-width: $breakpoint-md) and (max-width: $breakpoint-lg) {
+    .metrics-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .charts-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .chart-card.large {
+      grid-column: span 1;
+    }
+    
+    .quick-actions-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  } 

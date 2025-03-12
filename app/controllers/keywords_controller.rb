@@ -26,6 +26,6 @@ class KeywordsController < ApplicationController
   end
 
   def keyword_params
-    params.require(:keyword).permit(:content)
+    params.require(:keyword).permit(:score, :frequency_score, :position_score, :link_score, :ai_providers)
   end
 end

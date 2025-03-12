@@ -35,12 +35,10 @@ Rails.application.routes.draw do
     get "history/:keyword_id", to: "geo_scorings#history", on: :collection
   end
 
-
-
-
   resources :keywords, only: [:index, :show, :new, :create, :edit, :update, :destroy]
 
   # Autres routes personnalisées
   get 'dashboard', to: 'dashboard#index'
   get 'profile', to: 'users#show'
+
 end
