@@ -58,5 +58,4 @@ class GeoScoringsController < ApplicationController
     prompt_words = prompt.split(/\W+/)
     prompt_words.select { |word| Keyword.exists?(content: word) }
   end
-  end
 end
