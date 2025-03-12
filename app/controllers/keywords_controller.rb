@@ -1,55 +1,31 @@
 class KeywordsController < ApplicationController
+  before_action :set_company, only: [:index, :create]
+
   def index
-    @keywords = Keyword.all
+    @keywords = @company.keywords
   end
-
-
-  def show
-    @keyword = Keyword.find(params[:id])
-  end
-
-  def new
-    @keyword = Keyword.new
-  end
-
-
 
   def create
-    @keyword = Keyword.find_or_create_by(content: params[:content], company: current_user.company)
+    @keyword = @company.keywords.build(keyword_params)
 
-    respond_to do |format|
-      if @keyword.persisted?
-        format.turbo_stream
-        format.html { redirect_to geo_scorings_path, notice: " Added!" }
-      else
-        format.html { redirect_to geo_scorings_path, alert: "Opps somethioing whent wrong" }
+    if @keyword.save
+      respond_to do |format|
+        format.json { render json: { id: @keyword.id, content: @keyword.content }, status: :created }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { error: @keyword.errors.full_messages.join(", ") }, status: :unprocessable_entity }
       end
     end
   end
 
-
-  def edit
-    @keyword = Keyword.find(params[:id])
-  end
-
-  def update
-    @keyword = Keyword.find(params[:id])
-    if @keyword.update(keyword_params)
-      redirect_to @keyword
-    else
-      render :edit
-    end
-  end
-
-  def destroy
-    @keyword = Keyword.find(params[:id])
-    @keyword.destroy
-    redirect_to keywords_path
-  end
-
   private
 
+  def set_company
+    @company = current_user.company
+  end
+
   def keyword_params
-    params.require(:keyword).permit(:name, :description)
+    params.require(:keyword).permit(:content)
   end
 end

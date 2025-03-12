@@ -25,30 +25,30 @@
     </div>
   <% end %>
 
-  <!-- 📌 Affichage des Position Scores par AI Provider -->
-    <% if @position_scores.any? %>
-    <div class="mt-4">
-      <h3>Top 3 AI Providers for <%= @selected_keyword.content %></h3>
-      <ul class="list-group">
-        <% @position_scores.each do |score| %>
-          <% if score.ai_provider.present? %>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <strong><%= score.ai_provider.name %></strong>
-              <span class="badge bg-secondary">Position: <%= score.position_score %></span>
-            </li>
-          <% else %>
-            <li class="list-group-item text-danger">
-              AI Provider Missing for Score ID: <%= score.id %>
-            </li>
-          <% end %>
+  <% if @position_scores.present? %>
+  <div class="mt-4">
+    <h3>Top 3 AI Providers for <%= @selected_keyword.content %></h3>
+    <ul class="list-group">
+      <% @position_scores.each do |score| %>
+        <% if score.ai_provider.present? %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <strong><%= score.ai_provider.name %></strong>
+            <span class="badge bg-secondary">Position: <%= score.position_score %></span>
+          </li>
+        <% else %>
+          <li class="list-group-item text-danger">
+            AI Provider Missing for Score ID: <%= score.id %>
+          </li>
         <% end %>
-      </ul>
-    </div>
-  <% else %>
-    <div class="mt-4 text-center text-muted">
-      <p>No AI data available for this keyword.</p>
-    </div>
-  <% end %>
+      <% end %>
+    </ul>
+  </div>
+<% else %>
+  <div class="mt-4 text-center text-muted">
+    <p>No AI data available for this keyword.</p>
+  </div>
+<% end %>
+
 
 
   <!-- 📌 Section de l’historique -->

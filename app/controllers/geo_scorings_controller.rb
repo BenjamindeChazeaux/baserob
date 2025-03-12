@@ -7,19 +7,19 @@ class GeoScoringsController < ApplicationController
 
     if params[:keyword_id].present?
       @selected_keyword = Keyword.find(params[:keyword_id])
-      @position_scores = GeoScoring.where(keyword: @selected_keyword)
-                                   .includes(:ai_provider)
-                                   .order("geo_scorings.position_score ASC") # 🟢 Trie les scores par position
-                                   .limit(3) # 🟢 Sélectionne les 3 premiers AI Providers
+      @all_scores = GeoScoring.where(keyword: @selected_keyword)
+                              .includes(:ai_provider)
+                              .order("geo_scorings.position_score ASC") # Trie les scores par position
     else
       @selected_keyword = nil
-      @position_scores = []
+      @all_scores = []
     end
 
-    # 🟢 Calcul du score global basé sur les 3 premiers AI
-    scores = @position_scores.pluck(:position_score)
+    # Calcul du score global
+    scores = @all_scores.pluck(:position_score)
     @global_score = scores.present? ? (scores.sum.to_f / scores.size).round(2) : nil
   end
+
   #  Affiche l'évolution de la position d'un site en fonction d'un mot-clé
   def history
     @history_scores = GeoScoring.where(keyword: @keyword).order(created_at: :asc)
