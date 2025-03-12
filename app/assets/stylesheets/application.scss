@@ -18,6 +18,7 @@
 // @import "components/tables";
 @import "components/modal";
 @import "components/settings_modal";
+@import "components/quick_start_modal";
 // @import "components/notifications";
 
 // Layouts
@@ -28,10 +29,13 @@
 // Pages
 @import "pages/home";
 @import "pages/requests";
+@import "pages/welcome";
 // @import "pages/geo_scoring";
 // @import "pages/website_crawling";
 // @import "pages/settings";
 
 // Responsive
 @import "responsive/mobile";
-@import "responsive/tablet"; 
+@import "responsive/tablet";
+
+@import "devise"; 

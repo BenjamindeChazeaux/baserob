@@ -9,7 +9,6 @@
           <h1>Welcome on Baserob</h1>
           <p class="date"><%= Date.today.strftime("%A %d %B %Y") %></p>
         </div>
-        
       </div>
       <!-- Modern Search Bar -->
       <div class="search-bar-container">
@@ -31,7 +30,11 @@
           </div>
           <h3>Quick tracking setup</h3>
           <p>Generate your tracking dashboard in one click from your own data</p>
-          <a href="#" class="card-action open-quick-start-modal" style="font-size: 1.5em;">
+          <a href="#" class="card-action" 
+          data-controller="quick-start"
+          data-action="click->quick-start#openModal" 
+          id="openModalButton"
+          style="font-size: 1.5em;">
             <i class="fi fi-rr-angle-square-right"></i>
           </a>
         </div>
@@ -120,573 +123,226 @@
   </div>
 </div>
 
-<!-- Quick Start Modal -->
-<div id="quickStartModal" class="modal" data-quick-start-target="modal" data-action="click->quick-start#clickOutside">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Quick Start Setup</h2>
-      <button class="close-modal" data-action="click->quick-start#closeModal">&times;</button>
-    </div>
-    
-    <div class="modal-body">
-      <!-- Stepper navigation -->
-      <div class="stepper">
-        <div class="step active" data-quick-start-target="step" data-step="1">
-          <div class="step-number">1</div>
-          <div class="step-label">Welcome</div>
-        </div>
-        <div class="step" data-quick-start-target="step" data-step="2">
-          <div class="step-number">2</div>
-          <div class="step-label">Data Source</div>
-        </div>
-        <div class="step" data-quick-start-target="step" data-step="3">
-          <div class="step-number">3</div>
-          <div class="step-label">Templates</div>
-        </div>
-        <div class="step" data-quick-start-target="step" data-step="4">
-          <div class="step-number">4</div>
-          <div class="step-label">Customize</div>
-        </div>
-      </div>
-      
-      <!-- Step content -->
-      <div class="step-content-container">
-        <!-- Step 1 -->
-        <div class="step-content active" data-quick-start-target="stepContent" data-step="1">
-          <h3>Welcome to Quick Start!</h3>
-          <p>This wizard will help you set up your dashboard in just a few steps. You'll be able to:</p>
-          <ul>
-            <li>Connect to your data sources</li>
-            <li>Choose from pre-built dashboard templates</li>
-            <li>Customize your dashboard to fit your needs</li>
-          </ul>
-          <p>Let's get started!</p>
-        </div>
-        
-        <!-- Step 2 -->
-        <div class="step-content" data-quick-start-target="stepContent" data-step="2">
-          <h3>Select Your Data Source</h3>
-          <div class="data-sources-grid">
-            <div class="data-source-card">
-              <i class="fi fi-rr-database"></i>
-              <h4>Database</h4>
-              <p>Connect to SQL, NoSQL or other databases</p>
-            </div>
-            <div class="data-source-card">
-              <i class="fi fi-rr-cloud-upload"></i>
-              <h4>File Upload</h4>
-              <p>Upload CSV, Excel or JSON files</p>
-            </div>
-            <div class="data-source-card">
-              <i class="fi fi-rr-link"></i>
-              <h4>API</h4>
-              <p>Connect to REST or GraphQL APIs</p>
-            </div>
-            <div class="data-source-card">
-              <i class="fi fi-rr-globe"></i>
-              <h4>Web Scraping</h4>
-              <p>Extract data from websites</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Step 3 -->
-        <div class="step-content" data-quick-start-target="stepContent" data-step="3">
-          <h3>Choose a Dashboard Template</h3>
-          <div class="templates-grid">
-            <div class="template-card">
-              <div class="template-preview">
-                <img src="https://via.placeholder.com/150x100" alt="Analytics Dashboard">
-              </div>
-              <h4>Analytics Dashboard</h4>
-              <p>Complete analytics with key metrics and trends</p>
-            </div>
-            <div class="template-card">
-              <div class="template-preview">
-                <img src="https://via.placeholder.com/150x100" alt="E-commerce Dashboard">
-              </div>
-              <h4>E-commerce Dashboard</h4>
-              <p>Sales, inventory and customer insights</p>
-            </div>
-            <div class="template-card">
-              <div class="template-preview">
-                <img src="https://via.placeholder.com/150x100" alt="Marketing Dashboard">
-              </div>
-              <h4>Marketing Dashboard</h4>
-              <p>Campaign performance and ROI tracking</p>
-            </div>
-            <div class="template-card">
-              <div class="template-preview">
-                <img src="https://via.placeholder.com/150x100" alt="Custom Dashboard">
-              </div>
-              <h4>Custom Dashboard</h4>
-              <p>Start from scratch and build your own</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Step 4 -->
-        <div class="step-content" data-quick-start-target="stepContent" data-step="4">
-          <h3>Customize Your Dashboard</h3>
-          <div class="customize-options">
-            <div class="option-group">
-              <label>Dashboard Name</label>
-              <input type="text" placeholder="My Dashboard" class="form-control">
-            </div>
-            <div class="option-group">
-              <label>Refresh Rate</label>
-              <select class="form-control">
-                <option>Real-time</option>
-                <option>Every 5 minutes</option>
-                <option>Every hour</option>
-                <option>Daily</option>
-              </select>
-            </div>
-            <div class="option-group">
-              <label>Color Theme</label>
-              <div class="color-options">
-                <div class="color-option" style="background-color: #3498db;"></div>
-                <div class="color-option" style="background-color: #2ecc71;"></div>
-                <div class="color-option" style="background-color: #e74c3c;"></div>
-                <div class="color-option" style="background-color: #9b59b6;"></div>
-                <div class="color-option" style="background-color: #f1c40f;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="modal-footer">
-      <button id="prevStep" class="btn-secondary" disabled data-quick-start-target="prevButton" data-action="click->quick-start#prevStep">Previous</button>
-      <button id="nextStep" class="btn-primary" data-quick-start-target="nextButton" data-action="click->quick-start#nextStep">Next</button>
-      <button id="finishSetup" class="btn-primary" style="display: none;" data-quick-start-target="finishButton" data-action="click->quick-start#finishSetup">Finish Setup</button>
-    </div>
-  </div>
-</div>
+<%= render "shared/quick_start_modal" %>
 
-<style>
-/* Variables */
-:root {
-  --primary-color: #333333;
-  --secondary-color: #599aaf;
-  --background: #f5f5f7;
-  --card-bg: #ffffff;
-  --text-primary: #599aaf;
-  --text-secondary: #86868b;
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 3rem;
-  --border-radius: 12px;
-  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
-  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-}
-
-/* Header Styles */
-.dashboard-header {
-  margin-bottom: var(--spacing-xl);
-}
-
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-lg);
-}
-
-.welcome-text h1 {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: var(--spacing-xs);
-}
-
-.date {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.header-actions {
-  display: flex;
-  gap: var(--spacing-md);
-  align-items: center;
-}
-
-/* Cards Grid */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-}
-
-.action-card {
-  background: var(--card-bg);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.action-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--spacing-md);
-}
-
-.card-icon {
-  width: 48px;
-  height: 48px;
-  background: rgba(51, 51, 51, 0.1);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-icon i {
-  font-size: 1.5rem;
-  color: var(--primary-color);
-}
-
-.card-badge {
-  background: white;
-  color: var(--secondary-color);
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.card-stats {
-  display: flex;
-  gap: var(--spacing-md);
-  margin: var(--spacing-md) 0;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-value {
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.stat-label {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.url-input {
-  display: flex;
-  gap: var(--spacing-xs);
-  margin: var(--spacing-md) 0;
-}
-
-.url-input input {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-}
-
-/* Resources Section */
-.resources-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-md);
-}
-
-.resource-card {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  background: var(--card-bg);
-  padding: var(--spacing-md);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
-}
-
-.resource-icon {
-  width: 40px;
-  height: 40px;
-  background: rgba(51, 51, 51, 0.1);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.resource-icon i {
-  color: var(--primary-color);
-}
-
-.resource-content h3 {
-  margin-bottom: 4px;
-  font-size: 1rem;
-}
-
-.resource-content p {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  margin-bottom: 8px;
-}
-
-.resource-link {
-  color: var(--secondary-color);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .header-top {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-md);
-  }
-
-  .header-actions {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .search-bar {
-    width: 100%;
-  }
-
-  .cards-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Styles pour la barre de recherche moderne */
-.search-bar-container {
-  margin-top: 16px; /* Espace entre le texte de bienvenue et la barre de recherche */
-  width: 100%; /* Prendre toute la largeur disponible */
-}
-
-.modern-search-bar {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 12px 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.modern-search-bar i {
-  color: #86868b;
-  margin-right: 8px;
-}
-
-.search-input {
-  flex: 1; /* Prendre toute la largeur disponible */
-  border: none;
-  background: transparent;
-  color: #86868b;
-  font-size: 0.8rem;
-  outline: none;
-}
-
-.search-input::placeholder {
-  color: #86868b;
-}
-</style>
+<%= javascript_include_tag "geo_chart" %>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const ctx = document.getElementById('geoChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Europe', 'Amérique du Nord', 'Asie'],
-      datasets: [{
-        data: [45, 35, 20],
-        backgroundColor: ['#333333', '#666666', '#999999']
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        }
-      },
-      cutout: '70%'
-    }
-  });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Sélectionner les éléments
-  const openModalButton = document.querySelector('.open-quick-start-modal');
-  const modal = document.getElementById('quickStartModal');
-  const closeModalButton = modal.querySelector('.close-modal');
-  const prevButton = document.getElementById('prevStep');
-  const nextButton = document.getElementById('nextStep');
-  const finishButton = document.getElementById('finishSetup');
-  const steps = modal.querySelectorAll('.step');
-  const stepContents = modal.querySelectorAll('.step-content');
-  
-  let currentStep = 1;
-  const totalSteps = steps.length;
-  
-  // Ouvrir la modal
-  openModalButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    console.log('Opening modal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  });
-  
-  // Fermer la modal
-  closeModalButton.addEventListener('click', function() {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-  });
-  
-  // Fermer la modal en cliquant à l'extérieur
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) {
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-  });
-  
-  // Navigation entre les étapes
-  function goToStep(stepNumber) {
-    currentStep = stepNumber;
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, setting up modal button');
     
-    // Mettre à jour les indicateurs d'étape
-    steps.forEach((step, index) => {
-      const stepNum = index + 1;
+    // Get the button and modal
+    const openButton = document.getElementById('openModalButton');
+    const modal = document.getElementById('quickStartModal');
+    
+    if (openButton && modal) {
+      console.log('Button and modal found');
       
-      if (stepNum === currentStep) {
-        step.classList.add('active');
-        step.classList.remove('completed');
-      } else if (stepNum < currentStep) {
-        step.classList.remove('active');
-        step.classList.add('completed');
-      } else {
-        step.classList.remove('active');
-        step.classList.remove('completed');
-      }
-    });
-    
-    // Mettre à jour le contenu des étapes
-    stepContents.forEach((content) => {
-      if (parseInt(content.dataset.step) === currentStep) {
-        content.classList.add('active');
-      } else {
-        content.classList.remove('active');
-      }
-    });
-    
-    // Mettre à jour les boutons
-    prevButton.disabled = currentStep === 1;
-    
-    if (currentStep === totalSteps) {
-      nextButton.style.display = 'none';
-      finishButton.style.display = 'block';
-    } else {
-      nextButton.style.display = 'block';
-      finishButton.style.display = 'none';
-    }
-  }
-  
-  // Bouton suivant
-  nextButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    
-    if (currentStep < totalSteps) {
-      goToStep(currentStep + 1);
-    }
-  });
-  
-  // Bouton précédent
-  prevButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    
-    if (currentStep > 1) {
-      goToStep(currentStep - 1);
-    }
-  });
-  
-  // Bouton terminer
-  finishButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    
-    // Fermer la modal
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-    
-    // Afficher une notification de succès
-    const notification = document.createElement('div');
-    notification.className = 'notification success';
-    notification.innerHTML = `
-      <i class="fas fa-check-circle"></i>
-      <div class="notification-content">
-        <h4>Dashboard Created!</h4>
-        <p>Your new dashboard has been set up successfully.</p>
-      </div>
-      <button class="close-notification">&times;</button>
-    `;
-    document.body.appendChild(notification);
-    
-    // Supprimer la notification après 5 secondes
-    setTimeout(() => {
-      notification.classList.add('fade-out');
-      setTimeout(() => {
-        notification.remove();
-      }, 300);
-    }, 5000);
-  });
-  
-  // Gérer les clics sur les éléments sélectionnables
-  const selectableItems = modal.querySelectorAll('.data-source-card, .template-card, .color-option');
-  selectableItems.forEach(item => {
-    item.addEventListener('click', function() {
-      const parent = this.parentElement;
+      // Add click event listener to the button
+      openButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('Button clicked, opening modal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
       
-      // Si c'est un conteneur à sélection unique
-      if (parent.classList.contains('single-select')) {
-        parent.querySelectorAll('.selected').forEach(el => {
-          el.classList.remove('selected');
+      // Add click event listener to close button
+      const closeButton = modal.querySelector('.close-modal');
+      if (closeButton) {
+        closeButton.addEventListener('click', function() {
+          console.log('Close button clicked');
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
         });
       }
       
-      this.classList.toggle('selected');
-    });
-  });
-  
-  // Fermer les notifications
-  document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('close-notification')) {
-      const notification = e.target.closest('.notification');
-      notification.classList.add('fade-out');
-      setTimeout(() => {
-        notification.remove();
-      }, 300);
+      // Close modal when clicking outside
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          console.log('Clicked outside modal');
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+      
+      // Setup stepper functionality
+      let currentStep = 1;
+      const totalSteps = modal.querySelectorAll('.step').length;
+      const prevButton = document.getElementById('prevStep');
+      const nextButton = document.getElementById('nextStep');
+      const finishButton = document.getElementById('finishSetup');
+      
+      // Function to go to a specific step
+      function goToStep(stepNumber) {
+        currentStep = stepNumber;
+        
+        // Update step indicators
+        modal.querySelectorAll('.step').forEach((step, index) => {
+          const stepNum = index + 1;
+          
+          if (stepNum === currentStep) {
+            step.classList.add('active');
+            step.classList.remove('completed');
+          } else if (stepNum < currentStep) {
+            step.classList.remove('active');
+            step.classList.add('completed');
+          } else {
+            step.classList.remove('active');
+            step.classList.remove('completed');
+          }
+        });
+        
+        // Update step content
+        modal.querySelectorAll('.step-content').forEach((content) => {
+          if (parseInt(content.dataset.step) === currentStep) {
+            content.classList.add('active');
+          } else {
+            content.classList.remove('active');
+          }
+        });
+        
+        // Update buttons
+        prevButton.disabled = currentStep === 1;
+        
+        if (currentStep === totalSteps) {
+          nextButton.style.display = 'none';
+          finishButton.style.display = 'block';
+        } else {
+          nextButton.style.display = 'block';
+          finishButton.style.display = 'none';
+        }
+      }
+      
+      // Add click event listeners to next and previous buttons
+      if (nextButton) {
+        nextButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (currentStep < totalSteps) {
+            goToStep(currentStep + 1);
+          }
+        });
+      }
+      
+      if (prevButton) {
+        prevButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (currentStep > 1) {
+            goToStep(currentStep - 1);
+          }
+        });
+      }
+      
+      if (finishButton) {
+        finishButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+          
+          // Show success notification
+          const notification = document.createElement('div');
+          notification.className = 'notification success';
+          notification.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            <div class="notification-content">
+              <h4>Dashboard Created!</h4>
+              <p>Your new dashboard has been set up successfully.</p>
+            </div>
+            <button class="close-notification">&times;</button>
+          `;
+          document.body.appendChild(notification);
+          
+          // Add click event listener to close notification
+          notification.querySelector('.close-notification').addEventListener('click', function() {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+              notification.remove();
+            }, 300);
+          });
+          
+          // Remove notification after 5 seconds
+          setTimeout(() => {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+              notification.remove();
+            }, 300);
+          }, 5000);
+        });
+      }
+      
+      // Add click event listeners to selectable items
+      modal.querySelectorAll('.data-source-card, .template-card, .color-option').forEach(item => {
+        item.addEventListener('click', function() {
+          const parent = this.parentElement;
+          
+          // If it's a single-select container
+          if (parent.classList.contains('single-select')) {
+            parent.querySelectorAll('.selected').forEach(el => {
+              el.classList.remove('selected');
+            });
+          }
+          
+          this.classList.toggle('selected');
+        });
+      });
+    } else {
+      console.error('Button or modal not found', { 
+        buttonFound: !!openButton, 
+        modalFound: !!modal 
+      });
     }
   });
-});
-</script> 
+</script>
+
+<!-- Debug Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Debug script loaded');
+    
+    // Vérifier si le modal existe
+    const modal = document.getElementById('quickStartModal');
+    console.log('Modal found:', modal);
+    
+    // Vérifier si le bouton d'ouverture existe
+    const openButton = document.getElementById('openModalButton');
+    console.log('Open button found:', openButton);
+    
+    // Vérifier si le bouton de test existe
+    const testButton = document.getElementById('testOpenModalButton');
+    console.log('Test button found:', testButton);
+    
+    // Vérifier si le panneau de script existe
+    const scriptPanel = document.getElementById('scriptContentPanel');
+    console.log('Script panel found:', scriptPanel);
+    
+    // Ajouter un écouteur d'événement direct au bouton de test
+    if (testButton) {
+      testButton.addEventListener('click', function() {
+        console.log('Test button clicked directly');
+        if (modal) {
+          modal.classList.add('active');
+          console.log('Modal activated directly');
+        }
+      });
+    }
+    
+    // Ajouter un écouteur d'événement direct au bouton de visualisation du script
+    const viewScriptButton = document.getElementById('viewScriptButton');
+    if (viewScriptButton) {
+      console.log('View script button found:', viewScriptButton);
+      viewScriptButton.addEventListener('click', function(e) {
+        console.log('View script button clicked directly');
+        e.preventDefault();
+        if (scriptPanel) {
+          if (scriptPanel.style.display === 'none' || scriptPanel.style.display === '') {
+            scriptPanel.style.display = 'block';
+            console.log('Script panel shown directly');
+          } else {
+            scriptPanel.style.display = 'none';
+            console.log('Script panel hidden directly');
+          }
+        }
+      });
+    }
+  });
+</script>
 
