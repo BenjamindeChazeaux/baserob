@@ -1,25 +1,43 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["modal", "step", "stepContent", "prevButton", "nextButton", "finishButton"]
+  static targets = ["modal", "step", "stepContent", "prevButton", "nextButton", "finishButton", "scriptPanel"]
   
   connect() {
     console.log("Quick Start controller connected")
+    console.log("Modal target found:", this.hasModalTarget)
+    console.log("Step targets found:", this.stepTargets.length)
+    console.log("Step content targets found:", this.stepContentTargets.length)
+    console.log("Script panel target found:", this.hasScriptPanelTarget)
     this.currentStep = 1
     this.totalSteps = this.stepTargets.length
   }
   
   openModal(event) {
-    console.log("Opening modal")
-    event.preventDefault()
+    if (event) event.preventDefault()
+    console.log("Opening modal method called")
+    
+    if (!this.hasModalTarget) {
+      console.error("Modal target not found!")
+      return
+    }
+    
+    console.log("Modal target:", this.modalTarget)
     this.modalTarget.classList.add('active')
     document.body.style.overflow = 'hidden'
   }
   
   closeModal(event) {
     if (event) event.preventDefault()
+    console.log("Closing modal")
     this.modalTarget.classList.remove('active')
     document.body.style.overflow = ''
+  }
+  
+  clickOutside(event) {
+    if (event.target === this.modalTarget) {
+      this.closeModal()
+    }
   }
   
   nextStep(event) {
@@ -77,6 +95,11 @@ export default class extends Controller {
       this.nextButtonTarget.style.display = 'block'
       this.finishButtonTarget.style.display = 'none'
     }
+    
+    // Hide script panel when changing steps
+    if (this.hasScriptPanelTarget) {
+      this.scriptPanelTarget.style.display = 'none'
+    }
   }
   
   finishSetup(event) {
@@ -87,29 +110,11 @@ export default class extends Controller {
     this.closeModal()
     
     // Show success notification
-    const notification = document.createElement('div')
-    notification.className = 'notification success'
-    notification.innerHTML = `
-      <i class="fas fa-check-circle"></i>
-      <div class="notification-content">
-        <h4>Dashboard Created!</h4>
-        <p>Your new dashboard has been set up successfully.</p>
-      </div>
-      <button class="close-notification">&times;</button>
-    `
-    document.body.appendChild(notification)
-    
-    // Remove notification after 5 seconds
-    setTimeout(() => {
-      notification.classList.add('fade-out')
-      setTimeout(() => {
-        notification.remove()
-      }, 300)
-    }, 5000)
+    this.showNotification('success', 'Dashboard Created!', 'Your new dashboard has been set up successfully.')
   }
   
   // Handle clicks on selectable items
-  selectItem(event) {
+  toggleSelection(event) {
     const item = event.currentTarget
     const parent = item.parentElement
     
@@ -123,10 +128,85 @@ export default class extends Controller {
     item.classList.toggle('selected')
   }
   
-  // Close modal when clicking outside
-  clickOutside(event) {
-    if (event.target === this.modalTarget) {
-      this.closeModal()
+  // Script Panel Methods
+  toggleScriptVisibility(event) {
+    event.preventDefault()
+    console.log("Toggling script panel visibility - SIMPLIFIED VERSION")
+    
+    // Approche directe avec getElementById
+    const scriptPanel = document.getElementById('scriptContentPanel')
+    console.log("Script panel found by ID:", scriptPanel)
+    
+    if (!scriptPanel) {
+      console.error("Script panel not found by ID!")
+      return
     }
+    
+    // Toggle display
+    if (scriptPanel.style.display === 'none' || scriptPanel.style.display === '') {
+      scriptPanel.style.display = 'block'
+      console.log("Panel shown (direct approach)")
+    } else {
+      scriptPanel.style.display = 'none'
+      console.log("Panel hidden (direct approach)")
+    }
+    
+    // Update button text if needed
+    const viewButton = document.getElementById('viewScriptButton')
+    if (viewButton) {
+      if (scriptPanel.style.display === 'block') {
+        viewButton.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Script'
+      } else {
+        viewButton.innerHTML = '<i class="fas fa-eye"></i> View Script'
+      }
+    }
+  }
+  
+  // Copy script to clipboard
+  copyScript(event) {
+    event.preventDefault();
+    
+    const preElement = document.querySelector('#scriptContentPanel pre');
+    
+    if (!preElement) {
+      return this.showNotification('error', 'Copy Failed', 'Could not find the script content to copy.');
+    }
+    
+    const textToCopy = preElement.textContent.trim();
+    
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => this.showNotification('success', 'Script Copied!', 'The script has been copied to your clipboard.'))
+      .catch(err => this.showNotification('error', 'Copy Failed', `Could not copy the script to clipboard. ${err.message}`));
+  }
+  
+  showNotification(type, title, message) {
+    const notification = document.createElement('div')
+    notification.className = `notification ${type}`
+    notification.innerHTML = `
+      <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+      <div class="notification-content">
+        <h4>${title}</h4>
+        <p>${message}</p>
+      </div>
+      <button class="close-notification">&times;</button>
+    `
+    document.body.appendChild(notification)
+    
+    // Ajouter un écouteur pour fermer la notification
+    notification.querySelector('.close-notification').addEventListener('click', () => {
+      this.closeNotification(notification)
+    })
+    
+    // Supprimer la notification après 5 secondes
+    setTimeout(() => {
+      this.closeNotification(notification)
+    }, 5000)
+  }
+  
+  closeNotification(notification) {
+    notification.classList.add('fade-out')
+    setTimeout(() => {
+      notification.remove()
+    }, 300)
   }
 } 

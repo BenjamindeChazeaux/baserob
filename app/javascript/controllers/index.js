@@ -12,3 +12,15 @@ application.register("settings-modal", SettingsModalController)
 
 import SidebarController from "./sidebar_controller"
 application.register("sidebar", SidebarController)
+
+import QuickStartController from "./quick_start_controller"
+application.register("quick-start", QuickStartController)
+
+import GeoScoringController from "./geo_scoring_controller"
+application.register("geo-scoring", GeoScoringController)
+
+import KeywordsController from "./keywords_controller"
+application.register("keywords", KeywordsController)
+
+import ClipboardController from "./clipboard_controller"
+application.register("clipboard", ClipboardController)
