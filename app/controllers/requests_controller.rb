@@ -8,7 +8,26 @@ class RequestsController < ApplicationController
       @requests = @requests.where(ai_provider: @ai_provider)
     end
 
+
+    #search for timeline
+    timeline_param = params.dig(:search, :timeline)
+    if timeline_param.present?
+       case timeline_param
+       when "today"
+        @requests = @requests.where("created_at >= ?", today)
+       when "1 week"
+        @requests = @requests.where("created_at >= ?", 1.week.ago)
+       when "1 month"
+        @requests = @requests.where("created_at >= ?", 1.month.ago)
+       when "3 months"
+        @requests = @requests.where("created_at >= ?", 3.months.ago)
+       when "6 months"
+        @requests = @requests.where("created_at >= ?", 6.months.ago)
+       end
+    end
+
     @ai_crawler_requests_count = @requests.count # calcul the requests
+    @requests_by_date = @requests.group_by_day(:created_at).count
   end
 end
 

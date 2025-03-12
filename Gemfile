@@ -79,3 +79,5 @@ end
 gem 'sass-rails'
 gem 'animate.css-rails'
 gem 'hover-rails'
+gem "chartkick"
+gem 'groupdate'

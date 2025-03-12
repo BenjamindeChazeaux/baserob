@@ -16,23 +16,47 @@
             <i class="fa fa-info-circle"></i> This is a placeholder for your AI analytics content. You can customize this view with your specific analytics data and visualizations.
           </div>
 
-          <!-- Sample analytics sections -->
+          <!-- Analytic section with chart -->
           <div class="row mt-4">
             <div class="col-md-6">
               <div class="card mb-3">
                 <div class="card-header">Usage Metrics</div>
                 <div class="card-body">
                   <p>AI usage statistics and frequency analysis would appear here.</p>
+                  <div class="filter-container mb-4">
+                    <%= simple_form_for :search, url: requests_path, method: :get, local: true do |f| %>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <%= f.input :ai_provider, collection: AiProvider.all, include_blank: "All AI Providers", class: "form-control" %>
+                        </div>
+                        <div class="col-md-4">
+                          <%= f.input :Timeline, collection: [['Today', 'today']['1 Week', '1_week'], ['1 Month', '1_month'], ['3 Months', '3_months'], ['6 Months', '6_months']], include_blank: "Select Time ", class: "form-control" %>
+                        </div>
+                        <div class="col-md-2 text-center">
+                          <%= f.submit "Filter", class: "btn btn-primary" %>
+                          <div class="alert alert-success text-center">
+                            <strong> Total <%= @ai_provider&.name || "All AI Providers" %> Requests: </strong><%= @ai_crawler_requests_count %>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  </div>
+                  <%= line_chart @requests_by_date, xtitle: "Time", ytitle: "Requests" %>
                 </div>
               </div>
             </div>
+
+
+
+
+
             <div class="col-md-6">
               <div class="card mb-3">
                 <div class="card-header">Performance Metrics</div>
                 <div class="card-body">
                   <p>AI performance and accuracy metrics would appear here.</p>
                 </div>
-              
+
             </div>
           </div>
         </div>
@@ -44,57 +68,3 @@
     </div>
   </div>
 </div>
-
-
-<div class="filter-container mb-4">
-        <%= simple_form_for :search, url: requests_path, method: :get, local: true do |f| %>
-          <div class="row">
-            <div class="col-md-4">
-              <%= f.input :ai_provider, collection: AiProvider.all, include_blank: "All AI Providers", class: "form-control" %>
-            </div>
-
-            <div class="col-md-2 text-center">
-              <%= f.submit "Filter", class: "btn btn-primary" %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-
-      <!-- Display AI Crawler Requests Count -->
-      <div class="alert alert-success text-center">
-        <strong>Total AI Crawler Requests:</strong> <%= @ai_crawler_requests_count %>
-      </div>
-
-      <!-- Display Requests Table -->
-      <table class="table table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>User Agent</th>
-            <th>Referrer</th>
-            <th>Domain</th>
-            <th>Path</th>
-            <th>Company</th>
-            <th>AI Provider</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if @requests.any? %>
-            <% @requests.each do |request| %>
-              <tr>
-                <td><%= request.user_agent %></td>
-                <td><%= request.referrer %></td>
-                <td><%= request.domain %></td>
-                <td><%= request.path %></td>
-                <td><%= request.company.name %></td>
-                <td><%= request.ai_provider.name %></td>
-              </tr>
-            <% end %>
-          <% else %>
-            <tr>
-              <td colspan="6" class="text-center text-muted">No AI crawler requests found.</td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-
-      <!-- Bouton de Retour -->
