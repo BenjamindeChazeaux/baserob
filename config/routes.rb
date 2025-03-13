@@ -40,7 +40,9 @@ Rails.application.routes.draw do
   # Autres routes personnalisées
   get 'dashboard', to: 'dashboard#index'
   get 'profile', to: 'users#show'
-
+  
+  # Route pour le QuickStart setup du dashboard client
+  post 'dashboard/quick_setup', to: 'dashboard#quick_setup', as: :dashboard_quick_setup
 
   get 'requests', to: 'requests#index', as: 'requests_index'
 

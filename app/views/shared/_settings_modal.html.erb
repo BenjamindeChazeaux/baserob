@@ -1,4 +1,4 @@
-<!-- Settings Modal (copie de Quick Start) -->
+<!-- Settings Modal -->
 <div id="settingsModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -15,14 +15,10 @@
         </div>
         <div class="step" data-step="2">
           <div class="step-number">2</div>
-          <div class="step-label">Appearance</div>
+          <div class="step-label">Account</div>
         </div>
         <div class="step" data-step="3">
           <div class="step-number">3</div>
-          <div class="step-label">Account</div>
-        </div>
-        <div class="step" data-step="4">
-          <div class="step-number">4</div>
           <div class="step-label">Advanced</div>
         </div>
       </div>
@@ -62,42 +58,9 @@
             </div>
           </div>
         </div>
-        
-        <!-- Step 2: Appearance -->
+      
+        <!-- Step 2: Account -->
         <div class="step-content" data-step="2">
-          <h3>Appearance Settings</h3>
-          <div class="customize-options">
-            <div class="option-group">
-              <label>Theme</label>
-              <select class="form-control">
-                <option selected>System Default</option>
-                <option>Light</option>
-                <option>Dark</option>
-              </select>
-            </div>
-            <div class="option-group">
-              <label>Font Size</label>
-              <select class="form-control">
-                <option>Small</option>
-                <option selected>Medium</option>
-                <option>Large</option>
-              </select>
-            </div>
-            <div class="option-group">
-              <label>Color Theme</label>
-              <div class="color-options">
-                <div class="color-option" style="background-color: #3498db;"></div>
-                <div class="color-option" style="background-color: #2ecc71;"></div>
-                <div class="color-option" style="background-color: #e74c3c;"></div>
-                <div class="color-option" style="background-color: #9b59b6;"></div>
-                <div class="color-option" style="background-color: #f1c40f;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Step 3: Account -->
-        <div class="step-content" data-step="3">
           <h3>Account Settings</h3>
           <div class="customize-options">
             <div class="option-group">
@@ -107,7 +70,6 @@
             <div class="option-group">
               <label>Password</label>
               <input type="password" class="form-control" placeholder="••••••••">
-              <button class="btn-secondary mt-2">Change Password</button>
             </div>
             <div class="option-group">
               <label>Profile Picture</label>
@@ -117,13 +79,27 @@
                 <% else %>
                   <div class="avatar-large bg-secondary" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 15px;"></div>
                 <% end %>
-                <button class="btn-secondary">Upload New</button>
+                <input type="file" id="profilePictureUpload" class="d-none" accept="image/*" onchange="previewImage(event)">
+                <button class="btn-secondary" onclick="document.getElementById('profilePictureUpload').click();">Upload New</button>
+                <script>
+                  function previewImage(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = function(e) {
+                        const img = document.querySelector('.avatar-large');
+                        img.src = e.target.result;
+                      }
+                      reader.readAsDataURL(file);
+                    }
+                  }
+                </script>
               </div>
             </div>
           </div>
         </div>
         
-        <!-- Step 4: Advanced -->
+        <!-- Step 3: Advanced -->
         <div class="step-content" data-step="4">
           <h3>Advanced Settings</h3>
           <div class="customize-options">
