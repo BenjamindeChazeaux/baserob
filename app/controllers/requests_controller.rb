@@ -32,7 +32,6 @@ class RequestsController < ApplicationController
 
     group_method = timeline_param == "today" ? :group_by_hour : :group_by_day
 
-
     @requests_by_date_and_ai_provider = @ai_providers.map do |ai_provider|
       {
         name: ai_provider.name || "Other",
@@ -48,13 +47,17 @@ class RequestsController < ApplicationController
                   data: @requests.where(ai_provider: nil).send(group_method, :created_at).count
                 }
               ])
+    respond_to do |format|
+      format.html
+      format.json { render json: { requests_data: @requests_by_date_and_ai_provider } }
+    end
   end
 
   def create
     @req = Request.new(params_request)
     @req.company = @company
     @req.save!
-    render :head
+    head :no_content
   end
 
   private

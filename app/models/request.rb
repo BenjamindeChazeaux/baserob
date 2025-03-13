@@ -8,12 +8,16 @@ class Request < ApplicationRecord
   validates :path, presence: true
 
   before_validation :set_ai_provider
-
+  after_create :broadcast_request
   private
 
   def set_ai_provider
     ai_provider = AiProvider.find_by_referrer(self.referrer)
 
     self.ai_provider = ai_provider
+  end
+
+  def broadcast_request
+    CompanyChannel.broadcast_to company, { updated: true }
   end
 end

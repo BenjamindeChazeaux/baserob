@@ -52,6 +52,8 @@ gem "simple_form", github: "heartcombo/simple_form"
 gem "sassc-rails"
 gem 'ostruct'
 gem 'httparty'
+gem "solid_cable", "~> 1.0.3"
+
 group :development, :test do
   gem "dotenv-rails"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -74,6 +76,7 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
+
   gem "selenium-webdriver"
 end
 
