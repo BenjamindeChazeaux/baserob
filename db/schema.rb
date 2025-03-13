@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_13_133031) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_13_180635) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -74,6 +74,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_13_133031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.json "ai_responses", default: []
+    t.boolean "url_presence"
+    t.string "url_value"
+    t.integer "reference_score"
     t.index ["ai_provider_id"], name: "index_geo_scorings_on_ai_provider_id"
     t.index ["keyword_id"], name: "index_geo_scorings_on_keyword_id"
   end
