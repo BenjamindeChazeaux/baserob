@@ -46,13 +46,13 @@
           <h3>Configuration</h3>
           <%= simple_form_for :dashboard, url: dashboard_quick_setup_path, method: :post, html: { id: 'quickStartForm', data: { action: 'submit->quick-start#submitForm' } } do |f| %>
             <div class="form-group">
-              <%= f.input :company_name, input_html: { class: 'form-control', placeholder: 'Enter your company name' } %>
+              <%= f.input :company_name, label: 'Company Name', input_html: { class: 'form-control', placeholder: 'Enter your company name' } %>
             </div>
             <div class="form-group">
-              <%= f.input :website_url, input_html: { class: 'form-control', placeholder: 'Enter your website URL' } %>
+              <%= f.input :website_url, label: 'Website URL', input_html: { class: 'form-control', placeholder: 'Enter your website URL' } %>
             </div>
             <div class="form-group">
-              <%= f.input :update_preferences, as: :select, collection: ['Daily', 'Weekly', 'Monthly'], input_html: { class: 'form-control' } %>
+              <%= f.input :update_preferences, label: 'Update Frequency', as: :select, collection: ['Daily', 'Weekly', 'Monthly'], input_html: { class: 'form-control' } %>
             </div>
           <% end %>
         </div>
@@ -62,32 +62,28 @@
           <h3>Baserob Script</h3>
           <p>Use the buttons below to view or copy your script:</p>
           <div class="script-actions">
-            <button id="viewScriptButton" class="btn btn-secondary" 
-            data-action="click->quick-start#toggleScriptVisibility">
+            <button id="viewScriptButton" class="btn btn-secondary" data-action="click->quick-start#toggleScriptVisibility">
               <i class="fas fa-eye"></i> View Script
             </button>
             
-            <!-- Bouton de copie avec le contrôleur clipboard -->
-            <button id="copyScriptButton" class="btn btn-primary" 
-                    data-controller="clipboard" 
-                    data-clipboard-success-message-value="Copied to clipboard!" 
-                    data-clipboard-error-message-value="Failed to copy!" 
-                    data-clipboard-reset-delay-value="2000" 
-                    data-action="click->clipboard#copy" 
-                    data-clipboard-target="button">
+            <button id="copyScriptButton" class="btn btn-primary" data-action="click->quick-start#copyScript">
               <i class="fas fa-copy"></i> Copy Script
             </button>
           </div>
           
-          <!-- Script Content Panel - Simplified version -->
-          <div id="scriptContentPanel" class="script-panel" data-quick-start-target="scriptPanel" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+          <!-- Panneau de script (caché par défaut) -->
+          <div id="scriptContentPanel" class="script-panel" data-quick-start-target="scriptPanel" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
               <h4 style="margin: 0;">Your Baserob script</h4>
             </div>
-            <div style="background-color: #1d1d1f; color: #f5f5f7; padding: 15px; border-radius: 8px; max-height: 350px; overflow: auto; font-family: 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9rem; line-height: 1.6;">
-                <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;" data-clipboard-target="source">
-                    current_user.company.cdn_script
-                </pre>
+            <div style="background-color: #1d1d1f; color: #f5f5f7; padding: 15px; border-radius: 8px; max-height: 350px; overflow: auto; font-family: monospace; font-size: 0.9rem; line-height: 1.6;">
+              <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">
+                <% if current_user && current_user.company %>
+                  current_user.company.cdn_script
+                <% else %>
+                  // Please complete the configuration to generate your script
+                <% end %>
+              </pre>
             </div>
           </div>
         </div>
@@ -98,7 +94,7 @@
           <p>Follow these steps to implement your script on your website:</p>
           <ol>
             <li>Copy the script from the previous step</li>
-            <li>Paste the script into your website's HTML file just before the '< / body >' tag</li>
+            <li>Paste the script into your website's HTML file just before the <code>&lt;/body&gt;</code> tag</li>
             <li>Save the file and refresh your website</li>
           </ol>
           <p>If you need help, don't hesitate to ask for assistance on our support channel.</p>

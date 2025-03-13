@@ -1,12 +1,16 @@
 import { Controller } from "@hotwired/stimulus"
 
 /**
- * Contrôleur Stimulus pour gérer la modal de démarrage rapide (QuickStart)
- * Ce contrôleur gère l'affichage de la modal, la navigation entre les étapes,
- * la soumission du formulaire et l'affichage des notifications.
+ * Contrôleur pour la modal de démarrage rapide (QuickStart)
+ * 
+ * Ce contrôleur gère :
+ * 1. L'ouverture et la fermeture de la modal
+ * 2. La navigation entre les étapes
+ * 3. La soumission du formulaire
+ * 4. L'affichage des notifications
  */
 export default class extends Controller {
-  // Définition des éléments HTML ciblés par le contrôleur
+  // Éléments HTML ciblés par le contrôleur
   static targets = [
     "modal",       // La modal principale
     "step",        // Les indicateurs d'étapes (cercles numérotés)
@@ -18,45 +22,41 @@ export default class extends Controller {
   ]
   
   /**
-   * Méthode appelée automatiquement lorsque le contrôleur est connecté à l'élément HTML
-   * Initialise les variables et l'état initial
+   * Initialisation du contrôleur
    */
   connect() {
-    console.log("Quick Start controller connected")
-    console.log("Modal target found:", this.hasModalTarget)
-    console.log("Step targets found:", this.stepTargets.length)
-    console.log("Step content targets found:", this.stepContentTargets.length)
-    console.log("Script panel target found:", this.hasScriptPanelTarget)
+    // Définir l'étape actuelle (commencer à l'étape 1)
     this.currentStep = 1
+    // Nombre total d'étapes
     this.totalSteps = this.stepTargets.length
   }
   
-  // ===== MÉTHODES DE GESTION DE LA MODAL =====
+  // ===== GESTION DE LA MODAL =====
   
   /**
-   * Ouvre la modal de démarrage rapide
+   * Ouvre la modal
    */
   openModal(event) {
     if (event) event.preventDefault()
-    console.log("Opening modal method called")
     
-    if (!this.hasModalTarget) {
-      console.error("Modal target not found!")
-      return
-    }
+    // Vérifier que la modal existe
+    if (!this.hasModalTarget) return
     
-    console.log("Modal target:", this.modalTarget)
+    // Afficher la modal
     this.modalTarget.classList.add('active')
+    // Empêcher le défilement de la page
     document.body.style.overflow = 'hidden'
   }
   
   /**
-   * Ferme la modal de démarrage rapide
+   * Ferme la modal
    */
   closeModal(event) {
     if (event) event.preventDefault()
-    console.log("Closing modal")
+    
+    // Masquer la modal
     this.modalTarget.classList.remove('active')
+    // Réactiver le défilement de la page
     document.body.style.overflow = ''
   }
   
@@ -64,12 +64,13 @@ export default class extends Controller {
    * Ferme la modal si l'utilisateur clique en dehors du contenu
    */
   clickOutside(event) {
+    // Si le clic est sur le fond de la modal (pas sur son contenu)
     if (event.target === this.modalTarget) {
       this.closeModal()
     }
   }
   
-  // ===== MÉTHODES DE NAVIGATION ENTRE LES ÉTAPES =====
+  // ===== NAVIGATION ENTRE LES ÉTAPES =====
   
   /**
    * Passe à l'étape suivante
@@ -94,33 +95,13 @@ export default class extends Controller {
   }
   
   /**
-   * Change l'affichage pour montrer l'étape spécifiée
-   * @param {number} stepNumber - Le numéro de l'étape à afficher
+   * Affiche l'étape spécifiée
    */
   goToStep(stepNumber) {
     // Mettre à jour l'étape actuelle
     this.currentStep = stepNumber
     
-    // Mettre à jour les indicateurs d'étapes (cercles numérotés)
-    this.updateStepIndicators()
-    
-    // Mettre à jour le contenu affiché
-    this.updateStepContent()
-    
-    // Mettre à jour l'état des boutons (précédent/suivant/terminer)
-    this.updateNavigationButtons()
-    
-    // Masquer le panneau de script lors du changement d'étape
-    if (this.hasScriptPanelTarget) {
-      this.scriptPanelTarget.style.display = 'none'
-    }
-  }
-  
-  /**
-   * Met à jour l'apparence des indicateurs d'étapes
-   * (Méthode d'aide pour goToStep)
-   */
-  updateStepIndicators() {
+    // Mettre à jour les indicateurs d'étapes
     this.stepTargets.forEach((step, index) => {
       const stepNum = index + 1
       
@@ -133,43 +114,37 @@ export default class extends Controller {
         step.classList.remove('active')
         step.classList.add('completed')
       } else {
-        // Étapes futures (non complétées)
+        // Étapes futures
         step.classList.remove('active')
         step.classList.remove('completed')
       }
     })
-  }
-  
-  /**
-   * Met à jour le contenu affiché selon l'étape actuelle
-   * (Méthode d'aide pour goToStep)
-   */
-  updateStepContent() {
+    
+    // Mettre à jour le contenu affiché
     this.stepContentTargets.forEach((content) => {
-      // Afficher uniquement le contenu de l'étape actuelle
       if (parseInt(content.dataset.step) === this.currentStep) {
         content.classList.add('active')
       } else {
         content.classList.remove('active')
       }
     })
-  }
-  
-  /**
-   * Met à jour l'état des boutons de navigation
-   * (Méthode d'aide pour goToStep)
-   */
-  updateNavigationButtons() {
-    // Désactiver le bouton "Précédent" à la première étape
-    this.prevButtonTarget.disabled = this.currentStep === 1
     
-    // Afficher le bouton "Terminer" à la dernière étape, sinon afficher "Suivant"
+    // Mettre à jour les boutons
+    this.prevButtonTarget.disabled = (this.currentStep === 1)
+    
     if (this.currentStep === this.totalSteps) {
+      // À la dernière étape, afficher le bouton "Terminer"
       this.nextButtonTarget.style.display = 'none'
       this.finishButtonTarget.style.display = 'block'
     } else {
+      // Sinon, afficher le bouton "Suivant"
       this.nextButtonTarget.style.display = 'block'
       this.finishButtonTarget.style.display = 'none'
+    }
+    
+    // Masquer le panneau de script lors du changement d'étape
+    if (this.hasScriptPanelTarget) {
+      this.scriptPanelTarget.style.display = 'none'
     }
   }
   
@@ -186,22 +161,17 @@ export default class extends Controller {
     this.showNotification('success', 'Dashboard Created!', 'Your new dashboard has been set up successfully.')
   }
   
-  // ===== MÉTHODES DE GESTION DU SCRIPT =====
+  // ===== GESTION DU SCRIPT =====
   
   /**
    * Affiche ou masque le panneau contenant le script
    */
   toggleScriptVisibility(event) {
     event.preventDefault()
-    console.log("Toggling script panel visibility - SIMPLIFIED VERSION")
     
     // Trouver le panneau de script
     const scriptPanel = document.getElementById('scriptContentPanel')
-    
-    if (!scriptPanel) {
-      console.error("Script panel not found!")
-      return
-    }
+    if (!scriptPanel) return
     
     // Basculer l'affichage du panneau
     const isHidden = scriptPanel.style.display === 'none' || scriptPanel.style.display === ''
@@ -216,13 +186,31 @@ export default class extends Controller {
     }
   }
   
-  // ===== MÉTHODES DE SOUMISSION DU FORMULAIRE =====
+  /**
+   * Copie le script dans le presse-papiers
+   */
+  copyScript(event) {
+    event.preventDefault()
+    
+    // Trouver le contenu du script
+    const preElement = document.querySelector('#scriptContentPanel pre')
+    if (!preElement) {
+      return this.showNotification('error', 'Copy Failed', 'Could not find the script content to copy.')
+    }
+    
+    // Copier le texte
+    const textToCopy = preElement.textContent.trim()
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => this.showNotification('success', 'Script Copied!', 'The script has been copied to your clipboard.'))
+      .catch(err => this.showNotification('error', 'Copy Failed', `Could not copy the script to clipboard. ${err.message || ''}`))
+  }
+  
+  // ===== SOUMISSION DU FORMULAIRE =====
   
   /**
-   * Soumet le formulaire de configuration via AJAX
+   * Soumet le formulaire de configuration
    */
   submitForm(event) {
-    // Empêcher la soumission normale du formulaire
     event.preventDefault()
     
     // Récupérer les données du formulaire
@@ -230,14 +218,6 @@ export default class extends Controller {
     const formData = new FormData(form)
     
     // Envoyer les données au serveur
-    this.sendFormData(form, formData)
-  }
-  
-  /**
-   * Envoie les données du formulaire au serveur via fetch API
-   * (Méthode d'aide pour submitForm)
-   */
-  sendFormData(form, formData) {
     fetch(form.action, {
       method: form.method,
       body: formData,
@@ -247,40 +227,28 @@ export default class extends Controller {
       credentials: 'same-origin'
     })
     .then(response => {
-      if (response.ok) {
-        return response.json()
-      }
-      throw new Error('Network response was not ok')
+      if (!response.ok) throw new Error('Network response was not ok')
+      return response.json()
     })
-    .then(data => this.handleFormResponse(data))
+    .then(data => {
+      if (data.success) {
+        // Si la sauvegarde a réussi, passer à l'étape du script
+        this.goToStep(3)
+        this.showNotification('success', 'Configuration Saved', 'Your configuration has been saved successfully.')
+      } else {
+        // Afficher un message d'erreur
+        this.showNotification('error', 'Error', data.message || 'There was an error saving your configuration.')
+      }
+    })
     .catch(error => {
-      console.error('Error:', error)
       this.showNotification('error', 'Error', 'There was an error saving your configuration.')
     })
   }
   
-  /**
-   * Traite la réponse du serveur après soumission du formulaire
-   * (Méthode d'aide pour sendFormData)
-   */
-  handleFormResponse(data) {
-    if (data.success) {
-      // Si la sauvegarde a réussi, passer à l'étape du script (étape 3)
-      this.goToStep(3)
-      this.showNotification('success', 'Configuration Saved', 'Your configuration has been saved successfully.')
-    } else {
-      // Afficher un message d'erreur
-      this.showNotification('error', 'Error', data.message || 'There was an error saving your configuration.')
-    }
-  }
-  
-  // ===== MÉTHODES DE NOTIFICATION =====
+  // ===== NOTIFICATIONS =====
   
   /**
-   * Affiche une notification à l'utilisateur
-   * @param {string} type - Le type de notification ('success' ou 'error')
-   * @param {string} title - Le titre de la notification
-   * @param {string} message - Le message de la notification
+   * Affiche une notification
    */
   showNotification(type, title, message) {
     // Créer l'élément de notification
@@ -294,6 +262,8 @@ export default class extends Controller {
       </div>
       <button class="close-notification">&times;</button>
     `
+    
+    // Ajouter la notification à la page
     document.body.appendChild(notification)
     
     // Ajouter un écouteur pour fermer la notification
@@ -309,7 +279,6 @@ export default class extends Controller {
   
   /**
    * Ferme et supprime une notification
-   * @param {HTMLElement} notification - L'élément de notification à fermer
    */
   closeNotification(notification) {
     notification.classList.add('fade-out')
@@ -331,22 +300,5 @@ export default class extends Controller {
     }
     
     item.classList.toggle('selected')
-  }
-  
-  // Copy script to clipboard
-  copyScript(event) {
-    event.preventDefault();
-    
-    const preElement = document.querySelector('#scriptContentPanel pre');
-    
-    if (!preElement) {
-      return this.showNotification('error', 'Copy Failed', 'Could not find the script content to copy.');
-    }
-    
-    const textToCopy = preElement.textContent.trim();
-    
-    navigator.clipboard.writeText(textToCopy)
-      .then(() => this.showNotification('success', 'Script Copied!', 'The script has been copied to your clipboard.'))
-      .catch(err => this.showNotification('error', 'Copy Failed', `Could not copy the script to clipboard. ${err.message}`));
   }
 }
