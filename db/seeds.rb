@@ -1,13 +1,4 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
+# Nettoyage de la base de données
 CompanyAiProvider.destroy_all
 CompetitorScore.destroy_all
 GeoScoring.destroy_all
@@ -38,12 +29,10 @@ puts "Users created"
 
 ai_providers = AiProvider.create!([
   { name: "OpenAI" },
-  { name: "Google DeepMind" },
   { name: "Anthropic" },
-  { name: "Cohere" },
-  { name: "Mistral" }
+  { name: "Perplexity" }
 ])
-puts "Ai providers created"
+puts ai_providers.inspect
 
 companies = Company.all
 keywords = Keyword.create!([
@@ -60,48 +49,21 @@ AiProvider.find_each do |ai_provider|
 end
 puts "Association done"
 
-requests = Request.create!([
-  {
-    domain: "https://www.lewagon.com",
-    path: "/learn",
-    referrer: "google.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.first
-  },
-  {
-    domain: "https://www.airbnb.com",
-    path: "/host",
-    referrer: "facebook.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.second
-  },
-  {
-    domain: "https://www.uber.com",
-    path: "/ride",
-    referrer: "twitter.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.third
-  },
-  {
-    domain: "https://www.spotify.com",
-    path: "/premium",
-    referrer: "youtube.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.fourth
-  },
-  {
-    domain: "https://www.github.com",
-    path: "/repos",
-    referrer: "linkedin.com",
-    user_agent: "Mozilla/5.0",
-    company: company,
-    ai_provider: ai_providers.fifth
-  }
-])
+# Création des requêtes sur 3 jours
+(Date.today - 2.days..Date.today).each do |date|
+  ["https://www.openai.com", "http://www.anthropic.com", "http://www.perplexity.ai"].each do |referrer|
+    rand(10).times do |i|
+      Request.create!(
+        domain: ["https://www.lewagon.com", "https://www.airbnb.com", "https://www.uber.com", "https://www.github.com"].sample,
+        path: ["/learn", "/repos"],
+        user_agent: "Mozilla/5.0",
+        company: company,
+        created_at: date,
+        referrer: referrer
+      )
+    end
+  end
+end
 puts "requests created"
 
 competitors = Competitor.create!([
@@ -114,14 +76,59 @@ competitors = Competitor.create!([
 puts "Competitors created"
 
 keywords = Keyword.all
-geo_scorings = GeoScoring.create!([
-  { score: 85, frequency_score: 90, position_score: 80, link_score: 75, keyword: keywords.first, ai_provider: ai_providers.first, ai_responses: ["Le Wagon", "Ironhack", "App Academy"] },
-  { score: 70, frequency_score: 65, position_score: 72, link_score: 80, keyword: keywords.second, ai_provider: ai_providers.second, ai_responses: ["DataCamp", "Springboard", "Udacity"] },
-  { score: 90, frequency_score: 88, position_score: 85, link_score: 92, keyword: keywords.third, ai_provider: ai_providers.third, ai_responses: ["General Assembly", "Thinkful", "Lambda School"] },
-  { score: 65, frequency_score: 60, position_score: 70, link_score: 65, keyword: keywords.fourth, ai_provider: ai_providers.fourth, ai_responses: ["AWS Training", "Microsoft Learn", "Google Cloud Skills"] },
-  { score: 78, frequency_score: 80, position_score: 75, link_score: 70, keyword: keywords.fifth, ai_provider: ai_providers.fifth, ai_responses: ["Zapier", "Automate.io", "Parabola"] }
-])
-puts "goe_scoring created"
+calculator = GeoScoringCalculatorService.new(company)
+
+# Création des geo_scorings historiques sur 3 jours
+(Date.today - 2.days..Date.today).each do |date|
+  Keyword.find_each do |keyword|
+    AiProvider.find_each do |ai_provider|
+      3.times do |i|
+        ai_responses = ["Le Wagon", "Ironhack", "App Academy", "Ahn Academy", 'Pouet school'].shuffle
+        scores = calculator.calculate_all_scores(ai_responses)
+
+        GeoScoring.create!(
+          keyword: keyword,
+          ai_provider: ai_provider,
+          position_score: scores[:position_score],
+          reference_score: scores[:reference_score],
+          url_presence: scores[:url_presence],
+          url_value: scores[:url_value],
+          ai_responses: ai_responses,
+          created_at: date
+        )
+      end
+    end
+  end
+end
+
+puts "geo_scoring historiques créés"
+
+# Création des geo_scorings actuels pour les scores des concurrents
+current_geo_scorings = []
+keywords.each_with_index do |keyword, index|
+  ai_provider = ai_providers[index % ai_providers.length]
+  ai_responses = case index
+    when 0 then ["Le Wagon", "Ironhack", "App Academy", "Ahn Academy"]
+    when 1 then ["DataCamp", "Springboard", "Udacity", "Le Wagon", "Anthoine Academy"]
+    when 2 then ["General Assembly", "Le Wagon", "Lambda School", "Yanick Academy"]
+    when 3 then ["AWS Training", "Microsoft Learn", "Le Wagon", "Google Cloud Skills"]
+    when 4 then ["Zapier", "Automate.io", "Parabola", "Le Wagon"]
+  end
+
+  scores = calculator.calculate_all_scores(ai_responses)
+
+  current_geo_scorings << GeoScoring.create!(
+    keyword: keyword,
+    ai_provider: ai_provider,
+    position_score: scores[:position_score],
+    reference_score: scores[:reference_score],
+    url_presence: scores[:url_presence],
+    url_value: scores[:url_value],
+    ai_responses: ai_responses
+  )
+end
+
+puts "geo_scoring actuels créés"
 
 competitor_scores = CompetitorScore.create!([
   {
@@ -130,7 +137,7 @@ competitor_scores = CompetitorScore.create!([
     position_score: 80,
     link_score: 75,
     competitor: competitors.first,
-    geo_scoring: geo_scorings.first
+    geo_scoring: current_geo_scorings.first
   },
   {
     score: 70,
@@ -138,7 +145,7 @@ competitor_scores = CompetitorScore.create!([
     position_score: 72,
     link_score: 80,
     competitor: competitors.second,
-    geo_scoring: geo_scorings.second
+    geo_scoring: current_geo_scorings.second
   },
   {
     score: 90,
@@ -146,7 +153,7 @@ competitor_scores = CompetitorScore.create!([
     position_score: 85,
     link_score: 92,
     competitor: competitors.third,
-    geo_scoring: geo_scorings.third
+    geo_scoring: current_geo_scorings.third
   },
   {
     score: 65,
@@ -154,7 +161,7 @@ competitor_scores = CompetitorScore.create!([
     position_score: 70,
     link_score: 65,
     competitor: competitors.fourth,
-    geo_scoring: geo_scorings.fourth
+    geo_scoring: current_geo_scorings.fourth
   },
   {
     score: 78,
@@ -162,7 +169,7 @@ competitor_scores = CompetitorScore.create!([
     position_score: 75,
     link_score: 70,
     competitor: competitors.fifth,
-    geo_scoring: geo_scorings.fifth
+    geo_scoring: current_geo_scorings.fifth
   }
 ])
 puts "Competitor_Score created"

@@ -73,6 +73,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.json "ai_responses", default: []
+    t.float "reference_score"
+    t.boolean "url_presence"
+    t.string "url_value"
     t.index ["ai_provider_id"], name: "index_geo_scorings_on_ai_provider_id"
     t.index ["keyword_id"], name: "index_geo_scorings_on_keyword_id"
   end

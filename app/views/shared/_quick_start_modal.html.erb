@@ -1,0 +1,213 @@
+<!-- Quick Start Modal -->
+<div id="quickStartModal" class="modal active" data-quick-start-target="modal">
+  <div class="modal-content" data-action="click->quick-start#clickOutside">
+    <div class="modal-header">
+      <h2>Quick Start Setup</h2>
+      <button class="close-modal" data-action="click->quick-start#closeModal">&times;</button>
+    </div>
+    
+    <div class="modal-body">
+      <!-- Stepper navigation -->
+      <div class="stepper">
+        <div class="step active" data-quick-start-target="step" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-label">Welcome</div>
+        </div>
+        <div class="step" data-quick-start-target="step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-label">Configuration</div>
+        </div>
+        <div class="step" data-quick-start-target="step" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-label">Script</div>
+        </div>
+        <div class="step" data-quick-start-target="step" data-step="4">
+          <div class="step-number">4</div>
+          <div class="step-label">Instructions</div>
+        </div>
+      </div>
+      
+      <!-- Step content -->
+      <div class="step-content-container">
+        <!-- Step 1 -->
+        <div class="step-content active" data-quick-start-target="stepContent" data-step="1">
+          <h3>Welcome to Quick Start!</h3>
+          <p>This robot will help you set up your dashboard in just a few steps. You'll be able to:</p>
+          <ul>
+            <li>Connect to your own sources</li>
+            <li>Build and copy your own script</li>
+            <li>Implement your script in your website</li>
+          </ul>
+          <p>Let's get started!</p>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="step-content" data-quick-start-target="stepContent" data-step="2">
+          <h3>Configuration</h3>
+          <div class="form-group">
+            <%= simple_form_for :dashboard do |f| %>
+              <%= f.input :company_name, input_html: { class: 'form-control', placeholder: 'Enter your company name' } %>
+            <% end %>
+          </div>
+          <div class="form-group">
+            <%= simple_form_for :dashboard do |f| %>
+              <%= f.input :website_url, input_html: { class: 'form-control', placeholder: 'Enter your website URL' } %>
+            <% end %>
+          </div>
+          <div class="form-group">
+            <%= simple_form_for :dashboard do |f| %>
+              <%= f.input :update_preferences, as: :select, collection: ['Daily', 'Weekly', 'Monthly'], input_html: { class: 'form-control' } %>
+            <% end %>
+          </div>
+        </div>
+        
+        <!-- Step 3 -->
+        <div class="step-content" data-quick-start-target="stepContent" data-step="3">
+          <h3>Baserob Script</h3>
+          <p>Use the buttons below to view or copy your script:</p>
+          <div class="script-actions">
+            <button id="viewScriptButton" class="btn btn-secondary" 
+            data-action="click->quick-start#toggleScriptVisibility">
+              <i class="fas fa-eye"></i> View Script
+            </button>
+            
+            <!-- Bouton de copie avec le contrôleur clipboard -->
+            <button id="copyScriptButton" class="btn btn-primary" 
+                    data-controller="clipboard" 
+                    data-clipboard-success-message-value="Copied to clipboard!" 
+                    data-clipboard-error-message-value="Failed to copy!" 
+                    data-clipboard-reset-delay-value="2000" 
+                    data-action="click->clipboard#copy" 
+                    data-clipboard-target="button">
+              <i class="fas fa-copy"></i> Copy Script
+            </button>
+          </div>
+          
+          <!-- Script Content Panel - Simplified version -->
+          <div id="scriptContentPanel" class="script-panel" data-quick-start-target="scriptPanel" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ccc; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h4 style="margin: 0;">Votre script Baserob</h4>
+              <div>
+                <!-- Bouton de copie dans le panneau -->
+                <button class="btn btn-primary" style="margin-right: 8px;"
+                        data-controller="clipboard" 
+                        data-clipboard-success-message-value="Copied!" 
+                        data-clipboard-error-message-value="Failed!" 
+                        data-clipboard-reset-delay-value="2000" 
+                        data-action="click->clipboard#copy" 
+                        data-clipboard-target="button">
+                  <i class="fas fa-copy"></i> Copier
+                </button>
+                <button class="btn btn-secondary" data-action="click->quick-start#toggleScriptVisibility">
+                  <i class="fas fa-times"></i> Fermer
+                </button>
+              </div>
+            </div>
+            <div style="background-color: #1d1d1f; color: #f5f5f7; padding: 15px; border-radius: 8px; max-height: 350px; overflow: auto; font-family: 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.9rem; line-height: 1.6;">
+              <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;" data-clipboard-target="source">class GenerateCompanyScript < ApplicationService
+  def initialize(company)
+    @company = company
+  end
+
+  def call
+    generate_cdn_script
+  end
+
+  private
+
+  def generate_cdn_script
+    script = <<-SCRIPT
+      <script>
+        (function() {
+          const apiEndpoint = '#{Rails.application.routes.url_helpers.requests_url}';
+          const bearerToken = '#{@company.token}';
+
+          function collectClientInfo() {
+            const info = {
+              url: window.location.href,
+              path: window.location.pathname,
+              referrer: document.referrer,
+              userAgent: navigator.userAgent,
+              language: navigator.language,
+              timestamp: new Date().toISOString(),
+              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+              platform: navigator.platform,
+              connectionType: navigator.connection ? navigator.connection.effectiveType : 'unknown',
+              pageLoadTime: window.performance ? window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart : 'unsupported',
+              title: document.title
+            };
+
+            try {
+              fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                  info.ipAddress = data.ip;
+                  sendDataToServer(info);
+                })
+                .catch(() => {
+                  sendDataToServer(info);
+                });
+            } catch (e) {
+              sendDataToServer(info);
+            }
+          }
+
+          function sendDataToServer(data) {
+            fetch(apiEndpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + bearerToken
+              },
+              body: JSON.stringify(data)
+            })
+            .catch(error => console.error('Error sending tracking data:', error));
+          }
+
+          window.addEventListener('load', collectClientInfo);
+
+          // Si vous voulez récupérer les données de navigation (back, forward, etc.) mais ca ne me semble pas utile
+          // if (window.history && window.history.pushState) {
+          //   const originalPushState = window.history.pushState;
+          //   window.history.pushState = function() {
+          //     originalPushState.apply(this, arguments);
+          //     collectClientInfo();
+          //   };
+          //   window.addEventListener('popstate', collectClientInfo);
+          // }
+        })();
+      </script>
+    SCRIPT
+  end
+end</pre>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 4 -->
+        <div class="step-content" data-quick-start-target="stepContent" data-step="4">
+          <h3>Instructions</h3>
+          <p>Follow these steps to implement your script on your website:</p>
+          <ol>
+            <li>Copy the script from the previous step</li>
+            <li>Paste the script into your website's HTML file just before the '< / body >' tag</li>
+            <li>Save the file and refresh your website</li>
+          </ol>
+          <p>If you need help, don't hesitate to ask for assistance on our support channel.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button id="prevStep" class="btn-secondary" disabled data-quick-start-target="prevButton" data-action="click->quick-start#prevStep">
+        <i class="fas fa-chevron-left"></i> Previous
+      </button>
+      <button id="nextStep" class="btn-primary" data-quick-start-target="nextButton" data-action="click->quick-start#nextStep">
+        Next <i class="fas fa-chevron-right"></i>
+      </button>
+      <button id="finishSetup" class="btn-primary" style="display: none;" data-quick-start-target="finishButton" data-action="click->quick-start#finishSetup">
+        <i class="fas fa-check"></i> Finish Setup
+      </button>
+    </div>
+  </div>
+</div> 

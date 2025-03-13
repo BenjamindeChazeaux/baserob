@@ -1,58 +1,284 @@
-
-<div class="container w-50">
-  <h2 class="text-center">📊 AI Visibility Score</h2>
-
-  <!-- 📌 Sélection du mot-clé -->
-  <div class="mt-4">
-    <select id="keyword-dropdown" class="form-control"
-      data-controller="geo-scoring"
-      data-action="change->geo-scoring#loadScores"
-      data-geo-scoring-target="keywordDropdown">
-      <option value="">Select a keyword</option>
-      <% @keywords.each do |kw| %>
-        <option value="<%= kw.id %>" <%= "selected" if @selected_keyword&.id == kw.id %>><%= kw.content %></option>
-      <% end %>
-    </select>
+<%# app/views/geo_scorings/index.html.erb %>
+<div class="container mt-4 mb-5 d-flex flex-column align-items-center">
+  <!-- En-tête de la page -->
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      <h1 class="display-6 fw-bold mb-2">Analyse de positionnement</h1>
+      <p class="text-muted"><i class="bi bi-calendar3"></i> <%= Date.today.strftime("%A %d %B %Y") %></p>
+    </div>
   </div>
 
-  <!-- 📌 Affichage du Score Global -->
-  <% if @global_score.present? %>
-    <div class="mt-4 text-center">
-      <h3>Global Score: <span class="badge bg-primary"><%= @global_score %></span></h3>
+  <!-- Sélection du mot-clé -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-md-8">
+      <div class="card border-0 shadow-sm hover-shadow">
+        <div class="card-body p-3">
+          <%= form_with url: geo_scorings_path, method: :get, local: true do |f| %>
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0">
+                <i class="bi bi-search"></i>
+              </span>
+              <%= f.select :keyword_id,
+                          options_from_collection_for_select(@keywords, :id, :content, @selected_keyword&.id),
+                          { include_blank: "Rechercher un mot-clé..." },
+                          {
+                            onchange: "this.form.submit()",
+                            class: "form-select border-start-0 py-3"
+                          }
+              %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% if @keywords.present? && @selected_keyword.present? %>
+    <!-- Mot-clé sélectionné -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm hover-shadow">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-key-fill text-primary fs-4 me-2"></i>
+              <h2 class="h5 mb-0">Mot-clé analysé</h2>
+            </div>
+            <div class="bg-light p-4 rounded">
+              <h3 class="h5 mb-2"><%= @selected_keyword.content %></h3>
+              <p class="text-muted mb-0">
+                <i class="bi bi-robot"></i> Recherché sur <%= @provider_data.size %> IA
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Score Global Moyen -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm hover-shadow">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-graph-up text-primary fs-4 me-2"></i>
+              <h2 class="h5 mb-0">Score Global</h2>
+            </div>
+            <div class="d-flex justify-content-center">
+              <div class="progress-circle">
+                <% average_score = @provider_data.sum { |p| p[:global_score] } / @provider_data.size %>
+                <% score_color = case average_score
+                   when 0..33 then "danger"
+                   when 34..66 then "warning"
+                   else "success"
+                   end %>
+                <div class="progress-circle-fill bg-<%= score_color %>">
+                  <div class="progress-circle-value">
+                    <span class="h3 mb-0"><%= average_score.round %></span>
+                    <span class="small">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="text-center text-muted mt-3 mb-0">
+              Score moyen calculé à partir des <%= @provider_data.size %> fournisseurs d'IA
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Résultats par fournisseur d'IA -->
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="row g-4">
+          <% @provider_data.each do |provider| %>
+            <div class="col-md-4">
+              <div class="flip-card" style="width: 18rem; height: 300px;">
+                <div class="flip-card-inner">
+                  <!-- Face avant -->
+                  <div class="flip-card-front card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                      <div class="d-flex flex-column align-items-center text-center">
+                        <!-- En-tête avec nom et changement de position -->
+                        <div class="mb-4">
+                          <h3 class="h5 mb-2">
+                            <i class="bi bi-robot me-2"></i>
+                            <%= provider[:name] %>
+                          </h3>
+                          <% if provider[:position_change] != 0 %>
+                            <span class="badge <%= provider[:position_change] > 0 ? 'bg-success' : 'bg-danger' %>">
+                              <i class="bi bi-arrow-<%= provider[:position_change] > 0 ? 'up' : 'down' %>"></i>
+                              <%= provider[:position_change].abs %>
+                            </span>
+                          <% end %>
+                        </div>
+
+                        <!-- Score global -->
+                        <div class="progress-circle">
+                          <% score_color = case provider[:global_score]
+                             when 0..33 then "danger"
+                             when 34..66 then "warning"
+                             else "success"
+                             end %>
+                          <div class="progress-circle-fill bg-<%= score_color %>">
+                            <div class="progress-circle-value">
+                              <span class="h3 mb-0"><%= provider[:global_score].round %></span>
+                              <span class="small">%</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Face arrière -->
+                  <div class="flip-card-back card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                      <div class="d-flex flex-column h-100">
+                        <h3 class="h5 mb-4 text-center">
+                          <i class="bi bi-robot me-2"></i>
+                          <%= provider[:name] %>
+                        </h3>
+
+                        <!-- Détails des scores -->
+                        <div class="score-details flex-grow-1">
+                          <!-- Position Score -->
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                              <span class="text-muted">Position</span>
+                              <span class="fw-bold"><%= provider[:position_score].round %>%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                              <div class="progress-bar bg-primary" role="progressbar" style="width: <%= provider[:position_score] %>%"></div>
+                            </div>
+                          </div>
+
+                          <!-- Reference Score -->
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                              <span class="text-muted">Référencement</span>
+                              <span class="fw-bold"><%= provider[:reference_score].round %>%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                              <div class="progress-bar bg-info" role="progressbar" style="width: <%= provider[:reference_score] %>%"></div>
+                            </div>
+                          </div>
+
+                          <!-- URL Score -->
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                              <span class="text-muted">URL</span>
+                              <span class="fw-bold"><%= provider[:url_presence] ? "100%" : "0%" %></span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                              <div class="progress-bar bg-success" role="progressbar" style="width: <%= provider[:url_presence] ? "100" : "0" %>%"></div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                          <small class="text-muted">Cliquez pour retourner</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Légende -->
+    <div class="row justify-content-center mt-4">
+      <div class="col-lg-10">
+        <div class="card border-0 shadow-sm hover-shadow p-4">
+          <p class="small text-muted mb-0">
+            <i class="bi bi-info-circle me-2"></i>
+            Cette analyse montre le positionnement de votre entreprise "<%= @company.name %>" dans les résultats des différents fournisseurs d'IA pour le mot-clé "<%= @selected_keyword.content %>".
+          </p>
+        </div>
+      </div>
     </div>
   <% else %>
-    <div class="mt-4 text-center text-muted">
-      <p>Select a keyword to see the global score</p>
+    <!-- État vide -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm hover-shadow p-5 text-center">
+          <div class="py-4">
+            <i class="bi bi-search fs-1 text-muted mb-3"></i>
+            <h3 class="h5 mb-3">Aucun mot-clé sélectionné</h3>
+            <p class="text-muted mb-0">
+              Veuillez sélectionner un mot-clé dans la liste déroulante ci-dessus pour voir l'analyse de positionnement.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   <% end %>
-
-  <% if @position_scores.present? %>
-  <div class="mt-4">
-    <h3>Top 3 AI Providers for <%= @selected_keyword.content %></h3>
-    <ul class="list-group">
-      <% @position_scores.each do |score| %>
-        <% if score.ai_provider.present? %>
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <strong><%= score.ai_provider.name %></strong>
-            <span class="badge bg-secondary">Position: <%= score.position_score %></span>
-          </li>
-        <% else %>
-          <li class="list-group-item text-danger">
-            AI Provider Missing for Score ID: <%= score.id %>
-          </li>
-        <% end %>
-      <% end %>
-    </ul>
-  </div>
-<% else %>
-  <div class="mt-4 text-center text-muted">
-    <p>No AI data available for this keyword.</p>
-  </div>
-<% end %>
-
-
-
-  <!-- 📌 Section de l’historique -->
-  <div id="history" data-geo-scoring-target="history"></div>
 </div>
 
+<% content_for :styles do %>
+  <style>
+    .hover-shadow {
+      transition: box-shadow 0.3s ease;
+    }
+
+    .hover-shadow:hover {
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .progress-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: #f8f9fa;
+      padding: 10px;
+    }
+
+    .progress-circle-fill {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-circle-value {
+      color: white;
+      text-align: center;
+    }
+
+    .flip-card {
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+  </style>
+<% end %>
