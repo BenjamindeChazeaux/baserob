@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_13_133031) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
   create_table "companies", force: :cascade do |t|
     t.string "name"
     t.string "domain"
+    t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -73,9 +74,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.json "ai_responses", default: []
-    t.float "reference_score"
-    t.boolean "url_presence"
-    t.string "url_value"
     t.index ["ai_provider_id"], name: "index_geo_scorings_on_ai_provider_id"
     t.index ["keyword_id"], name: "index_geo_scorings_on_keyword_id"
   end
@@ -94,11 +92,20 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
     t.string "referrer"
     t.string "user_agent"
     t.bigint "company_id", null: false
-    t.bigint "ai_provider_id", null: false
+    t.bigint "ai_provider_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ai_provider_id"], name: "index_requests_on_ai_provider_id"
     t.index ["company_id"], name: "index_requests_on_company_id"
+  end
+
+  create_table "solid_cable_messages", force: :cascade do |t|
+    t.text "channel"
+    t.text "payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel"], name: "index_solid_cable_messages_on_channel"
+    t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
   create_table "users", force: :cascade do |t|

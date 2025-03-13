@@ -1,16 +1,18 @@
 class RequestsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:create]
+  skip_before_action :authenticate_user!, only: [:create]
+  before_action :authenticate_company!, only: [:create]
   def index
-    @requests = Request.all
+    @company = current_user.company
+    @ai_providers = @company.ai_providers
+    @requests = @company.requests
 
-    # search AI Provider
     ai_provider_id_param = params.dig(:search, :ai_provider)
     if ai_provider_id_param.present?
       @ai_provider = AiProvider.find(ai_provider_id_param)
       @requests = @requests.where(ai_provider: @ai_provider)
     end
 
-
-    #search for timeline
     timeline_param = params.dig(:search, :timeline)
     if timeline_param.present?
        case timeline_param
@@ -27,8 +29,47 @@ class RequestsController < ApplicationController
        end
     end
 
-    @ai_crawler_requests_count = @requests.count # calcul the requests
-    @requests_by_date = @requests.group_by_day(:created_at).count
+    group_method = timeline_param == "today" ? :group_by_hour : :group_by_day
+
+    @requests_by_date_and_ai_provider = @ai_providers.map do |ai_provider|
+      {
+        name: ai_provider.name || "Other",
+        data: @requests.where(ai_provider: ai_provider).send(group_method, :created_at).count
+      }
+    end.concat([
+                {
+                  name: "Total",
+                  data: @requests.send(group_method, :created_at).count
+                },
+                {
+                  name: "Other",
+                  data: @requests.where(ai_provider: nil).send(group_method, :created_at).count
+                }
+              ])
+    respond_to do |format|
+      format.html
+      format.json { render json: { requests_data: @requests_by_date_and_ai_provider } }
+    end
+  end
+
+  def create
+    @req = Request.new(params_request)
+    @req.company = @company
+    @req.save!
+    head :no_content
+  end
+
+  private
+
+  def params_request
+    params.require(:request).permit(:domain, :path, :referrer, :user_agent)
+  end
+
+  def authenticate_company!
+    @company = Company.find_by(token: request.headers['Authorization'].split.last)
+    if @company.nil?
+      render json: {error: 'Unauthorized'}, status: :unauthorized
+    end
   end
 end
 

@@ -4,23 +4,26 @@
 
 import { application } from "./application"
 
+import ClipboardController from "./clipboard_controller"
+application.register("clipboard", ClipboardController)
+
+import GeoScoringController from "./geo_scoring_controller"
+application.register("geo-scoring", GeoScoringController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import KeywordsController from "./keywords_controller"
+application.register("keywords", KeywordsController)
+
+import QuickStartController from "./quick_start_controller"
+application.register("quick-start", QuickStartController)
+
+import RequestsStreamController from "./requests_stream_controller"
+application.register("requests-stream", RequestsStreamController)
 
 import SettingsModalController from "./settings_modal_controller"
 application.register("settings-modal", SettingsModalController)
 
 import SidebarController from "./sidebar_controller"
 application.register("sidebar", SidebarController)
-
-import QuickStartController from "./quick_start_controller"
-application.register("quick-start", QuickStartController)
-
-import GeoScoringController from "./geo_scoring_controller"
-application.register("geo-scoring", GeoScoringController)
-
-import KeywordsController from "./keywords_controller"
-application.register("keywords", KeywordsController)
-
-import ClipboardController from "./clipboard_controller"
-application.register("clipboard", ClipboardController)
