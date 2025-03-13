@@ -6,7 +6,7 @@ class CreateRequests < ActiveRecord::Migration[7.1]
       t.string :referrer
       t.string :user_agent
       t.references :company, null: false, foreign_key: true
-      t.references :ai_provider, null: false, foreign_key: true
+      t.references :ai_provider, null: true, foreign_key: true
 
       t.timestamps
     end

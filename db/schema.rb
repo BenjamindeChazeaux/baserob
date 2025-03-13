@@ -28,6 +28,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
   create_table "companies", force: :cascade do |t|
     t.string "name"
     t.string "domain"
+    t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -73,9 +74,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.json "ai_responses", default: []
-    t.float "reference_score"
-    t.boolean "url_presence"
-    t.string "url_value"
     t.index ["ai_provider_id"], name: "index_geo_scorings_on_ai_provider_id"
     t.index ["keyword_id"], name: "index_geo_scorings_on_keyword_id"
   end
@@ -94,7 +92,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
     t.string "referrer"
     t.string "user_agent"
     t.bigint "company_id", null: false
-    t.bigint "ai_provider_id", null: false
+    t.bigint "ai_provider_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ai_provider_id"], name: "index_requests_on_ai_provider_id"

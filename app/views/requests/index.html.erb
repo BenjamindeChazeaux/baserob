@@ -35,13 +35,13 @@
                         <div class="col-md-2 text-center">
                           <%= f.submit "Filter", class: "btn btn-primary" %>
                           <div class="alert alert-success text-center">
-                            <strong> Total <%= @ai_provider&.name || "All AI Providers" %> Requests: </strong><%= @ai_crawler_requests_count %>
+                            <strong> Total <%= @ai_provider&.name || "All AI Providers" %> Requests: </strong><%= @requests.count %>
                           </div>
                         </div>
                       </div>
                     <% end %>
                   </div>
-                  <%= line_chart @requests_by_date, xtitle: "Time", ytitle: "Requests" %>
+                  <%= line_chart @requests_by_date_and_ai_provider, xtitle: "Time", ytitle: "Requests" %>
                 </div>
               </div>
             </div>
