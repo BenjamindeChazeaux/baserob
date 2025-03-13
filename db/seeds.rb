@@ -32,9 +32,9 @@ NoCompany = User.create!(email: "nocompany@gmail.com", password: "password5", co
 puts "Users created"
 
 ai_providers = AiProvider.create!([
-  { name: "OpenAI" },
-  { name: "Anthropic" },
-  { name: "Perplexity" }
+  { name: "openai" },
+  { name: "anthropic" },
+  { name: "perplexity" }
 ])
 puts ai_providers.inspect
 
@@ -80,100 +80,100 @@ competitors = Competitor.create!([
 puts "Competitors created"
 
 keywords = Keyword.all
-calculator = GeoScoringCalculatorService.new(company)
+# calculator = GeoScoringCalculatorService.new(company)
 
-# Création des geo_scorings historiques sur 3 jours
-(Date.today - 2.days..Date.today).each do |date|
-  Keyword.find_each do |keyword|
-    AiProvider.find_each do |ai_provider|
-      3.times do |i|
-        ai_responses = ["Le Wagon", "Ironhack", "App Academy", "Ahn Academy", 'Pouet school'].shuffle
-        scores = calculator.calculate_all_scores(ai_responses)
+# # Création des geo_scorings historiques sur 3 jours
+# (Date.today - 2.days..Date.today).each do |date|
+#   Keyword.find_each do |keyword|
+#     AiProvider.find_each do |ai_provider|
+#       3.times do |i|
+#         ai_responses = ["Le Wagon", "Ironhack", "App Academy", "Ahn Academy", 'Pouet school'].shuffle
+#         scores = calculator.calculate_all_scores(ai_responses)
 
-        GeoScoring.create!(
-          keyword: keyword,
-          ai_provider: ai_provider,
-          position_score: scores[:position_score],
-          reference_score: scores[:reference_score],
-          url_presence: scores[:url_presence],
-          url_value: scores[:url_value],
-          ai_responses: ai_responses,
-          created_at: date
-        )
-      end
-    end
-  end
-end
+#         GeoScoring.create!(
+#           keyword: keyword,
+#           ai_provider: ai_provider,
+#           position_score: scores[:position_score],
+#           reference_score: scores[:reference_score],
+#           url_presence: scores[:url_presence],
+#           url_value: scores[:url_value],
+#           ai_responses: ai_responses,
+#           created_at: date
+#         )
+#       end
+#     end
+#   end
+# end
 
 puts "geo_scoring historiques créés"
 
 # Création des geo_scorings actuels pour les scores des concurrents
 current_geo_scorings = []
-keywords.each_with_index do |keyword, index|
-  ai_provider = ai_providers[index % ai_providers.length]
-  ai_responses = case index
-    when 0 then ["Le Wagon", "Ironhack", "App Academy", "Ahn Academy"]
-    when 1 then ["DataCamp", "Springboard", "Udacity", "Le Wagon", "Anthoine Academy"]
-    when 2 then ["General Assembly", "Le Wagon", "Lambda School", "Yanick Academy"]
-    when 3 then ["AWS Training", "Microsoft Learn", "Le Wagon", "Google Cloud Skills"]
-    when 4 then ["Zapier", "Automate.io", "Parabola", "Le Wagon"]
-  end
+# keywords.each_with_index do |keyword, index|
+#   ai_provider = ai_providers[index % ai_providers.length]
+#   ai_responses = case index
+#     when 0 then ["Le Wagon", "Ironhack", "App Academy", "Ahn Academy"]
+#     when 1 then ["DataCamp", "Springboard", "Udacity", "Le Wagon", "Anthoine Academy"]
+#     when 2 then ["General Assembly", "Le Wagon", "Lambda School", "Yanick Academy"]
+#     when 3 then ["AWS Training", "Microsoft Learn", "Le Wagon", "Google Cloud Skills"]
+#     when 4 then ["Zapier", "Automate.io", "Parabola", "Le Wagon"]
+#   end
 
-  scores = calculator.calculate_all_scores(ai_responses)
+#   scores = calculator.calculate_all_scores(ai_responses)
 
-  current_geo_scorings << GeoScoring.create!(
-    keyword: keyword,
-    ai_provider: ai_provider,
-    position_score: scores[:position_score],
-    reference_score: scores[:reference_score],
-    url_presence: scores[:url_presence],
-    url_value: scores[:url_value],
-    ai_responses: ai_responses
-  )
-end
+#   current_geo_scorings << GeoScoring.create!(
+#     keyword: keyword,
+#     ai_provider: ai_provider,
+#     position_score: scores[:position_score],
+#     reference_score: scores[:reference_score],
+#     url_presence: scores[:url_presence],
+#     url_value: scores[:url_value],
+#     ai_responses: ai_responses
+#   )
+# end
 
 puts "geo_scoring actuels créés"
 
-competitor_scores = CompetitorScore.create!([
-  {
-    score: 85,
-    frequency_score: 90,
-    position_score: 80,
-    link_score: 75,
-    competitor: competitors.first,
-    geo_scoring: current_geo_scorings.first
-  },
-  {
-    score: 70,
-    frequency_score: 65,
-    position_score: 72,
-    link_score: 80,
-    competitor: competitors.second,
-    geo_scoring: current_geo_scorings.second
-  },
-  {
-    score: 90,
-    frequency_score: 88,
-    position_score: 85,
-    link_score: 92,
-    competitor: competitors.third,
-    geo_scoring: current_geo_scorings.third
-  },
-  {
-    score: 65,
-    frequency_score: 60,
-    position_score: 70,
-    link_score: 65,
-    competitor: competitors.fourth,
-    geo_scoring: current_geo_scorings.fourth
-  },
-  {
-    score: 78,
-    frequency_score: 80,
-    position_score: 75,
-    link_score: 70,
-    competitor: competitors.fifth,
-    geo_scoring: current_geo_scorings.fifth
-  }
-])
-puts "Competitor_Score created"
+# competitor_scores = CompetitorScore.create!([
+#   {
+#     score: 85,
+#     frequency_score: 90,
+#     position_score: 80,
+#     link_score: 75,
+#     competitor: competitors.first,
+#     geo_scoring: current_geo_scorings.first
+#   },
+#   {
+#     score: 70,
+#     frequency_score: 65,
+#     position_score: 72,
+#     link_score: 80,
+#     competitor: competitors.second,
+#     geo_scoring: current_geo_scorings.second
+#   },
+#   {
+#     score: 90,
+#     frequency_score: 88,
+#     position_score: 85,
+#     link_score: 92,
+#     competitor: competitors.third,
+#     geo_scoring: current_geo_scorings.third
+#   },
+#   {
+#     score: 65,
+#     frequency_score: 60,
+#     position_score: 70,
+#     link_score: 65,
+#     competitor: competitors.fourth,
+#     geo_scoring: current_geo_scorings.fourth
+#   },
+#   {
+#     score: 78,
+#     frequency_score: 80,
+#     position_score: 75,
+#     link_score: 70,
+#     competitor: competitors.fifth,
+#     geo_scoring: current_geo_scorings.fifth
+#   }
+# ])
+# puts "Competitor_Score created"

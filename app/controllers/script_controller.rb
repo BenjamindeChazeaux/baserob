@@ -1,4 +1,4 @@
-class WelcomeController < ApplicationController
+class ScriptController < ApplicationController
     def index
       @script = <<-SCRIPT
                     <script>
