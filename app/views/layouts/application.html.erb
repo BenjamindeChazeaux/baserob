@@ -29,9 +29,11 @@
 
   <body <%= 'data-needs-company-setup' if @needs_company_setup %> data-controller="quick-start">
     <%= render "shared/flashes" %>
-    <%= render "shared/sidebar" %>
-    <%= render "shared/settings_modal" %>
-    <%= render "shared/quick_start_modal" %>
+    <% unless controller_name == 'pages' && action_name == 'home' %>
+      <%= render "shared/sidebar" %>
+      <%= render "shared/settings_modal" %>
+      <%= render "shared/quick_start_modal" %>
+    <% end %>
 
     <%= yield %>
   <script>
