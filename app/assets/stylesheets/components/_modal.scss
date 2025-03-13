@@ -15,7 +15,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        animation: fadeIn 0.2s ease;
       }
       
       .modal-content {
@@ -27,7 +26,6 @@
         max-height: 85vh;
         overflow: auto;
         position: relative;
-        animation: slideIn 0.3s ease;
         border: 1px solid rgba(0, 0, 0, 0.08);
       }
       
@@ -85,6 +83,11 @@
             line-height: 1.5;
             margin-bottom: 1.5rem;
           }
+        }
+        
+        .active {
+          // ... existing code ...
+          animation: fadeIn 0.3s ease;
         }
       }
       
@@ -372,16 +375,16 @@
       }
     }
     
-    // Animations
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    // // Animations
+    // @keyframes fadeIn {
+    //   from { opacity: 0; }
+    //   to { opacity: 1; }
+    // }
     
-    @keyframes slideIn {
-      from { transform: translateY(-20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
+    // @keyframes slideIn {
+    //   from { transform: translateY(-20px); opacity: 0; }
+    //   to { transform: translateY(0); opacity: 1; }
+    // }
     
     // Responsive styles
     @media (max-width: 768px) {
