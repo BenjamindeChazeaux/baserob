@@ -65,9 +65,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_110940) do
 
   create_table "geo_scorings", force: :cascade do |t|
     t.integer "score"
-    t.integer "frequency_score"
-    t.integer "position_score"
-    t.integer "link_score"
+    t.boolean "mentioned"
+    t.integer "position"
+    t.string "link"
     t.bigint "keyword_id", null: false
     t.bigint "ai_provider_id", null: false
     t.datetime "created_at", null: false
