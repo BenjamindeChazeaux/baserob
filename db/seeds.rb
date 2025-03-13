@@ -22,6 +22,7 @@ puts "Company created"
 company = Company.first
 
 # Utilisateurs avec company associée
+test = User.create!(email: "test@test.com", password: "azerty", company: company)
 Ben = User.create!(email: "ben@gmail.com", password: "password1", company: company)
 Anh = User.create!(email: "anh@gmail.com", password: "password2", company: company)
 Antoine = User.create!(email: "antoine@gmail.com", password: "password3", company: company)
