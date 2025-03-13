@@ -8,15 +8,7 @@
 @import "config/variables";
 
 // Components
-@import "components/buttons";
-@import "components/cards";
-// @import "components/charts";
-// @import "components/forms";
-@import "components/modals";
-@import "components/navigation";
-@import "components/sidebar";
-// @import "components/tables";
-@import "components/modals";
+@import "components/index";
 // @import "components/notifications";
 
 // Layouts
@@ -36,4 +28,4 @@
 @import "responsive/mobile";
 @import "responsive/tablet";
 
-@import "devise"; 
+@import "devise";
