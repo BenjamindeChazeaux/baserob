@@ -9,6 +9,7 @@ class Request < ApplicationRecord
 
   before_validation :set_ai_provider
   after_create :broadcast_request
+
   private
 
   def set_ai_provider

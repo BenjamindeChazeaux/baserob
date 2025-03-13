@@ -3,7 +3,6 @@ class RequestsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:create]
   before_action :authenticate_company!, only: [:create]
   def index
-
     @company = current_user.company
     @ai_providers = @company.ai_providers
     @requests = @company.requests

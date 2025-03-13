@@ -12,7 +12,6 @@ export default class extends Controller {
     this.channel = createConsumer().subscriptions.create(
       { channel: `CompanyChannel`, id: this.companyIdValue },
       {
-        connected: () => { console.log('connected to stream') },
         received: this.fetchNewGraphData.bind(this)
       }
     )
@@ -33,9 +32,9 @@ export default class extends Controller {
       }
     }
     fetch(action, options)
-    .then(response => response.json())
-    .then((data) => {
-      this.chart.updateData(data.requests_data)
-    })
+      .then(response => response.json())
+      .then((data) => {
+        this.chart.updateData(data.requests_data)
+      })
   }
 }
