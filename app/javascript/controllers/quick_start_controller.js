@@ -29,6 +29,8 @@ export default class extends Controller {
     this.currentStep = 1
     // Nombre total d'étapes
     this.totalSteps = this.stepTargets.length
+    // Vérifier si l'utilisateur a besoin de configurer une company
+    this.needsCompanySetup = document.body.hasAttribute('data-needs-company-setup')
   }
   
   // ===== GESTION DE LA MODAL =====
@@ -54,6 +56,12 @@ export default class extends Controller {
   closeModal(event) {
     if (event) event.preventDefault()
     
+    // Si l'utilisateur n'a pas de company, empêcher la fermeture de la modal
+    if (this.needsCompanySetup) {
+      this.showNotification('warning', 'Setup Required', 'Please complete the company setup before continuing.')
+      return
+    }
+    
     // Masquer la modal
     this.modalTarget.classList.remove('active')
     // Réactiver le défilement de la page
@@ -64,6 +72,12 @@ export default class extends Controller {
    * Ferme la modal si l'utilisateur clique en dehors du contenu
    */
   clickOutside(event) {
+    // Si l'utilisateur n'a pas de company, empêcher la fermeture de la modal
+    if (this.needsCompanySetup) {
+      this.showNotification('warning', 'Setup Required', 'Please complete the company setup before continuing.')
+      return
+    }
+    
     // Si le clic est sur le fond de la modal (pas sur son contenu)
     if (event.target === this.modalTarget) {
       this.closeModal()
@@ -154,11 +168,19 @@ export default class extends Controller {
   finishSetup(event) {
     event.preventDefault()
     
+    // Mettre à jour l'état de configuration de la company
+    this.needsCompanySetup = false
+    
     // Fermer la modal
     this.closeModal()
     
     // Afficher une notification de succès
     this.showNotification('success', 'Dashboard Created!', 'Your new dashboard has been set up successfully.')
+    
+    // Recharger la page pour appliquer les changements
+    setTimeout(() => {
+      window.location.reload()
+    }, 1500)
   }
   
   // ===== GESTION DU SCRIPT =====
@@ -235,6 +257,9 @@ export default class extends Controller {
         // Si la sauvegarde a réussi, passer à l'étape du script
         this.goToStep(3)
         this.showNotification('success', 'Configuration Saved', 'Your configuration has been saved successfully.')
+        
+        // Mettre à jour l'état de configuration de la company
+        this.needsCompanySetup = false
       } else {
         // Afficher un message d'erreur
         this.showNotification('error', 'Error', data.message || 'There was an error saving your configuration.')
@@ -255,7 +280,7 @@ export default class extends Controller {
     const notification = document.createElement('div')
     notification.className = `notification ${type}`
     notification.innerHTML = `
-      <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+      <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'}"></i>
       <div class="notification-content">
         <h4>${title}</h4>
         <p>${message}</p>
