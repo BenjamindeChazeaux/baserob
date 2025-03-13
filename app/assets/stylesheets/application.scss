@@ -1,11 +1,13 @@
 // Configuration globale
 // @import "config";
 
-// Base
-@import "base/reset";
-@import "base/typography";
-@import "base/utilities";
+// Config
+@import "config/reset";
+@import "config/typography";
+@import "config/utilities";
 @import "config/variables";
+@import "config/colors";
+@import "config/fonts";
 
 // Components
 @import "components/buttons";
@@ -13,7 +15,6 @@
 // @import "components/charts";
 // @import "components/forms";
 @import "components/modals";
-@import "components/navigation";
 @import "components/sidebar";
 // @import "components/tables";
 @import "components/modals";

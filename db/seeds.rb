@@ -21,7 +21,7 @@ puts "Company created"
 
 company = Company.first
 
-Ben = User.create!(email: "ben@gmail.com", password: "password1", company: company)
+Ben = User.create!(email: "ben@gmail.com", password: "password1", company: nil)
 Anh = User.create!(email: "anh@gmail.com", password: "password2", company: company)
 Antoine = User.create!(email: "antoine@gmail.com", password: "password3", company: company)
 Yannick = User.create!(email: "yannick@gmail.com", password: "password4", company: company)
