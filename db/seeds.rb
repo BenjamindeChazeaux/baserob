@@ -11,7 +11,7 @@ Company.destroy_all
 puts "seed destroyed"
 
 companies = Company.create!([
-  { name: "Le Wagon", domain: "https://www.lewagon.com" },
+  { name: "Le Wagon", domain: "https://www.lewagon.com", token: 'c52cf53345ce51d8e20ad727386e239a' },
   { name: "Airbnb", domain: "https://www.airbnb.com" },
   { name: "Uber", domain: "https://www.uber.com" },
   { name: "Spotify", domain: "https://www.spotify.com" },
