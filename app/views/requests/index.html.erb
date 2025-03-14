@@ -1,7 +1,9 @@
 <!-- AI Analytics Dashboard -->
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-12">
+<div class="dashboard-container" data-controller="quick-start">
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <%# <div class="col-12"> %>
       <h1>AI Analytics Dashboard</h1>
       <p class="lead">Track and analyze your AI performance metrics</p>
 
@@ -12,9 +14,6 @@
         <div class="card-body m-5">
           <p>Welcome to your AI Analytics dashboard. Here you can monitor and evaluate various AI metrics and performance indicators.</p>
 
-          <div class="alert alert-info">
-            <i class="fa fa-info-circle"></i> This is a placeholder for your AI analytics content. You can customize this view with your specific analytics data and visualizations.
-          </div>
 
           <!-- Analytic section with chart -->
           <div class="row mt-4">
@@ -32,7 +31,8 @@
                                           # local: true,
                                           html: {
                                             data: {
-                                              requests_stream_target: 'form'
+                                              requests_stream_target: 'form',
+                                              turbo_frame: 'request-chart'
                                             }
                                           } do |f| %>
                         <div class="row">
@@ -43,7 +43,10 @@
                                         class: "form-control",
                                         selected: params.dig(:search, :ai_provider),
                                         input_html: {
-                                          value: params.dig(:search, :ai_provider)
+                                          value: params.dig(:search, :ai_provider),
+                                          data: {
+                                            action: 'change->requests-stream#submitForm'
+                                          }
                                         } %>
                           </div>
                           <div class="col-md-4">
@@ -53,39 +56,32 @@
                                         class: "form-control",
                                         selected: params.dig(:search, :timeline),
                                         input_html: {
-                                          value: params.dig(:search, :timeline)
+                                          value: params.dig(:search, :timeline),
+                                          data: {
+                                            action: 'change->requests-stream#submitForm'
+                                          }
                                         } %>
                           </div>
-                          <div class="col-md-2 text-center">
-                            <%= f.submit "Filter", class: "btn btn-primary" %>
-                            <div class="alert alert-success text-center">
-                              <strong> Total <%= @ai_provider&.name || "All AI Providers" %> Requests: </strong><%= @requests.count %>
-                            </div>
+                          <div class="text-center">
+                            <strong> Total <%= @ai_provider&.name || "All AI Providers" %> Requests: </strong><%= @requests.count %>
                           </div>
                         </div>
                       <% end %>
                     </div>
-                    <%= line_chart @requests_by_date_and_ai_provider, xtitle: "Time", ytitle: "Requests", id: 'requests' %>
+                    <turbo-frame id="request-chart">
+                      <%= line_chart @requests_by_date_and_ai_provider, xtitle: "Time", ytitle: "Requests", id: 'requests' %>
+                    </turbo-frame>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="card mb-3">
-                <div class="card-header">Performance Metrics</div>
-                <div class="card-body">
-                  <p>AI performance and accuracy metrics would appear here.</p>
-                </div>
 
-            </div>
-          </div>
         </div>
       </div>
 
-      <div class="t
-      ext-center mt-3">
-        <a href="<%= welcome_path %>" class="btn btn-secondary">Back to Dashboard</a>
+      <div class="text-center mt-3">
+        <%= link_to "Back to Dashboard", welcome_path, class: "btn btn-secondary" %>
       </div>
-    </div>
+    <%# </div> %>
   </div>
 </div>
