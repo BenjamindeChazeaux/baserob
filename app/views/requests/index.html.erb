@@ -20,7 +20,7 @@
 
             <div class="mt-5"
                  data-controller="requests-stream"
-                 data-requests-stream-company-id-value:="<%= @company.id%>">
+                 data-requests-stream-company-id-value="<%= @company.id%>">
               <%= simple_form_for :search,
                                   url: requests_path,
                                   method: :get,
