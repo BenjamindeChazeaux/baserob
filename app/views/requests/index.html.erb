@@ -1,87 +1,94 @@
-<!-- AI Analytics Dashboard -->
 <div class="dashboard-container" data-controller="quick-start">
-
-  <!-- Main Content -->
   <div class="main-content">
-    <%# <div class="col-12"> %>
-      <h1>AI Analytics Dashboard</h1>
-      <p class="lead">Track and analyze your AI performance metrics</p>
 
-      <div class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">AI Performance Overview</h5>
+    <header class="dashboard-header">
+      <div class="header-top">
+        <div class="welcome-text">
+          <h1>AI Analytics <span class="gradient-text"> Dashboard </span></h1>
+          <p class="date"><%= Date.today.strftime("%A %d %B %Y") %></p>
         </div>
-        <div class="card-body m-5">
-          <p>Welcome to your AI Analytics dashboard. Here you can monitor and evaluate various AI metrics and performance indicators.</p>
+      </div>
+    </header>
 
 
-          <!-- Analytic section with chart -->
-          <div class="row mt-4">
-            <div class="col-md-6">
-              <div class="card mb-3">
-                <div class="card-header">Usage Metrics</div>
-                <div class="card-body m-5">
-                  <div data-controller="requests-stream"
-                      data-requests-stream-company-id-value="<%= @company.id %>">
-                    <p>AI usage statistics and frequency analysis would appear here.</p>
-                    <div class="filter-container mb-4">
-                      <%= simple_form_for :search,
-                                          url: requests_path,
-                                          method: :get,
-                                          # local: true,
-                                          html: {
-                                            data: {
-                                              requests_stream_target: 'form',
-                                              turbo_frame: 'request-chart'
-                                            }
-                                          } do |f| %>
-                        <div class="row">
-                          <div class="col-md-4">
-                            <%= f.input :ai_provider,
-                                        collection: AiProvider.all,
-                                        include_blank: "All AI Providers",
-                                        class: "form-control",
-                                        selected: params.dig(:search, :ai_provider),
-                                        input_html: {
-                                          value: params.dig(:search, :ai_provider),
-                                          data: {
-                                            action: 'change->requests-stream#submitForm'
-                                          }
-                                        } %>
-                          </div>
-                          <div class="col-md-4">
-                            <%= f.input :timeline,
-                                        collection: [['Today', 'today'],['1 Week', '1_week'], ['1 Month', '1_month'], ['3 Months', '3_months'], ['6 Months', '6_months']],
-                                        include_blank: "Select Time ",
-                                        class: "form-control",
-                                        selected: params.dig(:search, :timeline),
-                                        input_html: {
-                                          value: params.dig(:search, :timeline),
-                                          data: {
-                                            action: 'change->requests-stream#submitForm'
-                                          }
-                                        } %>
-                          </div>
-                          <div class="text-center">
-                            <strong> Total <%= @ai_provider&.name || "All AI Providers" %> Requests: </strong><%= @requests.count %>
-                          </div>
-                        </div>
-                      <% end %>
-                    </div>
-                    <turbo-frame id="request-chart">
-                      <%= line_chart @requests_by_date_and_ai_provider, xtitle: "Time", ytitle: "Requests", id: 'requests' %>
-                    </turbo-frame>
-                  </div>
+    <div class="card shadow-sm mb-4">
+      <div class="card-body m-5">
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <h2 class="card-header">Usage Metrics</h2>
+            <p>Welcome to your AI Analytics Dashboard. Here you can monitor and evaluate various AI metrics.</p>
+
+            <div class="mt-5"
+                 data-controller="requests-stream"
+                 data-requests-stream-company-id-value="<%= @company.id%>">
+              <%= simple_form_for :search,
+                                  url: requests_path,
+                                  method: :get,
+                                  html: {
+                                    class: 'd-block form-inline simple_form w-100',
+                                    data: {
+                                      requests_stream_target: 'form',
+                                      turbo_frame: 'request-chart'
+                                    }
+                                  } do |f| %>
+                <div class="d-flex g-5 w-100 justify-content-center gap-6rem">
+                  <%= f.input :ai_provider,
+                              collection: AiProvider.all,
+                              include_blank: "All AI Providers",
+                              wrapper_html: {
+                                class: 'modern-search-bar'
+                              },
+                              # label_html: {},
+                              input_html: {
+                                class:'form-control',
+                                value: params.dig(:search, :ai_provider),
+                                data: { action: 'change->requests-stream#submitForm' }
+                              } %>
+                  <%= f.input :timeline,
+                              collection: [
+                                ['Today', 'today'],
+                                ['1 Week', '1_week'],
+                                ['1 Month', '1_month'],
+                                ['3 Months', '3_months'],
+                                ['6 Months', '6_months']
+                              ],
+                              include_blank: "Select Time",
+                              wrapper_html: {
+                                class:'modern-search-bar'
+                              },
+                              input_html: {
+                                class:'form-control',
+                                value: params.dig(:search, :timeline),
+                                data: { action: 'change->requests-stream#submitForm' }
+                              } %>
                 </div>
-              </div>
+              <% end %>
             </div>
+          </div>
+
+
 
         </div>
       </div>
+    </div>
 
-      <div class="text-center mt-3">
-        <%= link_to "Back to Dashboard", welcome_path, class: "btn btn-secondary" %>
+    <div class="card shadow-sm mb-4">
+      <div class="card-body m-5">
+        <turbo-frame id="request-chart" class="mt-4">
+          <div class="text-center my-3">
+            <h5><strong>Total <%= @ai_provider&.name || "All AI Providers" %> Requests:</strong> <span class="badge bg-primary"> <%= @requests.count %> </span></h5>
+          </div>
+
+
+          <div class="chart-container bg-white p-4 shadow-sm rounded">
+            <%= line_chart @requests_by_date_and_ai_provider, xtitle: "Time", ytitle: "Requests", id: 'requests' %>
+          </div>
+        </turbo-frame>
       </div>
-    <%# </div> %>
+    </div>
+
+    <div class="text-center mt-3">
+      <%= link_to "Back to Dashboard", welcome_path, class: "btn btn-secondary" %>
+    </div>
   </div>
 </div>

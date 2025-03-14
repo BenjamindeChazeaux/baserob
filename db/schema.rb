@@ -31,8 +31,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_073517) do
     t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.index ["user_id"], name: "index_companies_on_user_id"
   end
 
   create_table "company_ai_providers", force: :cascade do |t|
@@ -68,9 +66,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_073517) do
 
   create_table "geo_scorings", force: :cascade do |t|
     t.integer "score"
-    t.integer "frequency_score"
-    t.integer "position_score"
-    t.integer "link_score"
+    t.boolean "mentioned"
+    t.integer "position"
+    t.string "url"
+    t.text "ai_responses", default: [], array: true
     t.bigint "keyword_id", null: false
     t.bigint "ai_provider_id", null: false
     t.datetime "created_at", null: false
@@ -127,7 +126,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_14_073517) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "companies", "users"
   add_foreign_key "company_ai_providers", "ai_providers"
   add_foreign_key "company_ai_providers", "companies"
   add_foreign_key "competitor_scores", "competitors"
