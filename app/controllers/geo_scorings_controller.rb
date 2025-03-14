@@ -48,6 +48,7 @@ class GeoScoringsController < ApplicationController
   def calculate_keyword_for_ai_provider_score(keyword, ai_provider)
     geo_scorings = GeoScoring.where(keyword: keyword, ai_provider: ai_provider)
     {
+      name: ai_provider.name,
       score: geo_scorings.average(:score).to_f,
       mention_score: geo_scorings.where(mentioned: true).count.fdiv(geo_scorings.count) * 100,
       position_score: geo_scorings.average(:position).to_f,
