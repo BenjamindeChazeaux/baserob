@@ -1,0 +1,266 @@
+.dashboard-container {
+  padding: $spacing-lg;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  margin-bottom: $spacing-xl;
+
+  .header-top {
+    margin-bottom: $spacing-lg;
+  }
+
+  .welcome-text {
+    h1 {
+      font-size: $font-size-xxl;
+      font-weight: 600;
+      color: $text-primary;
+      margin-bottom: $spacing-xs;
+    }
+
+    .date {
+      color: $text-secondary;
+      font-size: $font-size-sm;
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+
+      i {
+        font-size: $font-size-md;
+      }
+    }
+  }
+}
+
+.search-bar-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.modern-search-bar {
+  position: relative;
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: $border-radius-lg;
+  padding: $spacing-sm $spacing-md;
+  box-shadow: $card-shadow;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  i {
+    position: absolute;
+    left: $spacing-md;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $text-secondary;
+  }
+
+  .search-form {
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+    border: none;
+    background: none;
+    padding: $spacing-sm $spacing-md $spacing-sm $spacing-xl;
+    font-size: $font-size-md;
+    color: $text-primary;
+    outline: none;
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+}
+
+.quick-actions {
+  margin-bottom: $spacing-xl;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacing-lg;
+}
+
+.action-card {
+  background: $card-bg;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $card-shadow;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-md;
+  }
+
+  .card-badge {
+    background: rgba($primary-color, 0.1);
+    color: $primary-color;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    font-weight: 500;
+  }
+
+  h3 {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: $font-size-sm;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    i {
+      font-size: $font-size-md;
+    }
+  }
+
+  &.empty-state {
+    text-align: center;
+    padding: $spacing-xl;
+
+    .empty-state-content {
+      i {
+        font-size: 3rem;
+      }
+
+      h3 {
+        margin: $spacing-md 0;
+      }
+
+      p {
+        color: $text-secondary;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+    }
+  }
+}
+
+.results-section {
+  margin-bottom: $spacing-xl;
+
+  .section-header {
+    margin-bottom: $spacing-lg;
+
+    h2 {
+      font-size: $font-size-xl;
+      font-weight: 600;
+      color: $text-primary;
+      margin-bottom: $spacing-xs;
+    }
+
+    p {
+      color: $text-secondary;
+      font-size: $font-size-sm;
+      margin: 0;
+    }
+  }
+}
+
+.flip-card {
+  perspective: 1000px;
+  cursor: pointer;
+
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+
+  &.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .flip-card-front,
+  .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+  }
+
+  .flip-card-back {
+    transform: rotateY(180deg);
+  }
+}
+
+.resources-section {
+  margin-top: $spacing-xl;
+}
+
+.resource-card {
+  background: $card-bg;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  box-shadow: $card-shadow;
+
+  .resource-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba($primary-color, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $primary-color;
+    font-size: $font-size-lg;
+  }
+
+  .resource-content {
+    h3 {
+      font-size: $font-size-lg;
+      font-weight: 600;
+      color: $text-primary;
+      margin-bottom: $spacing-xs;
+    }
+
+    p {
+      color: $text-secondary;
+      font-size: $font-size-sm;
+      margin: 0;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: $breakpoint-md) {
+  .dashboard-container {
+    padding: $spacing-md;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-text h1 {
+    font-size: $font-size-xl;
+  }
+}

@@ -1,284 +1,408 @@
 <%# app/views/geo_scorings/index.html.erb %>
-<div class="container mt-4 mb-5 d-flex flex-column align-items-center">
-  <!-- En-tête de la page -->
-  <div class="row mb-4">
-    <div class="col-12 text-center">
-      <h1 class="display-6 fw-bold mb-2">Analyse de positionnement</h1>
-      <p class="text-muted"><i class="bi bi-calendar3"></i> <%= Date.today.strftime("%A %d %B %Y") %></p>
-    </div>
-  </div>
+<div class="dashboard-container">
+  <div class="main-content">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-top">
+        <div class="welcome-text">
+          <h1>Analysis of <span class="gradient-text">positioning</span></h1>
+          <p class="date"><%= Date.today.strftime("%A %d %B %Y") %></p>
+        </div>
+      </div>
 
-  <!-- Sélection du mot-clé -->
-  <div class="row justify-content-center mb-4">
-    <div class="col-md-8">
-      <div class="card border-0 shadow-sm hover-shadow">
-        <div class="card-body p-3">
-          <%= form_with url: geo_scorings_path, method: :get, local: true do |f| %>
-            <div class="input-group">
-              <span class="input-group-text bg-white border-end-0">
-                <i class="bi bi-search"></i>
-              </span>
-              <%= f.select :keyword_id,
-                          options_from_collection_for_select(@keywords, :id, :content, @selected_keyword&.id),
-                          { include_blank: "Rechercher un mot-clé..." },
-                          {
-                            onchange: "this.form.submit()",
-                            class: "form-select border-start-0 py-3"
-                          }
-              %>
-            </div>
+      <!-- Search bar -->
+      <div class="search-bar-container">
+        <div class="search-bar modern-search-bar">
+          <i class="fas fa-search"></i>
+          <%= form_with url: geo_scorings_path, method: :get, local: true, class: "search-form" do |f| %>
+            <%= f.select :keyword_id,
+                        options_from_collection_for_select(@keywords, :id, :content, @selected_keyword&.id),
+                        { include_blank: "Search for a keyword..." },
+                        {
+                          class: "search-input modern-input",
+                          onchange: "this.form.submit()"
+                        }
+            %>
           <% end %>
         </div>
       </div>
-    </div>
+    </header>
+
+    <% if @keywords.present? && @selected_keyword.present? %>
+      <div class="dashboard-sections">
+        <!-- Overview section -->
+        <section class="info-section">
+          <div class="cards-grid">
+            <!-- Selected keyword card -->
+            <div class="action-card">
+              <div class="card-header">
+                <h3>Selected</h3>
+              </div>
+              <h3><%= @selected_keyword.content %></h3>
+              <p><i class="fas fa-robot"></i> Analyzed on <%= @provider_data.size %> AI</p>
+            </div>
+
+            <!-- Average score card -->
+            <div class="action-card">
+              <div class="card-header">
+                <h3>Global Score</h3>
+              </div>
+              <% average_score = @provider_data.sum { |p| p[:global_score] } / @provider_data.size %>
+              <div class="global-score-display <%= score_color_class(average_score) %>">
+                <span class="score-number"><%= average_score.round %>%</span>
+              </div>
+              <p>Average score across <%= @provider_data.size %> providers</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Results section -->
+        <section class="results-section">
+          <div class="section-header">
+            <h2>Results by AI Provider</h2>
+            <p>Detailed score analysis</p>
+          </div>
+          <div class="cards-grid">
+            <% @provider_data.each do |provider| %>
+              <div class="action-card">
+                <div class="card-header">
+                  <h3><%= provider[:name].capitalize %></h3>
+                </div>
+                <div class="score-display">
+                  <div class="score-circle <%= score_color_class(provider[:global_score]) %>">
+                    <span class="score-value"><%= provider[:global_score].round %>%</span>
+                  </div>
+                  <p class="score-label">Global score</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </section>
+
+        <!-- Information section -->
+        <section class="resources-section">
+          <div class="section-header">
+            <h2>Information</h2>
+            <p>Analysis details</p>
+          </div>
+          <div class="resources-grid">
+            <div class="resource-card">
+              <div class="resource-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="resource-content">
+                <h3>Positioning Analysis</h3>
+                <p>This analysis shows the positioning of your company "<%= @company.name %>" in the results of different AI providers for the keyword "<%= @selected_keyword.content %>".</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    <% else %>
+      <!-- Empty state -->
+      <div class="empty-state">
+        <div class="empty-state-content">
+          <i class="fas fa-search"></i>
+          <h3>No keyword selected</h3>
+          <p>Please select a keyword in the search bar above to see the positioning analysis.</p>
+        </div>
+      </div>
+    <% end %>
   </div>
-
-  <% if @keywords.present? && @selected_keyword.present? %>
-    <!-- Mot-clé sélectionné -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm hover-shadow">
-          <div class="card-body p-4">
-            <div class="d-flex align-items-center mb-3">
-              <i class="bi bi-key-fill text-primary fs-4 me-2"></i>
-              <h2 class="h5 mb-0">Mot-clé analysé</h2>
-            </div>
-            <div class="bg-light p-4 rounded">
-              <h3 class="h5 mb-2"><%= @selected_keyword.content %></h3>
-              <p class="text-muted mb-0">
-                <i class="bi bi-robot"></i> Recherché sur <%= @provider_data.size %> IA
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Score Global Moyen -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm hover-shadow">
-          <div class="card-body p-4">
-            <div class="d-flex align-items-center mb-3">
-              <i class="bi bi-graph-up text-primary fs-4 me-2"></i>
-              <h2 class="h5 mb-0">Score Global</h2>
-            </div>
-            <div class="d-flex justify-content-center">
-              <div class="progress-circle">
-                <% average_score = @provider_data.sum { |p| p[:global_score] } / @provider_data.size %>
-                <% score_color = case average_score
-                   when 0..33 then "danger"
-                   when 34..66 then "warning"
-                   else "success"
-                   end %>
-                <div class="progress-circle-fill bg-<%= score_color %>">
-                  <div class="progress-circle-value">
-                    <span class="h3 mb-0"><%= average_score.round %></span>
-                    <span class="small">%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p class="text-center text-muted mt-3 mb-0">
-              Score moyen calculé à partir des <%= @provider_data.size %> fournisseurs d'IA
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Résultats par fournisseur d'IA -->
-    <div class="row justify-content-center">
-      <div class="col-lg-10">
-        <div class="row g-4">
-          <% @provider_data.each do |provider| %>
-            <div class="col-md-4">
-              <div class="flip-card" style="width: 18rem; height: 300px;">
-                <div class="flip-card-inner">
-                  <!-- Face avant -->
-                  <div class="flip-card-front card border-0 shadow-sm h-100">
-                    <div class="card-body p-4">
-                      <div class="d-flex flex-column align-items-center text-center">
-                        <!-- En-tête avec nom et changement de position -->
-                        <div class="mb-4">
-                          <h3 class="h5 mb-2">
-                            <i class="bi bi-robot me-2"></i>
-                            <%= provider[:name] %>
-                          </h3>
-                          <% if provider[:position_change] != 0 %>
-                            <span class="badge <%= provider[:position_change] > 0 ? 'bg-success' : 'bg-danger' %>">
-                              <i class="bi bi-arrow-<%= provider[:position_change] > 0 ? 'up' : 'down' %>"></i>
-                              <%= provider[:position_change].abs %>
-                            </span>
-                          <% end %>
-                        </div>
-
-                        <!-- Score global -->
-                        <div class="progress-circle">
-                          <% score_color = case provider[:global_score]
-                             when 0..33 then "danger"
-                             when 34..66 then "warning"
-                             else "success"
-                             end %>
-                          <div class="progress-circle-fill bg-<%= score_color %>">
-                            <div class="progress-circle-value">
-                              <span class="h3 mb-0"><%= provider[:global_score].round %></span>
-                              <span class="small">%</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Face arrière -->
-                  <div class="flip-card-back card border-0 shadow-sm h-100">
-                    <div class="card-body p-4">
-                      <div class="d-flex flex-column h-100">
-                        <h3 class="h5 mb-4 text-center">
-                          <i class="bi bi-robot me-2"></i>
-                          <%= provider[:name] %>
-                        </h3>
-
-                        <!-- Détails des scores -->
-                        <div class="score-details flex-grow-1">
-                          <!-- Position Score -->
-                          <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                              <span class="text-muted">Position</span>
-                              <span class="fw-bold"><%= provider[:position_score].round %>%</span>
-                            </div>
-                            <div class="progress" style="height: 8px;">
-                              <div class="progress-bar bg-primary" role="progressbar" style="width: <%= provider[:position_score] %>%"></div>
-                            </div>
-                          </div>
-
-                          <!-- Reference Score -->
-                          <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                              <span class="text-muted">Référencement</span>
-                              <span class="fw-bold"><%= provider[:reference_score].round %>%</span>
-                            </div>
-                            <div class="progress" style="height: 8px;">
-                              <div class="progress-bar bg-info" role="progressbar" style="width: <%= provider[:reference_score] %>%"></div>
-                            </div>
-                          </div>
-
-                          <!-- URL Score -->
-                          <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                              <span class="text-muted">URL</span>
-                              <span class="fw-bold"><%= provider[:url_presence] ? "100%" : "0%" %></span>
-                            </div>
-                            <div class="progress" style="height: 8px;">
-                              <div class="progress-bar bg-success" role="progressbar" style="width: <%= provider[:url_presence] ? "100" : "0" %>%"></div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="text-center mt-3">
-                          <small class="text-muted">Cliquez pour retourner</small>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
-
-    <!-- Légende -->
-    <div class="row justify-content-center mt-4">
-      <div class="col-lg-10">
-        <div class="card border-0 shadow-sm hover-shadow p-4">
-          <p class="small text-muted mb-0">
-            <i class="bi bi-info-circle me-2"></i>
-            Cette analyse montre le positionnement de votre entreprise "<%= @company.name %>" dans les résultats des différents fournisseurs d'IA pour le mot-clé "<%= @selected_keyword.content %>".
-          </p>
-        </div>
-      </div>
-    </div>
-  <% else %>
-    <!-- État vide -->
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="card border-0 shadow-sm hover-shadow p-5 text-center">
-          <div class="py-4">
-            <i class="bi bi-search fs-1 text-muted mb-3"></i>
-            <h3 class="h5 mb-3">Aucun mot-clé sélectionné</h3>
-            <p class="text-muted mb-0">
-              Veuillez sélectionner un mot-clé dans la liste déroulante ci-dessus pour voir l'analyse de positionnement.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  <% end %>
 </div>
 
 <% content_for :styles do %>
   <style>
-    .hover-shadow {
-      transition: box-shadow 0.3s ease;
+    /* Variables */
+    :root {
+      --primary-color: #2563eb;
+      --primary-light: #EEF2FF;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+      --danger-color: #EF4444;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --border-color: #E5E7EB;
+      --card-radius: 16px;
+      --transition: all 0.2s ease;
+      --section-spacing: 4rem;
     }
 
-    .hover-shadow:hover {
-      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    /* Layout */
+    .dashboard-container {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
-    .progress-circle {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: #f8f9fa;
-      padding: 10px;
-    }
-
-    .progress-circle-fill {
+    .main-content {
       width: 100%;
-      height: 100%;
+    }
+
+    /* Header */
+    .dashboard-header {
+      margin-bottom: var(--section-spacing);
+    }
+
+    .header-top {
+      margin-bottom: 2rem;
+    }
+
+    .welcome-text h1 {
+      font-size: 2.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary-color), #4F46E5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .date {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    /* Search bar */
+    .search-bar-container {
+      width: auto;
+    }
+
+    .modern-search-bar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--card-radius);
+      padding: 0.75rem 1rem;
+      transition: var(--transition);
+    }
+
+    .modern-search-bar:focus-within {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .modern-search-bar i {
+      color: var(--text-secondary);
+      margin-right: 0.75rem;
+    }
+
+    .modern-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      background: transparent;
+    }
+
+    /* Sections */
+    .dashboard-sections {
+      display: flex;
+      flex-direction: column;
+      gap: var(--section-spacing);
+    }
+
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    /* Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    .action-card {
+      background: white;
+      border-radius: var(--card-radius);
+      padding: 2rem;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .action-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .action-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .action-card p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      background: var(--primary-light);
+      border-radius: var(--card-radius);
+      margin-bottom: 2rem;
+    }
+
+    .card-header h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin: 0;
+    }
+
+    /* Scores */
+    .score-display {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .score-circle {
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      margin: 0 auto 1rem;
+      background: var(--primary-light);
+      color: var(--primary-color);
     }
 
-    .progress-circle-value {
-      color: white;
+    .score-circle.success { background: #ECFDF5; color: var(--success-color); }
+    .score-circle.warning { background: #FEF3C7; color: var(--warning-color); }
+    .score-circle.danger { background: #FEE2E2; color: var(--danger-color); }
+
+    .score-value {
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    .score-label {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    /* Resources */
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .resource-card {
+      background: white;
+      border-radius: var(--card-radius);
+      padding: 2rem;
+      border: 1px solid var(--border-color);
+      display: flex;
+      gap: 1.5rem;
+      transition: var(--transition);
+    }
+
+    .resource-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .resource-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .resource-content {
+      flex: 1;
+    }
+
+    .resource-content h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .resource-content p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+    }
+
+    .empty-state-content {
       text-align: center;
+      max-width: 400px;
     }
 
-    .flip-card {
-      perspective: 1000px;
-      cursor: pointer;
+    .empty-state-content i {
+      font-size: 3rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
     }
 
-    .flip-card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.8s;
-      transform-style: preserve-3d;
-    }
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .dashboard-container {
+        padding: 1.5rem;
+      }
 
-    .flip-card:hover .flip-card-inner {
-      transform: rotateY(180deg);
-    }
+      .dashboard-sections {
+        gap: 3rem;
+      }
 
-    .flip-card-front, .flip-card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-    }
+      .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
 
-    .flip-card-back {
-      transform: rotateY(180deg);
+      .action-card,
+      .resource-card {
+        padding: 1.5rem;
+      }
+
+      .section-header h2 {
+        font-size: 1.25rem;
+      }
     }
   </style>
 <% end %>
