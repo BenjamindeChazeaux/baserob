@@ -15,18 +15,9 @@ export default class extends Controller {
         received: this.fetchNewGraphData.bind(this)
       }
     )
-    setTimeout(() => {
-      this.chart = Chartkick.charts['requests']
-    }, 100);
-    document.addEventListener('turbo:before-frame-render', (event) => {
-      if (document.startViewTransition) {
-        const originalRender = event.detail.render
+    setTimeout(() => { this.findCurrentChart() }, 100);
 
-        event.detail.render = (currentElement, newElement) => {
-          document.startViewTransition(() => originalRender(currentElement, newElement))
-        }
-      }
-    })
+    this.fadeTurboFrames()
   }
 
   submitForm(event) {
@@ -34,6 +25,7 @@ export default class extends Controller {
   }
 
   fetchNewGraphData(data) {
+    this.findCurrentChart()
     const formData = new FormData(this.formTarget)
     const queryParams = new URLSearchParams(formData).toString()
     const action = `${this.formTarget.action}?${queryParams}`
@@ -46,8 +38,24 @@ export default class extends Controller {
     }
     fetch(action, options)
       .then(response => response.json())
-      .then((data) => {
-        this.chart.updateData(data.requests_data)
+      .then((newData) => {
+        this.chart.updateData(newData.requests_data)
       })
+  }
+
+  findCurrentChart() {
+    this.chart = Chartkick.charts['requests']
+  }
+
+  fadeTurboFrames() {
+    document.addEventListener('turbo:before-frame-render', (event) => {
+      if (document.startViewTransition) {
+        const originalRender = event.detail.render
+
+        event.detail.render = (currentElement, newElement) => {
+          document.startViewTransition(() => originalRender(currentElement, newElement))
+        }
+      }
+    })
   }
 }
