@@ -29,7 +29,13 @@ class RequestsController < ApplicationController
        end
     end
 
-    group_method = timeline_param == "today" ? :group_by_hour : :group_by_day
+    group_method = if timeline_param == "today"
+       :group_by_hour
+      elsif ["1_week", "1_month"].include?(timeline_param)
+        :group_by_day
+      else
+        :group_by_week
+      end
 
     @requests_by_date_and_ai_provider = @ai_providers.map do |ai_provider|
       {
