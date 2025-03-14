@@ -14,11 +14,12 @@
         <!-- Search Bar -->
         <div class="search-bar-container">
           <div class="search-bar modern-search-bar">
-            <%= form_tag search_geo_scorings_path, method: :post, class: "search-form", data: { turbo: false } do %>
+            <%= form_tag search_geo_scorings_path, method: :post, class: "search-form", data: { controller: "form" } do %>
               <i class="fas fa-search"></i>
               <%= text_field_tag :keyword_content, nil,
                   class: "search-input modern-input",
-                  placeholder: "Entrez un mot-clé..." %>
+                  placeholder: "Entrez un mot-clé...",
+                  data: { form_target: "input" } %>
               <%= button_tag type: 'submit', class: "btn-secondary" do %>
                 <i class="fas fa-arrow-right"></i>
               <% end %>
@@ -245,11 +246,23 @@
     }
 
     .modern-input {
-      flex: 1;
+      flex: none;
       border: none;
       outline: none;
       font-size: 1rem;
+      color: var(--text-primary);
       background: transparent;
+      transition: width 0.3s ease;
+      min-width: 200px;
+    }
+
+    .modern-input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .modern-search-bar {
+      width: fit-content;
+      max-width: 100%;
     }
 
     /* Sections */
