@@ -1,4 +1,24 @@
-<h1>Home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<%# 
+  Page d'accueil principale (Landing Page)
+  
+  Cette page présente l'application aux visiteurs avec un design moderne
+  inspiré du site Halo. Elle contient une section hero, une présentation
+  des fonctionnalités principales et un appel à l'action.
+%>
 
-<%= link_to 'Get Started', welcome_index_path, class: 'btn btn-primary' %>
+<div class="home-container">
+  <!-- Section Hero - Introduction principale -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="highlight">Baserob</span>. Intelligent 
+        <span class="text-gradient">platform</span> for 
+        your data analysis.
+      </h1>
+      <p class="hero-subtitle">
+        Transform your data into actionable insights with our 
+        platform powered by artificial intelligence.
+      </p>
+      <%= link_to 'Get Started', welcome_index_path, class: 'action-button primary' %>
+    </div>
+  </section>

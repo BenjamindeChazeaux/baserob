@@ -13,10 +13,21 @@ class CompaniesController < ApplicationController
 
   def create
     @company = Company.new(company_params)
+    
     if @company.save
-      redirect_to companies_path, notice: "Company was successfully created."
+      # Associer l'utilisateur actuel à la company créée
+      current_user.update(company: @company) if current_user.company.nil?
+      
+      # Répondre en JSON si c'est une requête AJAX (pour la modal QuickStart)
+      respond_to do |format|
+        format.html { redirect_to companies_path, notice: "Company was successfully created." }
+        format.json { render json: { success: true, message: "Company was successfully created." } }
+      end
     else
-      render :new
+      respond_to do |format|
+        format.html { render :new }
+        format.json { render json: { success: false, message: @company.errors.full_messages.join(", ") } }
+      end
     end
   end
 
@@ -42,6 +53,6 @@ class CompaniesController < ApplicationController
   private
 
   def company_params
-    params.require(:company).permit(:nam, :adress, :description)
+    params.require(:company).permit(:name, :domain, :description)
   end
 end

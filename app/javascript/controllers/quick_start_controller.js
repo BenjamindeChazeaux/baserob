@@ -29,6 +29,8 @@ export default class extends Controller {
     this.currentStep = 1
     // Nombre total d'étapes
     this.totalSteps = this.stepTargets.length
+    // Vérifier si l'utilisateur a besoin de configurer une company
+    this.needsCompanySetup = document.body.hasAttribute('data-needs-company-setup')
   }
   
   // ===== GESTION DE LA MODAL =====
@@ -54,6 +56,12 @@ export default class extends Controller {
   closeModal(event) {
     if (event) event.preventDefault()
     
+    // Si l'utilisateur n'a pas de company, empêcher la fermeture de la modal
+    if (this.needsCompanySetup) {
+      this.showNotification('warning', 'Setup Required', 'Please complete the company setup before continuing.')
+      return
+    }
+    
     // Masquer la modal
     this.modalTarget.classList.remove('active')
     // Réactiver le défilement de la page
@@ -64,6 +72,12 @@ export default class extends Controller {
    * Ferme la modal si l'utilisateur clique en dehors du contenu
    */
   clickOutside(event) {
+    // Si l'utilisateur n'a pas de company, empêcher la fermeture de la modal
+    if (this.needsCompanySetup) {
+      this.showNotification('warning', 'Setup Required', 'Please complete the company setup before continuing.')
+      return
+    }
+    
     // Si le clic est sur le fond de la modal (pas sur son contenu)
     if (event.target === this.modalTarget) {
       this.closeModal()
@@ -78,9 +92,108 @@ export default class extends Controller {
   nextStep(event) {
     event.preventDefault()
     
-    if (this.currentStep < this.totalSteps) {
-      this.goToStep(this.currentStep + 1)
+    // Vérifier si l'étape actuelle a des champs obligatoires
+    if (this.validateCurrentStep()) {
+      if (this.currentStep < this.totalSteps) {
+        this.goToStep(this.currentStep + 1)
+      }
     }
+  }
+  
+  /**
+   * Valide les champs obligatoires de l'étape actuelle
+   * @returns {boolean} true si tous les champs obligatoires sont remplis, false sinon
+   */
+  validateCurrentStep() {
+    // Supprimer les messages d'erreur existants
+    this.clearAllErrorMessages()
+    
+    // Vérifier si l'étape actuelle a des champs obligatoires
+    const requiredFields = this.requiredFieldsByStep[this.currentStep] || []
+    if (requiredFields.length === 0) {
+      return true // Pas de champs obligatoires pour cette étape
+    }
+    
+    let isValid = true
+    
+    // Vérifier chaque champ obligatoire
+    requiredFields.forEach(fieldId => {
+      const field = document.getElementById(fieldId)
+      if (field && (!field.value || field.value.trim() === '')) {
+        this.showFieldError(field, 'This field is required')
+        isValid = false
+      }
+    })
+    
+    // Si des champs sont invalides, afficher une notification
+    if (!isValid) {
+      this.showNotification('error', 'Validation Error', 'Please fill in all required fields before proceeding.')
+    }
+    
+    return isValid
+  }
+  
+  /**
+   * Affiche un message d'erreur sous un champ
+   * @param {HTMLElement} field - Le champ avec l'erreur
+   * @param {string} message - Le message d'erreur à afficher
+   */
+  showFieldError(field, message) {
+    // Créer l'élément de message d'erreur
+    const errorElement = document.createElement('div')
+    errorElement.className = 'field-error'
+    errorElement.textContent = message
+    errorElement.style.color = '#dc3545'
+    errorElement.style.fontSize = '0.875rem'
+    errorElement.style.marginTop = '0.25rem'
+    
+    // Ajouter une classe d'erreur au champ
+    field.classList.add('is-invalid')
+    field.style.borderColor = '#dc3545'
+    
+    // Insérer le message d'erreur après le champ
+    const parentElement = field.parentElement
+    parentElement.appendChild(errorElement)
+    
+    // Ajouter un écouteur pour supprimer le message d'erreur lorsque l'utilisateur modifie le champ
+    field.addEventListener('input', () => {
+      if (field.value && field.value.trim() !== '') {
+        this.clearFieldError(field)
+      }
+    }, { once: true })
+  }
+  
+  /**
+   * Supprime le message d'erreur d'un champ
+   * @param {HTMLElement} field - Le champ dont il faut supprimer l'erreur
+   */
+  clearFieldError(field) {
+    // Supprimer la classe d'erreur du champ
+    field.classList.remove('is-invalid')
+    field.style.borderColor = ''
+    
+    // Supprimer le message d'erreur
+    const parentElement = field.parentElement
+    const errorElement = parentElement.querySelector('.field-error')
+    if (errorElement) {
+      errorElement.remove()
+    }
+  }
+  
+  /**
+   * Supprime tous les messages d'erreur
+   */
+  clearAllErrorMessages() {
+    // Supprimer tous les messages d'erreur
+    document.querySelectorAll('.field-error').forEach(error => {
+      error.remove()
+    })
+    
+    // Réinitialiser le style des champs
+    document.querySelectorAll('.is-invalid').forEach(field => {
+      field.classList.remove('is-invalid')
+      field.style.borderColor = ''
+    })
   }
   
   /**
@@ -98,6 +211,9 @@ export default class extends Controller {
    * Affiche l'étape spécifiée
    */
   goToStep(stepNumber) {
+    // Supprimer les messages d'erreur existants
+    this.clearAllErrorMessages()
+    
     // Mettre à jour l'étape actuelle
     this.currentStep = stepNumber
     
@@ -154,11 +270,19 @@ export default class extends Controller {
   finishSetup(event) {
     event.preventDefault()
     
+    // Mettre à jour l'état de configuration de la company
+    this.needsCompanySetup = false
+    
     // Fermer la modal
     this.closeModal()
     
     // Afficher une notification de succès
     this.showNotification('success', 'Dashboard Created!', 'Your new dashboard has been set up successfully.')
+    
+    // Recharger la page pour appliquer les changements
+    setTimeout(() => {
+      window.location.reload()
+    }, 1500)
   }
   
   // ===== GESTION DU SCRIPT =====
@@ -235,6 +359,9 @@ export default class extends Controller {
         // Si la sauvegarde a réussi, passer à l'étape du script
         this.goToStep(3)
         this.showNotification('success', 'Configuration Saved', 'Your configuration has been saved successfully.')
+        
+        // Mettre à jour l'état de configuration de la company
+        this.needsCompanySetup = false
       } else {
         // Afficher un message d'erreur
         this.showNotification('error', 'Error', data.message || 'There was an error saving your configuration.')
@@ -255,7 +382,7 @@ export default class extends Controller {
     const notification = document.createElement('div')
     notification.className = `notification ${type}`
     notification.innerHTML = `
-      <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+      <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'}"></i>
       <div class="notification-content">
         <h4>${title}</h4>
         <p>${message}</p>
