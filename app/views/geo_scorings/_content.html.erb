@@ -1,0 +1,80 @@
+<% if @keywords.present? && @selected_keyword.present? %>
+  <div class="dashboard-sections">
+    <!-- Overview section -->
+    <section class="info-section">
+      <div class="cards-grid">
+        <!-- Selected keyword card -->
+        <div class="action-card">
+          <div class="card-header">
+            <h3>Selected</h3>
+          </div>
+          <h3><%= @selected_keyword.content %></h3>
+          <p><i class="fas fa-robot"></i> Analyzed on <%= @provider_data.size %> AI</p>
+        </div>
+
+        <!-- Average score card -->
+        <div class="action-card">
+          <div class="card-header">
+            <h3>Global Score</h3>
+          </div>
+          <% average_score = @provider_data.sum { |p| p[:global_score] } / @provider_data.size %>
+          <div class="global-score-display <%= score_color_class(average_score) %>">
+            <span class="score-number"><%= average_score.round %>%</span>
+          </div>
+          <p>Average score across <%= @provider_data.size %> providers</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results section -->
+    <section class="results-section">
+      <div class="section-header">
+        <h2>Results by AI Provider</h2>
+        <p>Detailed score analysis</p>
+      </div>
+      <div class="cards-grid">
+        <% @provider_data.each do |provider| %>
+          <div class="action-card">
+            <div class="card-header">
+              <h3><%= provider[:name].capitalize %></h3>
+            </div>
+            <div class="score-display">
+              <div class="score-circle <%= score_color_class(provider[:global_score]) %>">
+                <span class="score-value"><%= provider[:global_score].round %>%</span>
+              </div>
+              <p class="score-label">Global score</p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+
+    <!-- Information section -->
+    <section class="resources-section">
+      <div class="section-header">
+        <h2>Information</h2>
+        <p>Analysis details</p>
+      </div>
+      <div class="resources-grid">
+        <div class="resource-card">
+          <div class="resource-icon">
+            <i class="fas fa-info-circle"></i>
+          </div>
+          <div class="resource-content">
+            <h3>Positioning Analysis</h3>
+            <p>This analysis shows the positioning of your company "<%= @company.name %>" in the results of different AI providers for the keyword "<%= @selected_keyword.content %>".</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+<% else %>
+  <!-- Empty state -->
+  <div class="empty-state">
+    <div class="empty-state-content">
+      <i class="fas fa-search"></i>
+      <h3>No keyword selected</h3>
+      <p>Please select a keyword in the search bar above to see the positioning analysis.</p>
+    </div>
+  </div>
+<% end %>

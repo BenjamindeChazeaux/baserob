@@ -2,7 +2,7 @@ module Ai
   module Models
     class OpenAi < Request
       API_URL = 'https://api.openai.com/v1/chat/completions'
-      DEFAULT_MODEL = 'gpt-4o-mini'
+      DEFAULT_MODEL = 'gpt-4'
       API_KEY = ENV['OPENAI_API_KEY']
 
       private
@@ -16,7 +16,7 @@ module Ai
 
       def body
         {
-          "model": "gpt-4o-mini",
+          "model": self.class::DEFAULT_MODEL,
           "messages": [
             {
               "role": "system",
@@ -35,7 +35,9 @@ module Ai
               "role": "user",
               "content": @prompt
             }
-          ]
+          ],
+          "temperature": 0.7,
+          "max_tokens": 1000
         }
       end
 

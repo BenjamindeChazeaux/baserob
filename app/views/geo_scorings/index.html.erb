@@ -1,67 +1,40 @@
 <%# app/views/geo_scorings/index.html.erb %>
-<div class="dashboard-container">
-  <div class="main-content">
-    <!-- Header -->
-    <header class="dashboard-header">
-      <div class="header-top">
-        <div class="welcome-text">
-          <h1>Analysis of <span class="gradient-text">positioning</span></h1>
-          <p class="date"><%= Date.today.strftime("%A %d %B %Y") %></p>
-        </div>
-      </div>
-
-      <!-- Search bar -->
-      <div class="search-bar-container">
-        <div class="search-bar modern-search-bar">
-          <i class="fas fa-search"></i>
-          <%= form_with url: geo_scorings_path, method: :get, local: true, class: "search-form" do |f| %>
-            <%= f.select :keyword_id,
-                        options_from_collection_for_select(@keywords, :id, :content, @selected_keyword&.id),
-                        { include_blank: "Search for a keyword..." },
-                        {
-                          class: "search-input modern-input",
-                          onchange: "this.form.submit()"
-                        }
-            %>
-          <% end %>
-        </div>
-      </div>
-    </header>
-
-    <% if @keywords.present? && @selected_keyword.present? %>
-      <div class="dashboard-sections">
-        <!-- Overview section -->
-        <section class="info-section">
-          <div class="cards-grid">
-            <!-- Selected keyword card -->
-            <div class="action-card">
-              <div class="card-header">
-                <h3>Selected</h3>
-              </div>
-              <h3><%= @selected_keyword.content %></h3>
-              <p><i class="fas fa-robot"></i> Analyzed on <%= @provider_data.size %> AI</p>
-            </div>
-
-            <!-- Average score card -->
-            <div class="action-card">
-              <div class="card-header">
-                <h3>Global Score</h3>
-              </div>
-              <% average_score = @provider_data.sum { |p| p[:global_score] } / @provider_data.size %>
-              <div class="global-score-display <%= score_color_class(average_score) %>">
-                <span class="score-number"><%= average_score.round %>%</span>
-              </div>
-              <p>Average score across <%= @provider_data.size %> providers</p>
-            </div>
+<%= turbo_frame_tag "geo_scoring_content" do %>
+  <div class="dashboard-container">
+    <div class="main-content">
+      <!-- Header -->
+      <header class="dashboard-header">
+        <div class="header-top">
+          <div class="welcome-text">
+            <h1><span class="gradient-text">Positionnement EO</span></h1>
+            <p class="date"><%= Date.today.strftime("%A %d %B %Y") %></p>
           </div>
-        </section>
+        </div>
 
-        <!-- Results section -->
-        <section class="results-section">
+        <!-- Search Bar -->
+        <div class="search-bar-container">
+          <div class="search-bar modern-search-bar">
+            <%= form_tag search_geo_scorings_path, method: :post, class: "search-form", data: { turbo: false } do %>
+              <i class="fas fa-search"></i>
+              <%= text_field_tag :keyword_content, nil,
+                  class: "search-input modern-input",
+                  placeholder: "Entrez un mot-clé..." %>
+              <%= button_tag type: 'submit', class: "btn-secondary" do %>
+                <i class="fas fa-arrow-right"></i>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </header>
+
+      <% if @selected_keyword %>
+        <!-- Results Section -->
+        <section class="quick-actions">
           <div class="section-header">
-            <h2>Results by AI Provider</h2>
-            <p>Detailed score analysis</p>
+            <h2>Résultats pour : <%= @selected_keyword.content %></h2>
+            <p>Analyse détaillée par fournisseur d'IA</p>
           </div>
+
           <div class="cards-grid">
             <% @provider_data.each do |provider| %>
               <div class="action-card">
@@ -72,48 +45,126 @@
                   <div class="score-circle <%= score_color_class(provider[:global_score]) %>">
                     <span class="score-value"><%= provider[:global_score].round %>%</span>
                   </div>
-                  <p class="score-label">Global score</p>
+                  <p class="score-label">Score global</p>
+                </div>
+                <div class="metrics-grid">
+                  <div class="metric">
+                    <span class="metric-label">Position</span>
+                    <span class="metric-value"><%= provider[:position_score].round(2) %></span>
+                  </div>
+                  <div class="metric">
+                    <span class="metric-label">Fréquence</span>
+                    <span class="metric-value"><%= provider[:reference_score].round(2) %></span>
+                  </div>
+                  <div class="metric">
+                    <span class="metric-label">URL</span>
+                    <span class="metric-value"><%= provider[:url_presence] ? "Présente" : "Absente" %></span>
+                  </div>
                 </div>
               </div>
             <% end %>
           </div>
         </section>
 
-        <!-- Information section -->
+        <!-- Global Score Section -->
         <section class="resources-section">
           <div class="section-header">
-            <h2>Information</h2>
-            <p>Analysis details</p>
+            <h2>Score Global</h2>
+            <p>Moyenne des scores de tous les fournisseurs</p>
           </div>
-          <div class="resources-grid">
-            <div class="resource-card">
-              <div class="resource-icon">
-                <i class="fas fa-info-circle"></i>
-              </div>
-              <div class="resource-content">
-                <h3>Positioning Analysis</h3>
-                <p>This analysis shows the positioning of your company "<%= @company.name %>" in the results of different AI providers for the keyword "<%= @selected_keyword.content %>".</p>
+          <div class="resource-card">
+            <div class="resource-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="resource-content">
+              <h3>Score Global</h3>
+              <div class="global-score-display <%= score_color_class(@global_score) %>">
+                <span class="score-number"><%= @global_score.round(2) %>%</span>
               </div>
             </div>
           </div>
         </section>
-      </div>
 
-    <% else %>
-      <!-- Empty state -->
-      <div class="empty-state">
-        <div class="empty-state-content">
-          <i class="fas fa-search"></i>
-          <h3>No keyword selected</h3>
-          <p>Please select a keyword in the search bar above to see the positioning analysis.</p>
+      <% else %>
+        <!-- Empty State -->
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <i class="fas fa-search"></i>
+            <h3>Aucun mot-clé sélectionné</h3>
+            <p>Entrez un mot-clé dans la barre de recherche pour voir l'analyse de positionnement.</p>
+          </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </div>
-</div>
+<% end %>
 
 <% content_for :styles do %>
   <style>
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .metric {
+      text-align: center;
+      padding: 0.5rem;
+      background: var(--primary-light);
+      border-radius: 8px;
+    }
+
+    .metric-label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    /* Search Form */
+    .search-form {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      gap: 1rem;
+    }
+
+    .btn-secondary {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+      background: #1d4ed8;
+    }
+
+    /* Global Score Display */
+    .global-score-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .score-number {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
     /* Variables */
     :root {
       --primary-color: #2563eb;

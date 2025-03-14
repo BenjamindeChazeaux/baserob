@@ -1,0 +1,21 @@
+<% if @keyword.persisted? %>
+  <%= turbo_stream.append "keyword-options" do %>
+    <%= content_tag :option, @keyword.content, value: @keyword.id, selected: true %>
+  <% end %>
+
+  <%= turbo_stream.update "keyword-form" do %>
+    <%= render "keywords/form" %>
+  <% end %>
+
+  <%= turbo_stream.update "flash" do %>
+    <div class="alert alert-success">
+      Le mot-clé "<%= @keyword.content %>" a été ajouté avec succès.
+    </div>
+  <% end %>
+<% else %>
+  <%= turbo_stream.update "flash" do %>
+    <div class="alert alert-danger">
+      <%= @keyword.errors.full_messages.join(", ") %>
+    </div>
+  <% end %>
+<% end %>

@@ -1,14 +1,106 @@
 <% if notice %>
-  <div class="alert alert-info alert-dismissible fade show m-1" role="alert">
-    <%= notice %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    </button>
+  <div class="notification info" data-controller="notification">
+    <i class="fas fa-info-circle"></i>
+    <div class="notification-content">
+      <%= notice %>
+    </div>
+    <button class="close-notification" data-action="click->notification#close">&times;</button>
   </div>
 <% end %>
+
 <% if alert %>
-  <div class="alert alert-warning alert-dismissible fade show m-1" role="alert">
-    <%= alert %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    </button>
+  <div class="notification warning" data-controller="notification">
+    <i class="fas fa-exclamation-circle"></i>
+    <div class="notification-content">
+      <%= alert %>
+    </div>
+    <button class="close-notification" data-action="click->notification#close">&times;</button>
   </div>
+<% end %>
+
+<% content_for :styles do %>
+  <style>
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      max-width: 400px;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .notification.info {
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .notification.warning {
+      border-left: 4px solid var(--warning-color);
+    }
+
+    .notification i {
+      font-size: 1.25rem;
+      margin-right: 1rem;
+    }
+
+    .notification.info i {
+      color: var(--primary-color);
+    }
+
+    .notification.warning i {
+      color: var(--warning-color);
+    }
+
+    .notification-content {
+      flex: 1;
+      margin-right: 1rem;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+    }
+
+    .close-notification {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .close-notification:hover {
+      color: var(--text-primary);
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .notification.fade-out {
+      animation: slideOut 0.3s ease-in forwards;
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+  </style>
 <% end %>

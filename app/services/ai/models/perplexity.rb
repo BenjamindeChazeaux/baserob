@@ -2,14 +2,15 @@ module Ai
   module Models
     class Perplexity < Request
       API_URL = 'https://api.perplexity.ai/chat/completions'
-      DEFAULT_MODEL = 'sonar'
+      DEFAULT_MODEL = 'mixtral-8x7b-instruct'
       API_KEY = ENV['PERPLEXITY_API_KEY']
 
       private
 
       def headers
         {
-          'Authorization' => "Bearer #{API_KEY}"
+          'Authorization' => "Bearer #{API_KEY}",
+          'Content-Type' => 'application/json'
         }
       end
 
@@ -36,18 +37,10 @@ module Ai
               "content": @prompt
             }
           ],
-          # "max_tokens": 123,
-          # "temperature": 0.2,
-          # "top_p": 0.9,
-          # "search_domain_filter": null,
-          # "return_images": false,
-          # "return_related_questions": false,
-          # "search_recency_filter": "<string>",
-          # "top_k": 0,
-          # "stream": false,
-          # "presence_penalty": 0,
-          # "frequency_penalty": 1,
-          # "response_format": null
+          "temperature": 0.7,
+          "max_tokens": 1024,
+          "top_p": 0.9,
+          "stream": false
         }
       end
 

@@ -1,0 +1,17 @@
+<%= form_with(model: Keyword.new, class: "keyword-form", data: { controller: "form", turbo: true }) do |f| %>
+  <div class="keyword-input-group">
+    <%= f.text_field :content,
+                     placeholder: "Ajouter un nouveau mot-clé...",
+                     class: "modern-input keyword-input",
+                     required: true,
+                     autocomplete: "off",
+                     data: {
+                       form_target: "input"
+                     } %>
+    <%= f.submit "Ajouter",
+                class: "btn btn-primary keyword-submit",
+                data: {
+                  action: "form#submit"
+                } %>
+  </div>
+<% end %>

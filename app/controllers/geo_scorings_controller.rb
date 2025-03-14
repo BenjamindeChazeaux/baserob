@@ -11,6 +11,23 @@ class GeoScoringsController < ApplicationController
       @provider_data = calculate_provider_data
       @global_score = calculate_global_score
     end
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
+  end
+
+  def search
+    keyword_content = params[:keyword_content]
+    keyword = Keyword.find_or_create_by!(content: keyword_content, company: @company)
+
+    service = AiKeywordSearchService.new(keyword, @company)
+    service.call
+
+    redirect_to geo_scorings_path(keyword_id: keyword.id), notice: "Analyse terminée pour le mot-clé '#{keyword_content}'"
+  rescue StandardError => e
+    redirect_to geo_scorings_path, alert: "Erreur lors de l'analyse : #{e.message}"
   end
 
   #  Affiche l'évolution de la position d'un site en fonction d'un mot-clé
@@ -54,7 +71,11 @@ class GeoScoringsController < ApplicationController
   end
 
   def set_selected_keyword
-    @selected_keyword = @keywords.find_by(id: params[:keyword_id])
+    @selected_keyword = if params[:keyword_id].present?
+      @keywords.find_by(id: params[:keyword_id])
+    else
+      @keywords.last
+    end
   end
 
   def calculate_provider_data

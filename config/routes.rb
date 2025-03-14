@@ -29,7 +29,10 @@ Rails.application.routes.draw do
   # Modules principaux
   resources :ai_analytics, only: [:index]
   resources :geo_scorings, only: [:index] do
-    get "history/:keyword_id", to: "geo_scorings#history", on: :collection
+    collection do
+      post :search
+      get :history
+    end
   end
   resources :requests, only: [:index, :create]
   resources :keywords, only: [:index, :show, :new, :create, :edit, :update, :destroy]

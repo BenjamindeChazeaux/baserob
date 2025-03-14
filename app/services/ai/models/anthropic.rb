@@ -2,7 +2,7 @@ module Ai
   module Models
     class Anthropic < Request
       API_URL = 'https://api.anthropic.com/v1/messages'
-      DEFAULT_MODEL = 'claude-3-5-haiku-20241022'
+      DEFAULT_MODEL = 'claude-3-opus-20240229'
       API_KEY = ENV['ANTHROPIC_API_KEY']
 
       private
@@ -10,7 +10,8 @@ module Ai
       def headers
         {
           'x-api-key' => API_KEY,
-          'anthropic-version' => '2023-06-01'
+          'anthropic-version' => '2023-06-01',
+          'content-type' => 'application/json'
         }
       end
 
@@ -18,6 +19,7 @@ module Ai
         {
           "model": self.class::DEFAULT_MODEL,
           "max_tokens": 1024,
+          "temperature": 0.7,
           "messages": [
             {
               "role": "user",

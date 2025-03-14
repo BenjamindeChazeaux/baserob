@@ -13,7 +13,7 @@ module Ai
     def call
       options = {
         headers: { 'Content-Type' => 'application/json' }.merge(headers),
-        body: body.to_json
+        body: request_body(@prompt).to_json
       }
 
       begin
@@ -25,7 +25,6 @@ module Ai
     end
 
     private
-
 
     def headers
       raise NotImplementedError, 'Subclasses must implement the auth_headers method'
@@ -47,10 +46,6 @@ module Ai
         raise RequestError, "#{self.class.name} API error: #{response.code} - #{response.message} (#{response.dig('error', 'message')})"
       end
     end
-
-    # def extract_content(parsed_response)
-    #   raise NotImplementedError, 'Subclasses must implement the extract_content method'
-    # end
 
     def handle_error(error)
       raise RequestError, "#{self.class.name} API request failed: #{error.message}"
