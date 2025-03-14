@@ -60,7 +60,7 @@ end_time = Time.now - 10.minutes
 (Date.new(2024, 9, 1)..end_time.to_date).each do |date|
   max_hour = date == end_time.to_date ? end_time.hour : 23
   ["https://www.chatgpt.com", "http://www.claude.ai", "http://www.perplexity.ai"].each do |referrer|
-    rand(5..50).times do |i|
+    rand(5..15).times do |i|
       created_time = date.to_time + rand(max_hour + 1).hours
 
       next if created_time > end_time
