@@ -21,16 +21,15 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body <%= 'data-needs-company-setup' if @needs_company_setup %> data-controller="quick-start">
+  <body>
     <%= render "shared/flashes" %>
     <% unless controller_name == 'pages' && action_name == 'home' %>
       <%= render "shared/sidebar" %>
       <%= render "shared/settings_modal" %>
-      <%= render "shared/quick_start_modal" %>
     <% end %>
 
     <%= yield %>
-  <script>
+    <script>
       // Écouter les changements d'état de la sidebar
       window.addEventListener('sidebar:toggle', function(event) {
         if (event.detail.expanded) {

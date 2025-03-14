@@ -22,14 +22,15 @@ puts "Company created"
 company = Company.first
 
 # Utilisateurs avec company associée
+
+ben = User.create!(email: "ben@gmail.com", password: "password1", company: company)
+anh = User.create!(email: "anh@gmail.com", password: "password2", company: company)
+antoine = User.create!(email: "antoine@gmail.com", password: "password3", company: company)
+yannick = User.create!(email: "yannick@gmail.com", password: "password4", company: company)
 test = User.create!(email: "test@test.com", password: "azerty", company: company)
-Ben = User.create!(email: "ben@gmail.com", password: "password1", company: company)
-Anh = User.create!(email: "anh@gmail.com", password: "password2", company: company)
-Antoine = User.create!(email: "antoine@gmail.com", password: "password3", company: company)
-Yannick = User.create!(email: "yannick@gmail.com", password: "password4", company: company)
 
 # Utilisateurs sans company associée (pour tester la modal QuickStart)
-NoCompany = User.create!(email: "nocompany@gmail.com", password: "password5", company: nil)
+noCompany = User.create!(email: "nocompany@gmail.com", password: "azerty", company: nil)
 puts "Users created"
 
 ai_providers = AiProvider.create!([
@@ -37,7 +38,7 @@ ai_providers = AiProvider.create!([
   { name: "anthropic" },
   { name: "perplexity" }
 ])
-puts ai_providers.inspect
+
 
 companies = Company.all
 keywords = Keyword.create!([
@@ -55,17 +56,24 @@ end
 puts "Association done"
 
 # Création des requêtes sur 3 jours
-(Date.today - 2.days..Date.today).each do |date|
-  ["https://www.openai.com", "http://www.anthropic.com", "http://www.perplexity.ai"].each do |referrer|
-    rand(10).times do |i|
+end_time = Time.now - 10.minutes
+(Date.new(2024, 9, 1)..end_time.to_date).each do |date|
+  max_hour = date == end_time.to_date ? end_time.hour : 23
+  ["https://www.chatgpt.com", "http://www.claude.ai", "http://www.perplexity.ai"].each do |referrer|
+    rand(5..50).times do |i|
+      created_time = date.to_time + rand(max_hour + 1).hours
+
+      next if created_time > end_time
+
       Request.create!(
         domain: ["https://www.lewagon.com", "https://www.airbnb.com", "https://www.uber.com", "https://www.github.com"].sample,
         path: ["/learn", "/repos"],
         user_agent: "Mozilla/5.0",
         company: company,
-        created_at: date,
+        created_at: created_time,
         referrer: referrer
       )
+      puts "request n°#{Request.count} created"
     end
   end
 end

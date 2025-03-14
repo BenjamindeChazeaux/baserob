@@ -30,12 +30,13 @@ class DashboardController < ApplicationController
   def quick_setup
     # Extraire les paramètres du formulaire
     company_name = params[:dashboard][:company_name]
-    website_url = params[:dashboard][:website_url]
+    domain = params[:dashboard][:domain]
     
     # Créer une nouvelle company
     @company = Company.new(
       name: company_name,
-      domain: website_url
+      domain: domain,
+      user: current_user
     )
     
     if @company.save

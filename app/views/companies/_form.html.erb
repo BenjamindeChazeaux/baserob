@@ -1,0 +1,12 @@
+<%= simple_form_for company, html: { id: 'quickStartForm', data: { action: 'submit->quick-start#submitForm' } } do |f| %>
+  <div class="form-group">
+    <%= f.input :name, label: 'Company Name', input_html: { class: 'form-control', placeholder: 'Enter your company name' } %>
+  </div>
+  <div class="form-group">
+    <%= f.input :domain, label: 'Website URL', input_html: { class: 'form-control', placeholder: 'Enter your website URL' } %>
+  </div>
+
+  <%#= f.input :update_preferences, label: 'Update Frequency', as: :select, collection: ['Daily', 'Weekly', 'Monthly'], input_html: { class: 'form-control' } %>
+
+  <%= f.submit 'Save', class: 'btn btn-primary' %>
+<% end %>
