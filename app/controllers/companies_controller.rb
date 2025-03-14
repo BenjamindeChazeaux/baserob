@@ -1,4 +1,6 @@
 class CompaniesController < ApplicationController
+  before_action :authenticate_user!
+
   def index
     @companies = Company.all
   end
@@ -12,21 +14,21 @@ class CompaniesController < ApplicationController
   end
 
   def create
-    @company = Company.new(company_params)
+    @company = current_user.build_company(company_params)
     
-    if @company.save
-      # Associer l'utilisateur actuel à la company créée
-      current_user.update(company: @company) if current_user.company.nil?
-      
-      # Répondre en JSON si c'est une requête AJAX (pour la modal QuickStart)
-      respond_to do |format|
-        format.html { redirect_to companies_path, notice: "Company was successfully created." }
-        format.json { render json: { success: true, message: "Company was successfully created." } }
-      end
-    else
-      respond_to do |format|
-        format.html { render :new }
-        format.json { render json: { success: false, message: @company.errors.full_messages.join(", ") } }
+    respond_to do |format|
+      if @company.save
+        current_user.update(company: @company)
+        format.json { render json: { success: true, message: 'Company created successfully' } }
+      else
+        format.json do 
+          render json: {
+            success: false, 
+            message: @company.errors.full_messages.join(', '), 
+            formHTML: render_to_string(partial: 'companies/form', locals: { company: @company }, formats: [:html])
+          }, 
+          status: :unprocessable_entity 
+        end
       end
     end
   end
@@ -36,11 +38,17 @@ class CompaniesController < ApplicationController
   end
 
   def update
-    @companie = companie.find(params[:id])
-    if @company.update(company_params)
-      redirect_to companies_path, notice: "Company was successfully updated."
-    else
-      render :edit
+    @company = current_user.company
+    
+    respond_to do |format|
+      if @company.update(company_params)
+        # Mettre à jour le statut "needs_setup" de l'utilisateur
+        current_user.update(needs_setup: false)
+        
+        format.json { render json: { success: true, message: 'Company updated successfully' } }
+      else
+        format.json { render json: { success: false, message: @company.errors.full_messages.join(', ') }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -53,6 +61,6 @@ class CompaniesController < ApplicationController
   private
 
   def company_params
-    params.require(:company).permit(:name, :domain, :description)
+    params.require(:company).permit(:name, :domain)
   end
 end

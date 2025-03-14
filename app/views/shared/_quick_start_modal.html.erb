@@ -44,17 +44,7 @@
         <!-- Step 2 -->
         <div class="step-content" data-quick-start-target="stepContent" data-step="2">
           <h3>Configuration</h3>
-          <%= simple_form_for :dashboard, url: dashboard_quick_setup_path, method: :post, html: { id: 'quickStartForm', data: { action: 'submit->quick-start#submitForm' } } do |f| %>
-            <div class="form-group">
-              <%= f.input :company_name, label: 'Company Name', input_html: { class: 'form-control', placeholder: 'Enter your company name' } %>
-            </div>
-            <div class="form-group">
-              <%= f.input :website_url, label: 'Website URL', input_html: { class: 'form-control', placeholder: 'Enter your website URL' } %>
-            </div>
-            <div class="form-group">
-              <%= f.input :update_preferences, label: 'Update Frequency', as: :select, collection: ['Daily', 'Weekly', 'Monthly'], input_html: { class: 'form-control' } %>
-            </div>
-          <% end %>
+          <%= render 'companies/form', company: @company %>
         </div>
         
         <!-- Step 3 -->

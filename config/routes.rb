@@ -46,4 +46,6 @@ Rails.application.routes.draw do
   # Route pour les analytics IA
   get 'ai_analytics', to: 'analytics#ai', as: :analytics_ai
 
+  resource :companies, only: [:create, :update]
+
 end

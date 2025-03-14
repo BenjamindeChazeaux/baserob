@@ -20,17 +20,37 @@ export default class extends Controller {
     "finishButton", // Bouton "Terminer"
     "scriptPanel"  // Panneau affichant le script
   ]
+
+  static values = {
+    isOpened: { type: Boolean, default: false }
+  }
   
   /**
    * Initialisation du contrôleur
    */
   connect() {
+    
+    this.oldLogic()
     // Définir l'étape actuelle (commencer à l'étape 1)
     this.currentStep = 1
     // Nombre total d'étapes
     this.totalSteps = this.stepTargets.length
     // Vérifier si l'utilisateur a besoin de configurer une company
-    this.needsCompanySetup = document.body.hasAttribute('data-needs-company-setup')
+    console.log(this.isOpenedValue);
+    
+    // Initialiser les champs obligatoires par étape
+    this.requiredFieldsByStep = {
+      1: [], // Aucun champ obligatoire pour l'étape 1
+      2: ['company_name', 'company_website'], // Champs obligatoires pour l'étape 2
+      3: [], // Champs obligatoires pour l'étape 3
+      4: []  // Aucun champ obligatoire pour l'étape 4
+    }
+    
+    if (this.isOpenedValue) {
+      console.log(this.modalTarget);
+      
+      this.openModal(new Event("lolz"))
+    }
   }
   
   // ===== GESTION DE LA MODAL =====
@@ -58,7 +78,7 @@ export default class extends Controller {
     
     // Si l'utilisateur n'a pas de company, empêcher la fermeture de la modal
     if (this.needsCompanySetup) {
-      this.showNotification('warning', 'Setup Required', 'Please complete the company setup before continuing.')
+      this.showNotification('Please complete the company setup before continuing.')
       return
     }
     
@@ -69,18 +89,13 @@ export default class extends Controller {
   }
   
   /**
-   * Ferme la modal si l'utilisateur clique en dehors du contenu
+   * Gère les clics à l'extérieur de la modal
+   * Ferme la modal si le clic est en dehors du contenu
    */
   clickOutside(event) {
-    // Si l'utilisateur n'a pas de company, empêcher la fermeture de la modal
-    if (this.needsCompanySetup) {
-      this.showNotification('warning', 'Setup Required', 'Please complete the company setup before continuing.')
-      return
-    }
-    
-    // Si le clic est sur le fond de la modal (pas sur son contenu)
+    // Si le clic est sur la modal mais pas sur son contenu
     if (event.target === this.modalTarget) {
-      this.closeModal()
+      this.closeModal(event)
     }
   }
   
@@ -279,10 +294,10 @@ export default class extends Controller {
     // Afficher une notification de succès
     this.showNotification('success', 'Dashboard Created!', 'Your new dashboard has been set up successfully.')
     
-    // Recharger la page pour appliquer les changements
+    // Recharger la page après un court délai
     setTimeout(() => {
       window.location.reload()
-    }, 1500)
+    }, 1000)
   }
   
   // ===== GESTION DU SCRIPT =====
@@ -305,8 +320,8 @@ export default class extends Controller {
     const viewButton = document.getElementById('viewScriptButton')
     if (viewButton) {
       viewButton.innerHTML = isHidden 
-        ? '<i class="fas fa-eye-slash"></i> Hide Script'
-        : '<i class="fas fa-eye"></i> View Script'
+        ? '<i class="fas fa-eye"></i> View Script'
+        : '<i class="fas fa-eye-slash"></i> Hide Script'
     }
   }
   
@@ -332,43 +347,54 @@ export default class extends Controller {
   // ===== SOUMISSION DU FORMULAIRE =====
   
   /**
-   * Soumet le formulaire de configuration
+   * Soumet le formulaire de configuration - Version simplifiée
    */
   submitForm(event) {
+    // Empêcher le comportement par défaut du formulaire
     event.preventDefault()
     
-    // Récupérer les données du formulaire
-    const form = event.target
+    // Récupérer le formulaire
+    const form = document.getElementById('quickStartForm')
     const formData = new FormData(form)
     
-    // Envoyer les données au serveur
-    fetch(form.action, {
+    // Récupérer le token CSRF
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content
+
+    const options = {
       method: form.method,
       body: formData,
       headers: {
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-      },
-      credentials: 'same-origin'
-    })
-    .then(response => {
-      if (!response.ok) throw new Error('Network response was not ok')
-      return response.json()
-    })
-    .then(data => {
+        'X-CSRF-Token': csrfToken,
+        'Accept': 'application/json'
+      }
+    }
+
+    console.log(options);
+    
+    // Soumettre le formulaire avec fetch
+    fetch(form.action, options)
+    .then(response => response.json())
+    .then((data) => {
       if (data.success) {
-        // Si la sauvegarde a réussi, passer à l'étape du script
+        // Passer à l'étape suivante
         this.goToStep(3)
-        this.showNotification('success', 'Configuration Saved', 'Your configuration has been saved successfully.')
         
-        // Mettre à jour l'état de configuration de la company
+        // Afficher un message de succès
+        this.showNotification('success', 'Configuration saved successfully!')
+        
+        // Mettre à jour l'état
         this.needsCompanySetup = false
+        
       } else {
         // Afficher un message d'erreur
-        this.showNotification('error', 'Error', data.message || 'There was an error saving your configuration.')
+        this.showNotification('error', 'Error', data.message || 'Problem saving configuration')
+        form.innerHTML = data.formHTML
       }
     })
-    .catch(error => {
-      this.showNotification('error', 'Error', 'There was an error saving your configuration.')
+    .catch((error) => {
+      // En cas d'erreur
+      this.showNotification('error', 'Error', 'An error occurred while saving the configuration')
+      console.error(error)
     })
   }
   
@@ -427,5 +453,185 @@ export default class extends Controller {
     }
     
     item.classList.toggle('selected')
+  }
+
+
+  oldLogic() {
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // Get the button and modal
+      const openButton = document.getElementById('openModalButton');
+      const modal = document.getElementById('quickStartModal');
+      
+      if (openButton && modal) {
+      
+      // Add click event listener to the button
+      openButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+      });
+      
+      // Add click event listener to close button
+      const closeButton = modal.querySelector('.close-modal');
+      if (closeButton) {
+          closeButton.addEventListener('click', function() {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+          });
+      }
+      
+      // Close modal when clicking outside
+      modal.addEventListener('click', function(e) {
+          if (e.target === modal) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+          }
+      });
+      
+      // Setup stepper functionality
+      let currentStep = 1;
+      const totalSteps = modal.querySelectorAll('.step').length;
+      const prevButton = document.getElementById('prevStep');
+      const nextButton = document.getElementById('nextStep');
+      const finishButton = document.getElementById('finishSetup');
+      
+      // Function to go to a specific step
+      function goToStep(stepNumber) {
+          currentStep = stepNumber;
+          
+          // Update step indicators
+          modal.querySelectorAll('.step').forEach((step, index) => {
+          const stepNum = index + 1;
+          
+          if (stepNum === currentStep) {
+              step.classList.add('active');
+              step.classList.remove('completed');
+          } else if (stepNum < currentStep) {
+              step.classList.remove('active');
+              step.classList.add('completed');
+          } else {
+              step.classList.remove('active');
+              step.classList.remove('completed');
+          }
+          });
+          
+          // Update step content
+          modal.querySelectorAll('.step-content').forEach((content) => {
+          if (parseInt(content.dataset.step) === currentStep) {
+              content.classList.add('active');
+          } else {
+              content.classList.remove('active');
+          }
+          });
+          
+          // Update buttons
+          prevButton.disabled = currentStep === 1;
+          
+          if (currentStep === totalSteps) {
+          nextButton.style.display = 'none';
+          finishButton.style.display = 'block';
+          } else {
+          nextButton.style.display = 'block';
+          finishButton.style.display = 'none';
+          }
+      }
+      
+      // Add click event listeners to next and previous buttons
+      if (nextButton) {
+          nextButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (currentStep < totalSteps) {
+              goToStep(currentStep + 1);
+          }
+          });
+      }
+      
+      if (prevButton) {
+          prevButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (currentStep > 1) {
+              goToStep(currentStep - 1);
+          }
+          });
+      }
+      
+      if (finishButton) {
+          finishButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+          
+          // Show success notification
+          const notification = document.createElement('div');
+          notification.className = 'notification success';
+          notification.innerHTML = `
+              <i class="fas fa-check-circle"></i>
+              <div class="notification-content">
+              <h4>Dashboard Created!</h4>
+              <p>Your new dashboard has been set up successfully.</p>
+              </div>
+              <button class="close-notification">&times;</button>
+          `;
+          document.body.appendChild(notification);
+          
+          // Add click event listener to close notification
+          notification.querySelector('.close-notification').addEventListener('click', function() {
+              notification.classList.add('fade-out');
+              setTimeout(() => {
+              notification.remove();
+              }, 300);
+          });
+          
+          // Remove notification after 5 seconds
+          setTimeout(() => {
+              notification.classList.add('fade-out');
+              setTimeout(() => {
+              notification.remove();
+              }, 300);
+          }, 5000);
+          });
+      }
+      }
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+      
+      // Vérifier si le modal existe
+      const modal = document.getElementById('quickStartModal');
+      
+      // Vérifier si le bouton d'ouverture existe
+      const openButton = document.getElementById('openModalButton');
+      
+      // Vérifier si le bouton de test existe
+      const testButton = document.getElementById('testOpenModalButton');
+      
+      // Vérifier si le panneau de script existe
+      const scriptPanel = document.getElementById('scriptContentPanel');
+      
+      // Ajouter un écouteur d'événement direct au bouton de test
+      if (testButton) {
+      testButton.addEventListener('click', function() {
+          if (modal) {
+          modal.classList.add('active');
+          }
+      });
+      }
+      
+      // Ajouter un écouteur d'événement direct au bouton de visualisation du script
+      const viewScriptButton = document.getElementById('viewScriptButton');
+      if (viewScriptButton) {
+      viewScriptButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (scriptPanel) {
+          if (scriptPanel.style.display === 'none' || scriptPanel.style.display === '') {
+              scriptPanel.style.display = 'block';
+          } else {
+              scriptPanel.style.display = 'none';
+          }
+          }
+      });
+      }
+
+    })
   }
 }
