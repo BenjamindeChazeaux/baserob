@@ -12,7 +12,7 @@ $text-color: #1f2937;
 $light-text: #6b7280;
 $background-color: linear-gradient(135deg, #2563eb, #7c3aed);
 $section-padding: 5rem 2rem;
-$border-radius: 12px;
+$border-radius: 8px;
 $transition-speed: 0.3s;
 
 // Conteneur principal
@@ -243,7 +243,7 @@ $transition-speed: 0.3s;
   font-weight: 600;
   background-color: white;
   color: $primary-color;
-  border-radius: 50px;
+  border-radius: 8px;
   transition: transform $transition-speed ease-in-out, box-shadow $transition-speed ease-in-out;
   
   &:hover {
@@ -258,7 +258,7 @@ $transition-speed: 0.3s;
   padding: 0.75rem 1.5rem;
   background-color: $primary-color;
   color: white;
-  border-radius: 50px;
+  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
   transition: background-color $transition-speed ease-in-out, transform $transition-speed ease-in-out;

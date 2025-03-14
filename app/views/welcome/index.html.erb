@@ -1,5 +1,7 @@
-<div class="dashboard-container" data-controller="quick-start">
-
+<div class="dashboard-container" 
+    data-controller="quick-start"
+    data-quick-start-is-opened-value="<%= @needs_company_setup %>">
+    <%= render "shared/quick_start_modal" %>
   <!-- Main Content -->
   <div class="main-content">
     <!-- Header -->
@@ -31,7 +33,6 @@
           <h3>Quick tracking setup</h3>
           <p>Generate your tracking dashboard in one click from your own data</p>
           <a href="#" class="card-action" 
-          data-controller="quick-start"
           data-action="click->quick-start#openModal" 
           id="openModalButton"
           style="font-size: 1.5em;">
@@ -47,13 +48,13 @@
           <h3>GEO Scoring</h3>
           <p>Configure the AI requests and LLM you want to watch</p>
           <div class="url-input">
-            <input type="url" placeholder="Tape your AI request">
-            <button class="btn-secondary">
+            <input type="url" placeholder="Configure your first AI prompt">
+            <a href="<%= geo_scorings_path %>" class="btn-secondary">
               <i class="fas fa-play"></i>
               Score
-            </button>
+            </a>
           </div>
-          <a href="#" class="card-action">
+          <a href="<%= geo_scorings_path %>" class="card-action">
             Advanced configuration
             <i class="fas fa-arrow-right"></i>
           </a>
@@ -122,227 +123,3 @@
     </section>
   </div>
 </div>
-
-<%= render "shared/quick_start_modal" %>
-
-<%= javascript_include_tag "geo_chart" %>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, setting up modal button');
-    
-    // Get the button and modal
-    const openButton = document.getElementById('openModalButton');
-    const modal = document.getElementById('quickStartModal');
-    
-    if (openButton && modal) {
-      console.log('Button and modal found');
-      
-      // Add click event listener to the button
-      openButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        console.log('Button clicked, opening modal');
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      });
-      
-      // Add click event listener to close button
-      const closeButton = modal.querySelector('.close-modal');
-      if (closeButton) {
-        closeButton.addEventListener('click', function() {
-          console.log('Close button clicked');
-          modal.classList.remove('active');
-          document.body.style.overflow = '';
-        });
-      }
-      
-      // Close modal when clicking outside
-      modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-          console.log('Clicked outside modal');
-          modal.classList.remove('active');
-          document.body.style.overflow = '';
-        }
-      });
-      
-      // Setup stepper functionality
-      let currentStep = 1;
-      const totalSteps = modal.querySelectorAll('.step').length;
-      const prevButton = document.getElementById('prevStep');
-      const nextButton = document.getElementById('nextStep');
-      const finishButton = document.getElementById('finishSetup');
-      
-      // Function to go to a specific step
-      function goToStep(stepNumber) {
-        currentStep = stepNumber;
-        
-        // Update step indicators
-        modal.querySelectorAll('.step').forEach((step, index) => {
-          const stepNum = index + 1;
-          
-          if (stepNum === currentStep) {
-            step.classList.add('active');
-            step.classList.remove('completed');
-          } else if (stepNum < currentStep) {
-            step.classList.remove('active');
-            step.classList.add('completed');
-          } else {
-            step.classList.remove('active');
-            step.classList.remove('completed');
-          }
-        });
-        
-        // Update step content
-        modal.querySelectorAll('.step-content').forEach((content) => {
-          if (parseInt(content.dataset.step) === currentStep) {
-            content.classList.add('active');
-          } else {
-            content.classList.remove('active');
-          }
-        });
-        
-        // Update buttons
-        prevButton.disabled = currentStep === 1;
-        
-        if (currentStep === totalSteps) {
-          nextButton.style.display = 'none';
-          finishButton.style.display = 'block';
-        } else {
-          nextButton.style.display = 'block';
-          finishButton.style.display = 'none';
-        }
-      }
-      
-      // Add click event listeners to next and previous buttons
-      if (nextButton) {
-        nextButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (currentStep < totalSteps) {
-            goToStep(currentStep + 1);
-          }
-        });
-      }
-      
-      if (prevButton) {
-        prevButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          if (currentStep > 1) {
-            goToStep(currentStep - 1);
-          }
-        });
-      }
-      
-      if (finishButton) {
-        finishButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          modal.classList.remove('active');
-          document.body.style.overflow = '';
-          
-          // Show success notification
-          const notification = document.createElement('div');
-          notification.className = 'notification success';
-          notification.innerHTML = `
-            <i class="fas fa-check-circle"></i>
-            <div class="notification-content">
-              <h4>Dashboard Created!</h4>
-              <p>Your new dashboard has been set up successfully.</p>
-            </div>
-            <button class="close-notification">&times;</button>
-          `;
-          document.body.appendChild(notification);
-          
-          // Add click event listener to close notification
-          notification.querySelector('.close-notification').addEventListener('click', function() {
-            notification.classList.add('fade-out');
-            setTimeout(() => {
-              notification.remove();
-            }, 300);
-          });
-          
-          // Remove notification after 5 seconds
-          setTimeout(() => {
-            notification.classList.add('fade-out');
-            setTimeout(() => {
-              notification.remove();
-            }, 300);
-          }, 5000);
-        });
-      }
-      
-      // Add click event listeners to selectable items
-      modal.querySelectorAll('.data-source-card, .template-card, .color-option').forEach(item => {
-        item.addEventListener('click', function() {
-          const parent = this.parentElement;
-          
-          // If it's a single-select container
-          if (parent.classList.contains('single-select')) {
-            parent.querySelectorAll('.selected').forEach(el => {
-              el.classList.remove('selected');
-            });
-          }
-          
-          this.classList.toggle('selected');
-        });
-      });
-    } else {
-      console.error('Button or modal not found', { 
-        buttonFound: !!openButton, 
-        modalFound: !!modal 
-      });
-    }
-  });
-</script>
-
-<!-- Debug Script -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('Debug script loaded');
-    
-    // Vérifier si le modal existe
-    const modal = document.getElementById('quickStartModal');
-    console.log('Modal found:', modal);
-    
-    // Vérifier si le bouton d'ouverture existe
-    const openButton = document.getElementById('openModalButton');
-    console.log('Open button found:', openButton);
-    
-    // Vérifier si le bouton de test existe
-    const testButton = document.getElementById('testOpenModalButton');
-    console.log('Test button found:', testButton);
-    
-    // Vérifier si le panneau de script existe
-    const scriptPanel = document.getElementById('scriptContentPanel');
-    console.log('Script panel found:', scriptPanel);
-    
-    // Ajouter un écouteur d'événement direct au bouton de test
-    if (testButton) {
-      testButton.addEventListener('click', function() {
-        console.log('Test button clicked directly');
-        if (modal) {
-          modal.classList.add('active');
-          console.log('Modal activated directly');
-        }
-      });
-    }
-    
-    // Ajouter un écouteur d'événement direct au bouton de visualisation du script
-    const viewScriptButton = document.getElementById('viewScriptButton');
-    if (viewScriptButton) {
-      console.log('View script button found:', viewScriptButton);
-      viewScriptButton.addEventListener('click', function(e) {
-        console.log('View script button clicked directly');
-        e.preventDefault();
-        if (scriptPanel) {
-          if (scriptPanel.style.display === 'none' || scriptPanel.style.display === '') {
-            scriptPanel.style.display = 'block';
-            console.log('Script panel shown directly');
-          } else {
-            scriptPanel.style.display = 'none';
-            console.log('Script panel hidden directly');
-          }
-        }
-      });
-    }
-  });
-</script>
-

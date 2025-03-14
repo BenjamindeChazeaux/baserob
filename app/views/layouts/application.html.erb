@@ -22,16 +22,15 @@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
   </head>
 
-  <body <%= 'data-needs-company-setup' if @needs_company_setup %> data-controller="quick-start">
+  <body>
     <%= render "shared/flashes" %>
     <% unless controller_name == 'pages' && action_name == 'home' %>
       <%= render "shared/sidebar" %>
       <%= render "shared/settings_modal" %>
-      <%= render "shared/quick_start_modal" %>
     <% end %>
 
     <%= yield %>
-  <script>
+    <script>
       // Écouter les changements d'état de la sidebar
       window.addEventListener('sidebar:toggle', function(event) {
         if (event.detail.expanded) {
@@ -53,20 +52,6 @@
           document.body.classList.remove('sidebar-expanded');
         }
         
-        // Ouvrir automatiquement la modal QuickStart si l'utilisateur n'a pas de company
-        <% if @needs_company_setup %>
-          // Utiliser le contrôleur Stimulus pour ouvrir la modal
-          const quickStartController = document.querySelector('[data-controller="quick-start"]');
-          if (quickStartController) {
-            const stimulusController = window.Stimulus.application.getControllerForElementAndIdentifier(
-              quickStartController,
-              'quick-start'
-            );
-            if (stimulusController) {
-              stimulusController.openModal();
-            }
-          }
-        <% end %>
       });
     </script>
   </body>

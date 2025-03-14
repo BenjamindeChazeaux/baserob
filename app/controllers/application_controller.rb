@@ -6,14 +6,15 @@ class ApplicationController < ActionController::Base
   private
 
   def check_company_setup
+    @needs_company_setup = false
     if user_signed_in? && current_user.company.nil?
-      # Définir une variable pour indiquer que l'utilisateur n'a pas de company
       @needs_company_setup = true
       
-      # Si ce n'est pas déjà la page d'accueil et que ce n'est pas une requête AJAX
-      unless controller_name == 'welcome' || request.xhr?
+      return nil if controller_name == 'pages' && action_name == 'home' || controller_name == 'companies' && action_name == 'create'
+      
+      unless controller_name == 'welcome' && action_name == 'index' || request.xhr?
         flash[:notice] = "Please set up your company before continuing."
-        redirect_to root_path
+        redirect_to welcome_index_path
       end
     end
   end

@@ -22,13 +22,13 @@ puts "Company created"
 company = Company.first
 
 # Utilisateurs avec company associée
-Ben = User.create!(email: "ben@gmail.com", password: "password1", company: company)
-Anh = User.create!(email: "anh@gmail.com", password: "password2", company: company)
-Antoine = User.create!(email: "antoine@gmail.com", password: "password3", company: company)
-Yannick = User.create!(email: "yannick@gmail.com", password: "password4", company: company)
+ben = User.create!(email: "ben@gmail.com", password: "password1", company: company)
+anh = User.create!(email: "anh@gmail.com", password: "password2", company: company)
+antoine = User.create!(email: "antoine@gmail.com", password: "password3", company: company)
+yannick = User.create!(email: "yannick@gmail.com", password: "password4", company: company)
 
 # Utilisateurs sans company associée (pour tester la modal QuickStart)
-NoCompany = User.create!(email: "nocompany@gmail.com", password: "password5", company: nil)
+noCompany = User.create!(email: "nocompany@gmail.com", password: "password5", company: nil)
 puts "Users created"
 
 ai_providers = AiProvider.create!([
