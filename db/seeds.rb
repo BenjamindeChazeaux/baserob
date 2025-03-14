@@ -11,7 +11,7 @@ Company.destroy_all
 puts "seed destroyed"
 
 companies = Company.create!([
-  { name: "Le Wagon", domain: "https://www.lewagon.com", token: 'c52cf53345ce51d8e20ad727386e239a' },
+  { name: "Le Wagon Bar", domain: "https://www.lewagon.com", token: 'c52cf53345ce51d8e20ad727386e239a' },
   { name: "Airbnb", domain: "https://www.airbnb.com" },
   { name: "Uber", domain: "https://www.uber.com" },
   { name: "Spotify", domain: "https://www.spotify.com" },
@@ -101,37 +101,20 @@ puts "geo_scoring actuels créés"
 # Création des geo_scorings pour chaque mot-clé et fournisseur d'IA
 puts "Creating geo_scorings..."
 
-company.keywords.each do |keyword|
-  company.ai_providers.each do |ai_provider|
-    # Score actuel
-    GeoScoring.create!(
-      keyword: keyword,
-      ai_provider: ai_provider,
-      position_score: rand(50..100),
-      reference_score: rand(40..90),
-      url_presence: [true, false].sample,
-      ai_responses: [
-        "#{company.name} est une entreprise leader dans #{keyword.content}",
-        "Visitez leur site web: #{company.domain}",
-        "Parmi les acteurs majeurs: #{company.name}"
-      ],
-      created_at: Time.current
-    )
-
-    # Score précédent (pour l'historique)
-    GeoScoring.create!(
-      keyword: keyword,
-      ai_provider: ai_provider,
-      position_score: rand(30..95),
-      reference_score: rand(35..85),
-      url_presence: [true, false].sample,
-      ai_responses: [
-        "#{company.name} propose des solutions en #{keyword.content}",
-        "Plus d'informations sur #{company.domain}",
-        "Les entreprises principales incluent #{company.name}"
-      ],
-      created_at: 1.day.ago
-    )
+urls = ['https://www.le-wagon-bar.vercel.app/', 'https://www.google.com/', nil]
+(Date.new(2024, 9, 1)..Date.today).each do |date|
+  company.keywords.each do |keyword|
+    company.ai_providers.each do |ai_provider|
+      mention = (rand(10) % 2).even?
+      GeoScoring.create!(
+        keyword: keyword,
+        ai_provider: ai_provider,
+        mentioned: mention,
+        ai_responses: ['wagon', 'google', 'le wagon bar', 'openclassrooms'].shuffle,
+        url: urls.sample,
+        created_at: date
+      )
+    end
   end
 end
 

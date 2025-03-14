@@ -1,4 +1,4 @@
-<%# app/views/geo_scorings/index.html.erb %>
+app/views/geo_scorings/index.html.erb
 <div class="dashboard-container">
   <div class="main-content">
     <!-- Header -->
@@ -39,7 +39,6 @@
                 <h3>Selected</h3>
               </div>
               <h3><%= @selected_keyword.content %></h3>
-              <p><i class="fas fa-robot"></i> Analyzed on <%= @provider_data.size %> AI</p>
             </div>
 
             <!-- Average score card -->
@@ -47,11 +46,8 @@
               <div class="card-header">
                 <h3>Global Score</h3>
               </div>
-              <% average_score = @provider_data.sum { |p| p[:global_score] } / @provider_data.size %>
-              <div class="global-score-display <%= score_color_class(average_score) %>">
-                <span class="score-number"><%= average_score.round %>%</span>
               </div>
-              <p>Average score across <%= @provider_data.size %> providers</p>
+              <p>Average score across providers</p>
             </div>
           </div>
         </section>
@@ -63,7 +59,6 @@
             <p>Detailed score analysis</p>
           </div>
           <div class="cards-grid">
-            <% @provider_data.each do |provider| %>
               <div class="action-card">
                 <div class="card-header">
                   <h3><%= provider[:name].capitalize %></h3>
