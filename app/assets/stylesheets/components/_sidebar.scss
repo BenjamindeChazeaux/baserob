@@ -128,47 +128,6 @@
     }
   }
   
-  .search-bar-container {
-    opacity: 0;
-    height: 0;
-    overflow: hidden;
-    transition: opacity 0.3s ease, height 0.3s ease;
-  }
-  
-  &:hover .search-bar-container {
-    opacity: 1;
-    height: auto;
-    margin-top: 16px;
-    width: 100%;
-  }
-
-  .modern-search-bar {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 12px 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .modern-search-bar i {
-    color: $text-secondary;
-    margin-right: 8px;
-  }
-
-  .search-input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    color: $text-secondary;
-    font-size: 0.8rem;
-    outline: none;
-  }
-
-  .search-input::placeholder {
-    color: $text-secondary;
-  }
-  
   .nav-item-with-submenu {
     position: relative;
     margin-bottom: 1rem;

@@ -1,11 +1,19 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["modal", "step", "stepContent", "nextButton", "prevButton", "closeButton", "form"]
+  static targets = [
+    "modal",
+    "step",
+    "stepContent",
+    "nextButton",
+    "prevButton",
+    "closeButton",
+    "form"
+  ]
   
   connect() {
     // Initialiser la modal
-    this.currentStep = 0
+    this.currentStep = 1
     this.totalSteps = this.stepTargets.length
     this.updateStepDisplay()
   }

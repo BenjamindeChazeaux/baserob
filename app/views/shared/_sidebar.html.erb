@@ -30,7 +30,7 @@
       <i class="fi fi-tr-pan"></i><span>Performance</span>
     </a>
 
-    <a href="">
+    <a href="<%= blog_path %>" class="<%= current_page?(blog_path) ? 'active' : '' %>">
       <i class="fi fi-tr-onboarding"></i><span>Resources</span>
     </a>
 
@@ -38,26 +38,15 @@
       <i class="fi fi-tr-customization-cogwheel"></i><span>Settings</span>
     </a>
 
-    <div class="sidebar-footer">
-      <% if user_signed_in? %>
-          <div style="margin-top: auto;" class="dropdown">
-            <%= image_tag "https://kitt.lewagon.com/placeholder/users/ssaunier", 
-                         class: "avatar avatar-bordered", 
-                         id: "sidebarDropdown", 
-                         data: { bs_toggle: "dropdown" }, 
-                         'aria-haspopup': true, 
-                         'aria-expanded': false, 
-                         style: "width: 25px; height: 25px; margin-left: 8px; border-radius: 50%; object-fit: cover;" %>
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="sidebarDropdown">
-              <%= link_to "Logout", destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: "dropdown-item" %>
-            </div>
-          </div>
-      <% else %>
-        <div class="login-link">
-          <%= link_to "Login", new_user_session_path, class: "btn btn-sm btn-outline-primary" %>
-        </div>
+    <% if user_signed_in? %>
+      <%= link_to destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, style: "margin-top: auto;" do %>
+        <i class="fi fi-tr-sign-out-alt"></i><span>Logout</span>
       <% end %>
-    </div>
+    <% else %>
+      <%= link_to new_user_session_path do %>
+        <i class="fi fi-tr-sign-in-alt"></i><span>Login</span>
+      <% end %>
+    <% end %>
   </nav>
   
 </div>

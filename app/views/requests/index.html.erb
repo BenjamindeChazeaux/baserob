@@ -1,94 +1,190 @@
 <div class="dashboard-container" data-controller="quick-start">
   <div class="main-content">
-
     <header class="dashboard-header">
       <div class="header-top">
         <div class="welcome-text">
-          <h1>AI Analytics <span class="gradient-text"> Dashboard </span></h1>
-          <p class="date"><%= Date.today.strftime("%A %d %B %Y") %></p>
+          <h1>AI Analytics <span class="gradient-text">Dashboard</span></h1>
+          <p class="date"></i> <%= Date.today.strftime("%A %d %B %Y") %></p>
         </div>
-      </div>
+        </div>
     </header>
 
+    
+    <!-- Filtres de recherche -->
+      <div class="mt-2"
+           data-controller="requests-stream"
+           data-requests-stream-company-id-value="<%= @company.id%>">
+        <%= simple_form_for :search,
+                            url: requests_path,
+                            method: :get,
+                            html: {
+                              class: 'form-inline w-100',
+                              data: {
+                                requests_stream_target: 'form',
+                                turbo_frame: 'request-chart'
+                              }
+                            } do |f| %>
+          <div class="d-flex gap-2">
+            <%= f.input :ai_provider,
+                        collection: AiProvider.all,
+                        include_blank: "All AI Providers",
+                        wrapper_html: {
+                          class: 'modern-search-bar'
+                        },
+                        input_html: {
+                          class:'form-control',
+                          value: params.dig(:search, :ai_provider),
+                          data: { action: 'change->requests-stream#submitForm' }
+                        } %>
+            <%= f.input :timeline,
+                        collection: [
+                          ['Today', 'today'],
+                          ['1 Week', '1_week'],
+                          ['1 Month', '1_month'],
+                          ['3 Months', '3_months'],
+                          ['6 Months', '6_months']
+                        ],
+                        include_blank: "Select Time",
+                        wrapper_html: {
+                          class:'modern-search-bar'
+                        },
+                        input_html: {
+                          class:'form-control',
+                          value: params.dig(:search, :timeline),
+                          data: { action: 'change->requests-stream#submitForm' }
+                        } %>
+          </div>
+        <% end %>
+      </div>
 
-    <div class="card shadow-sm mb-4">
-      <div class="card-body m-5">
-        <div class="row mt-4">
-          <div class="col-md-6">
-            <h2 class="card-header">Usage Metrics</h2>
-            <p>Welcome to your AI Analytics Dashboard. Here you can monitor and evaluate various AI metrics.</p>
+    <!-- Graphique et métriques -->
+    <turbo-frame id="request-chart">
+      
 
-            <div class="mt-5"
-                 data-controller="requests-stream"
-                 data-requests-stream-company-id-value="<%= @company.id%>">
-              <%= simple_form_for :search,
-                                  url: requests_path,
-                                  method: :get,
-                                  html: {
-                                    class: 'd-block form-inline simple_form w-100',
-                                    data: {
-                                      requests_stream_target: 'form',
-                                      turbo_frame: 'request-chart'
-                                    }
-                                  } do |f| %>
-                <div class="d-flex g-5 w-100 justify-content-center gap-6rem">
-                  <%= f.input :ai_provider,
-                              collection: AiProvider.all,
-                              include_blank: "All AI Providers",
-                              wrapper_html: {
-                                class: 'modern-search-bar'
-                              },
-                              # label_html: {},
-                              input_html: {
-                                class:'form-control',
-                                value: params.dig(:search, :ai_provider),
-                                data: { action: 'change->requests-stream#submitForm' }
-                              } %>
-                  <%= f.input :timeline,
-                              collection: [
-                                ['Today', 'today'],
-                                ['1 Week', '1_week'],
-                                ['1 Month', '1_month'],
-                                ['3 Months', '3_months'],
-                                ['6 Months', '6_months']
-                              ],
-                              include_blank: "Select Time",
-                              wrapper_html: {
-                                class:'modern-search-bar'
-                              },
-                              input_html: {
-                                class:'form-control',
-                                value: params.dig(:search, :timeline),
-                                data: { action: 'change->requests-stream#submitForm' }
-                              } %>
-                </div>
-              <% end %>
+      <div style="display: flex; gap: 20px;">
+        <!-- Graphique (côté gauche) -->
+        <div style="flex: 1; min-width: 0;">
+          <div class="card hoverable">
+            <div class="card-header">
+              <h3>Requests Over Time</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-container" style="height: 490px;">
+                <%= line_chart @requests_by_date_and_ai_provider, 
+                    curve: false,
+                    points: false,
+                    height: "450px",
+                    colors: ["#d88c9a", "#f2d0a9", "#f1e3d3", "#99c1b9", "#8e7dbe", "#EC4899"],
+                    library: {
+                      chart: {
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: 2
+                      },
+                      title: {
+                        text: nil
+                      },
+                      legend: {
+                        align: 'center',
+                        verticalAlign: 'bottom',
+                        layout: 'horizontal',
+                        symbolHeight: 12,
+                        symbolWidth: 12,
+                        symbolRadius: 6
+                      },
+                      xAxis: {
+                        labels: {
+                          style: {
+                            fontSize: '12px'
+                          }
+                        }
+                      },
+                      yAxis: {
+                        title: {
+                          text: 'Number of Visits'
+                        },
+                        min: 0
+                      },
+                      tooltip: {
+                        shared: true,
+                        crosshairs: true
+                      }
+                    },
+                    xtitle: "Time", 
+                    ytitle: "Visits", 
+                    id: 'requests' %>
+              </div>
             </div>
           </div>
+        </div>
 
+        <!-- Cartes de métriques (côté droit) -->
+        <div style="width: 250px;">
+          <% 
+            top_ai_provider = @company.ai_providers
+              .joins(:requests)
+              .where(requests: { company_id: @company.id })
+              .group('ai_providers.id')
+              .order('COUNT(requests.id) DESC')
+              .first
+            
+            top_ai_count = top_ai_provider ? @company.requests.where(ai_provider: top_ai_provider).count : 0
+          %>
+          
+          <!-- Carte 1: Volume total des visites -->
+          <div class="metric-card mb-3" style="height: auto; padding: 15px;">
+            <div class="metric-header">
+              <h3>Total Visits</h3>
+              <div class="metric-icon">
+                <i class="fi fi-tr-users"></i>
+              </div>
+            </div>
+            <div class="metric-value">
+              <span class="value"><%= @company.requests.count %></span>
+            </div>
+            <p class="metric-period">All time</p>
+          </div>
 
+          <!-- Carte 2: Volume total de visites issues des IA -->
+          <div class="metric-card mb-3" style="height: auto; padding: 15px;">
+            <div class="metric-header">
+              <h3>AI-Driven Visits</h3>
+              <div class="metric-icon">
+                <i class="fi fi-tr-robot"></i>
+              </div>
+            </div>
+            <div class="metric-value">
+              <span class="value"><%= @company.requests.where.not(ai_provider_id: nil).count %></span>
+              <span class="change positive">
+                <i class="fi fi-tr-arrow-up"></i>
+                <%= ((@company.requests.where.not(ai_provider_id: nil).count.to_f / @company.requests.count) * 100).round(1) %>%
+              </span>
+            </div>
+            <p class="metric-period">of total visits</p>
+          </div>
 
+          <!-- Carte 3: IA d'où proviennent le plus de visiteurs -->
+          <div class="metric-card" style="height: auto; padding: 15px;">
+            <div class="metric-header">
+              <h3>Top AI Source</h3>
+              <div class="metric-icon">
+                <i class="fi fi-tr-chart-network"></i>
+              </div>
+            </div>
+            <div class="metric-value">
+              <span class="value"><%= top_ai_provider&.name&.capitalize || "None" %></span>
+            </div>
+            <p class="metric-period"><%= top_ai_count %> visits</p>
+          </div>
         </div>
       </div>
+    </turbo-frame>
+    
+    <div class="text-center mb-4">
+      <h5><strong>Total <%= @ai_provider&.name || "All AI Providers" %> Requests:</strong> <span class="badge bg-primary"> <%= @requests.count %> </span></h5>
     </div>
 
-    <div class="card shadow-sm mb-4">
-      <div class="card-body m-5">
-        <turbo-frame id="request-chart" class="mt-4">
-          <div class="text-center my-3">
-            <h5><strong>Total <%= @ai_provider&.name || "All AI Providers" %> Requests:</strong> <span class="badge bg-primary"> <%= @requests.count %> </span></h5>
-          </div>
-
-
-          <div class="chart-container bg-white p-4 shadow-sm rounded">
-            <%= line_chart @requests_by_date_and_ai_provider, xtitle: "Time", ytitle: "Requests", id: 'requests' %>
-          </div>
-        </turbo-frame>
-      </div>
-    </div>
-
-    <div class="text-center mt-3">
-      <%= link_to "Back to Dashboard", welcome_path, class: "btn btn-secondary" %>
+    <div class="text-center mt-4">
+      <%= link_to "Back to Dashboard", welcome_path, class: "btn btn-primary" %>
     </div>
   </div>
 </div>
