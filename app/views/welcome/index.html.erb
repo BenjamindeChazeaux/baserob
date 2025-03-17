@@ -65,13 +65,14 @@
         <div class="action-card">
           <div class="card-header">
           </div>
-          <h3>GEO Scoring</h3>
+          <h3>AI Analytics</h3>
           <div class="geo-preview">
-            <canvas id="geoChart" height="120"></canvas>
+            <%= pie_chart({
+              "Total Visits" => @total_requests_count,
+              "AI-Driven Visits" => @ai_requests_count
+              }, donut: true, height: "150px", colors: ["#0E2954", "#84A7A1"]) %>
           </div>
-          <a href="<%= geo_scorings_path %>" class="card-action">
-
-            <%= pie_chart @company.requests.where.not(ai_provider_id: nil).count, donut: true %>
+          <a href="<%= requests_index_path %>" class="card-action">
             See details
             <i class="fas fa-arrow-right"></i>
           </a>
