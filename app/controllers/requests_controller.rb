@@ -96,12 +96,9 @@ class RequestsController < ApplicationController
         .order('COUNT(requests.id) DESC')
         .first
 
-      top_ai_count = top_ai_provider ? request.company.requests.where(ai_provider: top_ai_provider).count : 0
-
+    top_ai_count = top_ai_provider ? request.company.requests.where(ai_provider: top_ai_provider).count : 0
       return [top_ai_provider, top_ai_count]
   end
-
-
 end
 
 

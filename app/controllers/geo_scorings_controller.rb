@@ -13,11 +13,6 @@ class GeoScoringsController < ApplicationController
   def history
     @history_scores = GeoScoring.where(keyword: @selected_keyword).order(created_at: :asc)
 
-
-    @chart_data = @history_scores.group_by(&:ai_provider).transform_values do |scorings|
-      scorings.map { |scoring| [scoring.created_at, scoring.score] }
-    end
-    
     respond_to do |format|
       format.html { render partial: "history", locals: { history_scores: @history_scores } }
       format.json { render json: @history_scores }
