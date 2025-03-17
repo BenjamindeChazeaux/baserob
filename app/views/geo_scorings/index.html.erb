@@ -16,7 +16,7 @@
           <%= form_with url: geo_scorings_path, method: :get, local: true, class: "search-form" do |f| %>
             <%= f.select :keyword_id,
                         options_from_collection_for_select(@keywords, :id, :content, @selected_keyword&.id),
-                        { include_blank: "Search for a keyword..." },
+                        { include_blank: "Search for a prompt..." },
                         {
                           class: "search-input modern-input",
                           onchange: "this.form.submit()"
@@ -32,24 +32,38 @@
         <!-- Overview section -->
         <section class="info-section">
           <div class="cards-grid">
-            <!-- Selected keyword card -->
-            <div class="action-card">
-              <div class="card-header">
-                <h3>Selected</h3>
-              </div>
-              <h3><%= @selected_keyword.content %></h3>
-            </div>
 
-            <!-- Average score card -->
-            <div class="action-card">
-              <div class="card-header">
-                <h3>Global Score</h3>
+            <!-- Global score card -->
+            <div class="action-card" data-controller="flip-card">
+              <div class="card-back">
+                <div class="card-header">
+                  <h3>Global Score</h3>
+                </div>
+                <p>Average score across providers</p>
+                <div>
+                  <%= render 'score_details', position_score: 78, frequency_score: 65, link_score: 92 %>
+                </div>
               </div>
-              <p>Average score across providers</p>
+              <div class="card-front">
+                <div class="card-header">
+                  <h3>Score Details</h3>
+                </div>
+                <div class="score-display">
+                  <div class="score-circle success">
+                    <span class="score-value">85%</span>
+                  </div>
+                  <p class="score-label">Global score</p>
+                </div>
+                <div class="details-content">
+                  <p>This represents the average performance across all AI providers.</p>
+                  <p>Click again to return to the front.</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
+        
         <!-- Results section -->
         <section class="results-section">
           <div class="section-header">
@@ -58,39 +72,142 @@
           </div>
           <div class="cards-grid">
             <% @geo_scorings_data.each do |provider_data| %>
-              <div class="action-card">
-                <div class="card-header">
-                  <h3><%= provider_data[:name].capitalize %></h3>
-                </div>
-                <div class="score-display">
-                  <div class="score-circle <%= score_color_class(provider_data[:score]) %>">
-                    <span class="score-value"><%= provider_data[:score].round %>%</span>
+              <div class="action-card" data-controller="flip-card"> 
+                <div class="card-front">
+                  <div class="card-header">
+                    <h3><%= provider_data[:name].capitalize %></h3>
                   </div>
-                  <p class="score-label">Global score</p>
+                  <div class="score-display">
+                    <div class="score-circle <%= score_color_class(provider_data[:score]) %>">
+                      <span class="score-value"><%= provider_data[:score].round %>%</span>
+                    </div>
+                    <p class="score-label">Global score</p>
+                  </div>
+                </div>
+                <div class="card-back">
+                  <div class="card-header">
+                    <h3>Details for <%= provider_data[:name].capitalize %></h3>
+                  </div>
+                  <div class="details-content">
+                    <p>This score is based on several factors, including position, frequency, and link building.</p>
+                  </div>
+                  <div>
+                   <ul>
+                    <li><strong>Position score</strong>: <%= provider_data[:position_score] %>%</li>
+                    <li><strong>Reference score</strong>: <%= provider_data[:reference_score] %>%</li>
+                    <li><strong>URL presence</strong>: <%= provider_data[:url_presence] ? "Yes" : "No" %></li>
+                  </ul>
+                </div>
                 </div>
               </div>
             <% end %>
           </div>
         </section>
 
-        <!-- Information section -->
-        <section class="resources-section">
-          <div class="section-header">
-            <h2>Information</h2>
-            <p>Analysis details</p>
+        <!-- Filtres de recherche -->
+      <div class="mt-2"
+           data-controller="requests-stream"
+           data-requests-stream-company-id-value="<%= @company.id%>">
+        <%= simple_form_for :search,
+                            url: requests_path,
+                            method: :get,
+                            html: {
+                              class: 'form-inline w-100',
+                              data: {
+                                requests_stream_target: 'form',
+                                turbo_frame: 'request-chart'
+                              }
+                            } do |f| %>
+          <div class="d-flex gap-2">
+            <%= f.input :ai_provider,
+                        collection: AiProvider.all,
+                        include_blank: "All AI Providers",
+                        wrapper_html: {
+                          class: 'modern-search-bar'
+                        },
+                        input_html: {
+                          class:'form-control',
+                          value: params.dig(:search, :ai_provider),
+                          data: { action: 'change->requests-stream#submitForm' }
+                        } %>
+            <%= f.input :timeline,
+                        collection: [
+                          ['Today', 'today'],
+                          ['1 Week', '1_week'],
+                          ['1 Month', '1_month'],
+                          ['3 Months', '3_months'],
+                          ['6 Months', '6_months']
+                        ],
+                        include_blank: "Select Time",
+                        wrapper_html: {
+                          class:'modern-search-bar'
+                        },
+                        input_html: {
+                          class:'form-control',
+                          value: params.dig(:search, :timeline),
+                          data: { action: 'change->requests-stream#submitForm' }
+                        } %>
           </div>
-          <div class="resources-grid">
-            <div class="resource-card">
-              <div class="resource-icon">
-                <i class="fas fa-info-circle"></i>
-              </div>
-              <div class="resource-content">
-                <h3>Positioning Analysis</h3>
-                <p>This analysis shows the positioning of your company "<%= @company.name %>" in the results of different AI providers for the keyword "<%= @selected_keyword.content %>".</p>
+        <% end %>
+      </div>
+
+        <!-- Graphique et métriques -->
+    <turbo-frame id="request-chart">
+      <div style="display: flex; gap: 20px;">
+        <!-- Graphique (côté gauche) -->
+        <div style="flex: 1; min-width: 0;">
+          <div class="card hoverable">
+            <div class="card-header">
+              <h3>Requests Over Time</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-container" style="height: 490px;">
+                <%= line_chart @requests_by_date_and_ai_provider, 
+                    curve: false,
+                    points: false,
+                    height: "450px",
+                    colors: ["#d88c9a", "#f2d0a9", "#f1e3d3", "#99c1b9", "#8e7dbe", "#EC4899"],
+                    library: {
+                      chart: {
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: 2
+                      },
+                      title: {
+                        text: nil
+                      },
+                      legend: {
+                        align: 'center',
+                        verticalAlign: 'bottom',
+                        layout: 'horizontal',
+                        symbolHeight: 12,
+                        symbolWidth: 12,
+                        symbolRadius: 6
+                      },
+                      xAxis: {
+                        labels: {
+                          style: {
+                            fontSize: '12px'
+                          }
+                        }
+                      },
+                      yAxis: {
+                        title: {
+                          text: 'Number of Visits'
+                        },
+                        min: 0
+                      },
+                      tooltip: {
+                        shared: true,
+                        crosshairs: true
+                      }
+                    },
+                    xtitle: "Time", 
+                    ytitle: "Visits", 
+                    id: 'requests' %>
               </div>
             </div>
           </div>
-        </section>
+        </div>
       </div>
 
     <% else %>
@@ -106,297 +223,4 @@
   </div>
 </div>
 
-<% content_for :styles do %>
-  <style>
-    /* Variables */
-    :root {
-      --primary-color: #2563eb;
-      --primary-light: #EEF2FF;
-      --success-color: #10B981;
-      --warning-color: #F59E0B;
-      --danger-color: #EF4444;
-      --text-primary: #111827;
-      --text-secondary: #6B7280;
-      --border-color: #E5E7EB;
-      --card-radius: 16px;
-      --transition: all 0.2s ease;
-      --section-spacing: 4rem;
-    }
 
-    /* Layout */
-    .dashboard-container {
-      padding: 2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .main-content {
-      width: 100%;
-    }
-
-    /* Header */
-    .dashboard-header {
-      margin-bottom: var(--section-spacing);
-    }
-
-    .header-top {
-      margin-bottom: 2rem;
-    }
-
-    .welcome-text h1 {
-      font-size: 2.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.75rem;
-    }
-
-    .gradient-text {
-      background: linear-gradient(135deg, var(--primary-color), #4F46E5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .date {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-    }
-
-    /* Search bar */
-    .search-bar-container {
-      width: auto;
-    }
-
-    .modern-search-bar {
-      position: relative;
-      display: flex;
-      align-items: center;
-      background: white;
-      border: 1px solid var(--border-color);
-      border-radius: var(--card-radius);
-      padding: 0.75rem 1rem;
-      transition: var(--transition);
-    }
-
-    .modern-search-bar:focus-within {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px var(--primary-light);
-    }
-
-    .modern-search-bar i {
-      color: var(--text-secondary);
-      margin-right: 0.75rem;
-    }
-
-    .modern-input {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 1rem;
-      background: transparent;
-    }
-
-    /* Sections */
-    .dashboard-sections {
-      display: flex;
-      flex-direction: column;
-      gap: var(--section-spacing);
-    }
-
-    .section-header {
-      margin-bottom: 2rem;
-    }
-
-    .section-header h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .section-header p {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-    }
-
-    /* Cards */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-    }
-
-    .action-card {
-      background: white;
-      border-radius: var(--card-radius);
-      padding: 2rem;
-      border: 1px solid var(--border-color);
-      transition: var(--transition);
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .action-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    .action-card h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.75rem;
-    }
-
-    .action-card p {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      line-height: 1.5;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.5rem;
-      background: var(--primary-light);
-      border-radius: var(--card-radius);
-      margin-bottom: 2rem;
-    }
-
-    .card-header h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--primary-color);
-      margin: 0;
-    }
-
-    /* Scores */
-    .score-display {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .score-circle {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      background: var(--primary-light);
-      color: var(--primary-color);
-    }
-
-    .score-circle.success { background: #ECFDF5; color: var(--success-color); }
-    .score-circle.warning { background: #FEF3C7; color: var(--warning-color); }
-    .score-circle.danger { background: #FEE2E2; color: var(--danger-color); }
-
-    .score-value {
-      font-size: 2rem;
-      font-weight: 600;
-    }
-
-    .score-label {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-    }
-
-    /* Resources */
-    .resources-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-    }
-
-    .resource-card {
-      background: white;
-      border-radius: var(--card-radius);
-      padding: 2rem;
-      border: 1px solid var(--border-color);
-      display: flex;
-      gap: 1.5rem;
-      transition: var(--transition);
-    }
-
-    .resource-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    .resource-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: var(--primary-light);
-      color: var(--primary-color);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-    }
-
-    .resource-content {
-      flex: 1;
-    }
-
-    .resource-content h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .resource-content p {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      line-height: 1.5;
-      margin-bottom: 1rem;
-    }
-
-    /* Empty state */
-    .empty-state {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 400px;
-    }
-
-    .empty-state-content {
-      text-align: center;
-      max-width: 400px;
-    }
-
-    .empty-state-content i {
-      font-size: 3rem;
-      color: var(--text-secondary);
-      margin-bottom: 1rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .dashboard-container {
-        padding: 1.5rem;
-      }
-
-      .dashboard-sections {
-        gap: 3rem;
-      }
-
-      .cards-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-
-      .action-card,
-      .resource-card {
-        padding: 1.5rem;
-      }
-
-      .section-header h2 {
-        font-size: 1.25rem;
-      }
-    }
-  </style>
-<% end %>
