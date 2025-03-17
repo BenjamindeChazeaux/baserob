@@ -103,6 +103,16 @@
       font-weight: 600;
       color: $text-primary;
     }
+    
+    .provider-logo {
+      max-height: 40px;
+      max-width: 40px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      margin-left: $spacing-sm;
+      border-radius: $border-radius-sm;
+    }
   }
 
   .action-card h3 {

@@ -75,6 +75,7 @@
                 <div class="card-front">
                   <div class="card-header">
                     <h3><%= provider_data[:name].capitalize %></h3>
+                    <img src="<%= asset_path("#{provider_data[:name].downcase}_logo.png") %>" alt="<%= provider_data[:name] %> logo" class="provider-logo">
                   </div>
                   <div class="score-display">
                     <div class="score-circle <%= score_color_class(provider_data[:score]) %>">
