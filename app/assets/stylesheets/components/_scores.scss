@@ -1,13 +1,114 @@
 .score-circle {
-  &.score-low {
-    background: var(--danger-color);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+  
+  &.score-low, &.danger {
+    background: linear-gradient(135deg, $danger-color, lighten($danger-color, 15%));
   }
 
-  &.score-medium {
-    background: var(--warning-color);
+  &.score-medium, &.warning {
+    background: linear-gradient(135deg, $warning-color, lighten($warning-color, 15%));
   }
 
-  &.score-high {
-    background: var(--success-color);
+  &.score-high, &.success {
+    background: linear-gradient(135deg, $success-color, lighten($success-color, 15%));
+  }
+  
+  .score-value {
+    font-size: $font-size-xxl;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.score-details {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  margin-top: $spacing-md;
+  
+  h4 {
+    font-size: $font-size-md;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+    padding-bottom: $spacing-xs;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .score-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-xs $spacing-sm;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: $border-radius-md;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    
+    .score-name {
+      font-weight: 500;
+      color: $text-primary;
+    }
+    
+    .score-value {
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: $border-radius-sm;
+      font-size: $font-size-sm;
+      
+      &.success {
+        background-color: rgba($success-color, 0.1);
+        color: $success-color;
+      }
+      
+      &.warning {
+        background-color: rgba($warning-color, 0.1);
+        color: $warning-color;
+      }
+      
+      &.danger {
+        background-color: rgba($danger-color, 0.1);
+        color: $danger-color;
+      }
+    }
+  }
+}
+
+.score-trend-indicator {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  
+  &.up {
+    color: $success-color;
+  }
+  
+  &.down {
+    color: $danger-color;
+  }
+  
+  &.neutral {
+    color: $text-secondary;
   }
 }

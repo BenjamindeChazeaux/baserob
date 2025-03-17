@@ -6,8 +6,9 @@
 %>
 
 
-<div class="sidebar" id="sidebar" data-controller="sidebar" data-sidebar-target="sidebar">
-  <button class="pin-button" id="pin-sidebar">
+<div data-controller="sidebar" data-action="mouseenter->sidebar#expandSidebar mouseleave->sidebar#collapseSidebar">
+<div data-sidebar-target="sidebar" class="sidebar">
+<button class="pin-button" id="pin-sidebar">
     <i class="fas fa-thumbtack"></i>
   </button>
 
@@ -48,5 +49,5 @@
       <% end %>
     <% end %>
   </nav>
-  
+  </div>
 </div>

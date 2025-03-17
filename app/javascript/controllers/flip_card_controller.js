@@ -1,22 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 
+// Contrôleur Stimulus pour les flip cards
 export default class extends Controller {
-  static targets = ["card"]
-
   connect() {
-    this.cardTargets.forEach(card => {
-      card.addEventListener('click', this.flip.bind(this))
-    })
+    console.log("Flip card controller connected");
   }
-
-  disconnect() {
-    this.cardTargets.forEach(card => {
-      card.removeEventListener('click', this.flip.bind(this))
-    })
-  }
-
-  flip(event) {
-    const card = event.currentTarget
-    card.classList.toggle('flipped')
+  
+  flip() {
+    this.element.classList.toggle("flip");
   }
 }

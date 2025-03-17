@@ -10,3 +10,4 @@ pin "@popperjs/core", to: "popper.js", preload: true
 pin "chartkick", to: "chartkick.js"
 pin "Chart.bundle", to: "Chart.bundle.js"
 pin "@rails/actioncable", to: "@rails--actioncable.js" # @8.0.100
+pin "flip_cards", to: "flip_cards.js"

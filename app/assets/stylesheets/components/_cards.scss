@@ -44,37 +44,224 @@
     border-radius: $border-radius-lg;
     box-shadow: $card-shadow;
     padding: $spacing-lg;
-    transition: transform 0.3s, box-shadow 0.3s;
     cursor: pointer;
+    position: relative;
+    height: 300px; /* Hauteur fixe */
+    perspective: 1000px; /* Perspective pour l'effet 3D */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     
     &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(249, 16, 16, 0.08);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  /* Styles pour les faces avant et arrière */
+  .card-front,
+  .card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Cache la face arrière quand retournée */
+    transition: transform 0.6s ease;
+    padding: $spacing-lg;
+    border-radius: $border-radius-lg;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Style pour la face avant */
+  .card-front {
+    background: $card-bg;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  /* Position initiale de la face arrière (retournée) */
+  .card-back {
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(124, 58, 237, 0.1));
+    border: 1px solid rgba(124, 58, 237, 0.2);
+  }
+
+  /* Quand la carte est retournée */
+  .action-card.flip .card-front {
+    transform: rotateY(180deg);
+  }
+
+  .action-card.flip .card-back {
+    transform: rotateY(0);
+  }
+
+  /* Styles de base pour le contenu des cartes */
+  .card-header {
+    margin-bottom: $spacing-md;
+    
+    h3 {
+      margin-bottom: 0;
+      font-weight: 600;
+      color: $text-primary;
     }
     
-    .card-icon {
-      width: 48px;
-      height: 48px;
-      background: rgba($primary-color, 0.1);
-      border-radius: $border-radius-md;
+    .provider-logo {
+      max-height: 40px;
+      max-width: 40px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      margin-left: $spacing-sm;
+      border-radius: $border-radius-sm;
+    }
+  }
+
+  .action-card h3 {
+    font-size: $font-size-lg;
+    margin-bottom: $spacing-xs;
+  }
+
+  .action-card p {
+    color: $text-secondary;
+    margin-bottom: $spacing-md;
+  }
+  
+  /* Styles pour l'affichage du score */
+  .score-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+  }
+  
+  .score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: $spacing-md;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    &.success {
+      background: linear-gradient(135deg, $success-color, lighten($success-color, 15%));
+    }
+    
+    &.warning {
+      background: linear-gradient(135deg, $warning-color, lighten($warning-color, 15%));
+    }
+    
+    &.danger {
+      background: linear-gradient(135deg, $danger-color, lighten($danger-color, 15%));
+    }
+    
+    .score-value {
+      font-size: $font-size-xxl;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Indicateur de progression/régression */
+    &::after {
+      content: attr(data-trend);
+      position: absolute;
+      bottom: -5px;
+      right: -5px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: $spacing-md;
-      
-      i {
-        color: $primary-color;
-        font-size: $font-size-lg;
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    &[data-trend="↑"] {
+      &::after {
+        color: $success-color;
       }
     }
     
-    h3 {
-      font-size: $font-size-lg;
-      margin-bottom: $spacing-xs;
+    &[data-trend="↓"] {
+      &::after {
+        color: $danger-color;
+      }
     }
     
-    p {
-      color: $text-secondary;
-      margin-bottom: $spacing-md;
+    &[data-trend="→"] {
+      &::after {
+        color: $text-secondary;
+      }
     }
-  } 
+  }
+  
+  .score-label {
+    font-size: $font-size-md;
+    font-weight: 500;
+    color: $text-secondary;
+    margin-top: $spacing-xs;
+  }
+  
+  .score-trend {
+    font-size: $font-size-sm;
+    margin-top: $spacing-xs;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &.up {
+      color: $success-color;
+    }
+    
+    &.down {
+      color: $danger-color;
+    }
+    
+    &.neutral {
+      color: $text-secondary;
+    }
+    
+    .trend-value {
+      margin-left: 4px;
+      font-weight: 600;
+    }
+  }
+  
+  /* Styles pour les détails du score */
+  .details-content {
+    margin-top: $spacing-md;
+    
+    p {
+      margin-bottom: $spacing-sm;
+      font-size: $font-size-sm;
+    }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: $spacing-md 0;
+      
+      li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: $spacing-xs 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        strong {
+          color: $text-primary;
+        }
+      }
+    }
+  }
+  

@@ -1,28 +1,34 @@
 <!-- Provider Card -->
-<div class="action-card provider-card" data-provider="<%= provider[:name].downcase %>">
-  <div class="card-header">
-    <h3><%= provider[:name].capitalize %></h3>
+<div class="action-card provider-card" 
+     data-provider="<%= provider[:name].downcase %>"
+     data-controller="flip-card"
+     data-action="click->flip-card#flip">
+  <!-- Face avant -->
+  <div class="card-front">
+    <div class="card-header">
+      <h3><%= provider[:name].capitalize %></h3>
+    </div>
+    <div class="score-display">
+      <div class="score-circle <%= score_color_class(provider[:global_score]) %>">
+        <span class="score-value"><%= provider[:global_score].round %>%</span>
+      </div>
+      <p class="score-label">Score global</p>
+    </div>
   </div>
-  <div class="score-display">
-    <div class="score-circle <%= score_color_class(provider[:global_score]) %>">
-      <span class="score-value"><%= provider[:global_score].round %>%</span>
+  
+  <!-- Face arrière -->
+  <div class="card-back">
+    <div class="card-header">
+      <h3>Details for <%= provider[:name].capitalize %></h3>
     </div>
-    <p class="score-label">Score global</p>
-  </div>
-  <div class="metrics-grid">
-    <div class="metric">
-      <span class="metric-label">Position</span>
-      <span class="metric-value"><%= provider[:position_score].round(2) %>%</span>
-    </div>
-    <div class="metric">
-      <span class="metric-label">Mentions</span>
-      <span class="metric-value"><%= provider[:reference_score].round(2) %>%</span>
-    </div>
-    <div class="metric">
-      <span class="metric-label">URL</span>
-      <span class="metric-value <%= provider[:url_presence] ? 'text-success' : 'text-danger' %>">
-        <%= provider[:url_presence] ? "100%" : "0%" %>
-      </span>
+    <div class="details-content">
+      <p>Here are the details of the analysis for this AI provider:</p>
+      <ul>
+        <li><strong>Position score</strong>: <%= provider[:position_score].round(2) %>%</li>
+        <li><strong>Reference score</strong>: <%= provider[:reference_score].round(2) %>%</li>
+        <li><strong>URL presence</strong>: <%= provider[:url_presence] ? "Yes" : "No" %></li>
+      </ul>
+      <p class="tip">Click again to return to the summary</p>
     </div>
   </div>
 </div>
@@ -30,23 +36,46 @@
 <style>
   .provider-card {
     background: white;
-    border-radius: var(--card-radius);
-    padding: 1.5rem;
+    border-radius: 16px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    animation: fadeIn 0.3s ease-out;
+    height: 300px;
+    perspective: 1000px;
+  }
+
+  .card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    padding: 1.5rem;
+    backface-visibility: hidden;
+    transition: transform 0.6s ease;
+    border-radius: 16px;
+    background: white;
+  }
+
+  .card-back {
+    transform: rotateY(180deg);
+  }
+
+  .action-card.flip .card-front {
+    transform: rotateY(180deg);
+  }
+
+  .action-card.flip .card-back {
+    transform: rotateY(0);
   }
 
   .card-header {
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid #E5E7EB;
     padding-bottom: 1rem;
+    margin-bottom: 1rem;
   }
 
   .card-header h3 {
     margin: 0;
-    color: var(--text-primary);
+    color: #111827;
     font-size: 1.25rem;
   }
 
@@ -62,7 +91,7 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto 1rem;
-    background: var(--primary-color);
+    background: #2563eb;
     color: white;
   }
 
@@ -72,49 +101,25 @@
   }
 
   .score-label {
-    color: var(--text-secondary);
+    color: #6B7280;
     margin: 0;
   }
 
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    text-align: center;
-  }
-
-  .metric {
+  .details-content {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
   }
 
-  .metric-label {
-    color: var(--text-secondary);
+  .details-content ul {
+    padding-left: 1.5rem;
+  }
+
+  .tip {
     font-size: 0.875rem;
-  }
-
-  .metric-value {
-    color: var(--text-primary);
-    font-weight: 500;
-  }
-
-  .text-success {
-    color: var(--success-color);
-  }
-
-  .text-danger {
-    color: var(--danger-color);
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    color: #6B7280;
+    font-style: italic;
+    margin-top: auto;
+    text-align: center;
   }
 </style>
