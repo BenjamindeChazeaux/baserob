@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'resources/index'
+  get 'resources/show'
   devise_for :users
   root to: "pages#home"
   #
@@ -33,6 +35,11 @@ Rails.application.routes.draw do
   end
   resources :requests, only: [:index, :create]
   resources :keywords, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+
+  # Routes pour les ressources (blog GEO)
+  resources :resources, only: [:index, :show]
+  get 'blog', to: 'resources#index', as: :blog
+  get 'blog/:slug', to: 'resources#show', as: :blog_article
 
   # Autres routes personnalisées
   get 'dashboard', to: 'dashboard#index'

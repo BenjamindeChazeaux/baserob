@@ -1,0 +1,267 @@
+<div class="blog-container">
+  <div class="article-header">
+    <div class="container">
+      <div class="category-tag mb-3"><%= @resource.category %></div>
+      <h1><%= @resource.title %></h1>
+      
+      <div class="article-meta mb-4">
+        <span class="author"><i class="fi fi-tr-user"></i> <%= @resource.author %></span>
+        <span class="date"><i class="fi fi-tr-calendar"></i> <%= @resource.published_at.strftime("%B %d, %Y") %></span>
+        <span class="reading-time"><i class="fi fi-tr-clock"></i> <%= @resource.calculate_reading_time %> min read</span>
+      </div>
+      
+      <% if @resource.cover_image.present? %>
+        <div class="featured-image mb-5">
+          <%= image_tag @resource.cover_image, alt: @resource.title, class: "img-fluid rounded" %>
+        </div>
+      <% else %>
+        <div class="featured-image mb-5">
+          <%= image_tag "default-blog-cover.jpg", alt: @resource.title, class: "img-fluid rounded" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <!-- Contenu de l'article -->
+        <div class="article-content">
+          <%= simple_format(@resource.content) %>
+        </div>
+        
+        <!-- Tags et partage -->
+        <div class="article-footer mt-5">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="article-tags">
+              <span class="tag"><%= @resource.category %></span>
+              <span class="tag">GEO</span>
+              <span class="tag">AI</span>
+            </div>
+            
+            <div class="article-share">
+              <span>Share:</span>
+              <a href="#" class="share-icon"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="share-icon"><i class="fab fa-linkedin"></i></a>
+              <a href="#" class="share-icon"><i class="fab fa-facebook"></i></a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Auteur -->
+        <div class="author-box mt-5 p-4">
+          <div class="d-flex">
+            <div class="author-avatar">
+              <img src="https://ui-avatars.com/api/?name=<%= @resource.author.gsub(' ', '+') %>&background=4F46E5&color=fff" alt="<%= @resource.author %>" class="rounded-circle">
+            </div>
+            <div class="author-info ms-3">
+              <h4><%= @resource.author %></h4>
+              <p>Expert en Generative Engine Optimization avec plusieurs années d'expérience dans l'optimisation de contenu pour les moteurs de recherche basés sur l'IA.</p>
+              <div class="author-social">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <!-- Sidebar -->
+        <div class="article-sidebar">
+          <!-- Newsletter -->
+          <div class="sidebar-widget p-4 mb-4">
+            <h4>Stay Updated</h4>
+            <p>Subscribe to our newsletter for the latest GEO insights.</p>
+            <form class="newsletter-form mt-3">
+              <div class="input-group mb-3">
+                <input type="email" class="form-control" placeholder="Your email address">
+                <button class="btn btn-primary" type="submit">Subscribe</button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Articles connexes -->
+          <div class="sidebar-widget p-4">
+            <h4>Related Articles</h4>
+            <div class="related-articles">
+              <% @related_resources.each do |related| %>
+                <div class="related-article mb-3">
+                  <div class="row g-0">
+                    <div class="col-4">
+                      <%= image_tag related.cover_image.presence || "default-blog-cover.jpg", alt: related.title, class: "img-fluid rounded" %>
+                    </div>
+                    <div class="col-8 ps-3">
+                      <h5><%= link_to related.title, blog_article_path(related.slug) %></h5>
+                      <div class="small text-muted">
+                        <i class="fi fi-tr-calendar"></i> <%= related.published_at.strftime("%b %d, %Y") %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- CTA -->
+  <div class="cta-section mt-5 py-5">
+    <div class="container text-center">
+      <h2>Ready to optimize your content for AI?</h2>
+      <p class="lead mb-4">Get started with our GEO tools and see the difference in your content performance.</p>
+      <a href="#" class="btn btn-primary btn-lg">Get Started</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .blog-container {
+    background-color: #f8f9fa;
+    padding-bottom: 3rem;
+  }
+  
+  .article-header {
+    padding: 4rem 0 2rem;
+    text-align: center;
+  }
+  
+  .article-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  
+  .category-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: rgba(79, 70, 229, 0.1);
+    color: #4F46E5;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .article-meta {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  .featured-image img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+  
+  .article-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #343a40;
+  }
+  
+  .article-content p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .article-content h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  
+  .article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+  }
+  
+  .article-tags .tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: rgba(79, 70, 229, 0.1);
+    color: #4F46E5;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+  }
+  
+  .share-icon {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color: #e9ecef;
+    color: #495057;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .share-icon:hover {
+    background-color: #4F46E5;
+    color: white;
+  }
+  
+  .author-box {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .author-avatar img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .author-social a {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color: #e9ecef;
+    color: #495057;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .author-social a:hover {
+    background-color: #4F46E5;
+    color: white;
+  }
+  
+  .sidebar-widget {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .related-article h5 {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .related-article h5 a {
+    color: #343a40;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .related-article h5 a:hover {
+    color: #4F46E5;
+  }
+  
+  .cta-section {
+    background-color: #4F46E5;
+    color: white;
+  }
+</style>

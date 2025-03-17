@@ -1,0 +1,224 @@
+<div class="blog-container">
+  <div class="blog-header">
+    <div class="container">
+      <h1>Generative Engine Optimization Resources</h1>
+      <p class="lead">Explore our latest insights, strategies, and case studies on GEO to optimize your content for AI-driven search.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Filtres par catégorie -->
+    <div class="category-filter mb-5">
+      <div class="d-flex flex-wrap justify-content-center">
+        <a href="#" class="category-badge active">All</a>
+        <% Resource::CATEGORIES.each do |category| %>
+          <a href="#" class="category-badge"><%= category %></a>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @featured_resource.present? %>
+      <!-- Article en vedette -->
+      <div class="featured-article mb-5">
+        <div class="row g-0">
+          <div class="col-md-6">
+            <div class="featured-image">
+              <%= image_tag @featured_resource.cover_image.presence || "default-blog-cover.jpg", alt: @featured_resource.title, class: "img-fluid rounded-start" %>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="featured-content p-4">
+              <span class="featured-badge">Featured</span>
+              <span class="category-tag"><%= @featured_resource.category %></span>
+              <h2><%= @featured_resource.title %></h2>
+              <p class="article-summary"><%= @featured_resource.short_summary(200) %></p>
+              <div class="article-meta">
+                <span class="author"><i class="fi fi-tr-user"></i> <%= @featured_resource.author %></span>
+                <span class="date"><i class="fi fi-tr-calendar"></i> <%= @featured_resource.published_at.strftime("%B %d, %Y") %></span>
+                <span class="reading-time"><i class="fi fi-tr-clock"></i> <%= @featured_resource.calculate_reading_time %> min read</span>
+              </div>
+              <%= link_to "Read Article", blog_article_path(@featured_resource.slug), class: "btn btn-primary mt-3" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Liste des articles -->
+    <div class="articles-grid">
+      <div class="row">
+        <% @resources.reject { |r| r == @featured_resource }.each do |resource| %>
+          <div class="col-md-4 mb-4">
+            <div class="article-card">
+              <div class="article-image">
+                <%= image_tag resource.cover_image.presence || "default-blog-cover.jpg", alt: resource.title, class: "img-fluid" %>
+                <span class="category-tag"><%= resource.category %></span>
+              </div>
+              <div class="article-content">
+                <h3><%= resource.title %></h3>
+                <p><%= resource.short_summary %></p>
+                <div class="article-meta">
+                  <span class="author"><i class="fi fi-tr-user"></i> <%= resource.author %></span>
+                  <span class="date"><i class="fi fi-tr-calendar"></i> <%= resource.published_at.strftime("%B %d, %Y") %></span>
+                  <span class="reading-time"><i class="fi fi-tr-clock"></i> <%= resource.calculate_reading_time %> min read</span>
+                </div>
+                <%= link_to "Read More", blog_article_path(resource.slug), class: "read-more" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container text-center mt-5">
+      <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+          </li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Newsletter Signup -->
+    <div class="newsletter-section mt-5 p-5 text-center">
+      <h2>Stay Updated on GEO Trends</h2>
+      <p>Subscribe to our newsletter to receive the latest insights on Generative Engine Optimization.</p>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <form class="newsletter-form">
+            <div class="input-group mb-3">
+              <input type="email" class="form-control" placeholder="Your email address" aria-label="Email address">
+              <button class="btn btn-primary" type="submit">Subscribe</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .blog-container {
+    background-color: #f8f9fa;
+    padding-bottom: 3rem;
+  }
+  
+  .blog-header {
+    background-color: #4F46E5;
+    color: white;
+    padding: 4rem 0;
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+  
+  .category-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    border-radius: 2rem;
+    background-color: #e9ecef;
+    color: #495057;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+  
+  .category-badge.active, .category-badge:hover {
+    background-color: #4F46E5;
+    color: white;
+  }
+  
+  .featured-article {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
+  
+  .featured-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #4F46E5;
+    color: white;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .category-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: rgba(79, 70, 229, 0.1);
+    color: #4F46E5;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+  }
+  
+  .article-card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    height: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  .article-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .article-image {
+    position: relative;
+  }
+  
+  .article-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .article-image .category-tag {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+  
+  .article-content {
+    padding: 1.5rem;
+  }
+  
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 1rem;
+  }
+  
+  .read-more {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #4F46E5;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .read-more:hover {
+    text-decoration: underline;
+  }
+  
+  .newsletter-section {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+</style>
