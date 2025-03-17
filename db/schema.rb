@@ -1,3 +1,14 @@
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
+#
+# It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2025_03_17_091131) do
   # These are extensions that must be enabled in order to support this database
@@ -20,6 +31,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_17_091131) do
     t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_companies_on_user_id"
   end
 
   create_table "company_ai_providers", force: :cascade do |t|
@@ -133,6 +146,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_17_091131) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "companies", "users"
   add_foreign_key "company_ai_providers", "ai_providers"
   add_foreign_key "company_ai_providers", "companies"
   add_foreign_key "competitor_scores", "competitors"
