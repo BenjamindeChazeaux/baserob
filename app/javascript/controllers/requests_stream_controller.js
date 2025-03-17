@@ -45,6 +45,7 @@ export default class extends Controller {
 
   findCurrentChart() {
     this.chart = Chartkick.charts['requests']
+    console.log(this.chart)
   }
 
   fadeTurboFrames() {

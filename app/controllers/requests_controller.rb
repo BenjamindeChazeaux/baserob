@@ -31,7 +31,7 @@ class RequestsController < ApplicationController
 
     group_method = if timeline_param == "today"
        :group_by_hour
-      elsif ["1_week", "1_month"].include?(timeline_param)
+      elsif ["1_week", "1_month", "3_months"].include?(timeline_param)
         :group_by_day
       else
         :group_by_week
@@ -62,7 +62,16 @@ class RequestsController < ApplicationController
     @req = Request.new(params_request)
     @req.company = @company
     @req.save!
-    head :no_content
+
+    respond_to do |format|
+      format.turbo_stream do
+        top_ai_provider, top_ai_count = get_top_ai_provider(@req)
+        render turbo_stream: turbo_stream.replace(:requests, partial: "requests/requests",
+          target: "requests_list",
+          locals: { company: @req.company, top_ai_count: top_ai_count, top_ai_provider: top_ai_provider })
+      end
+      format.html { head :no_content }
+    end
   end
 
   private
@@ -76,6 +85,19 @@ class RequestsController < ApplicationController
     if @company.nil?
       render json: {error: 'Unauthorized'}, status: :unauthorized
     end
+  end
+
+  def get_top_ai_provider(request)
+
+    top_ai_provider = request.company.ai_providers
+        .joins(:requests)
+        .where(requests: { company_id: request.company.id })
+        .group('ai_providers.id')
+        .order('COUNT(requests.id) DESC')
+        .first
+
+    top_ai_count = top_ai_provider ? request.company.requests.where(ai_provider: top_ai_provider).count : 0
+      return [top_ai_provider, top_ai_count]
   end
 end
 

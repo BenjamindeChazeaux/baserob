@@ -9,7 +9,7 @@
         </div>
     </header>
 
-    
+
     <!-- Filtres de recherche -->
       <div class="mt-2"
            data-controller="requests-stream"
@@ -58,8 +58,7 @@
       </div>
 
     <!-- Graphique et métriques -->
-    <turbo-frame id="request-chart">
-      
+    <div id="request-chart">
 
       <div style="display: flex; gap: 20px;">
         <!-- Graphique (côté gauche) -->
@@ -70,7 +69,7 @@
             </div>
             <div class="card-body">
               <div class="chart-container" style="height: 490px;">
-                <%= line_chart @requests_by_date_and_ai_provider, 
+                <%= line_chart @requests_by_date_and_ai_provider,
                     curve: false,
                     points: false,
                     height: "450px",
@@ -109,8 +108,8 @@
                         crosshairs: true
                       }
                     },
-                    xtitle: "Time", 
-                    ytitle: "Visits", 
+                    xtitle: "Time",
+                    ytitle: "Visits",
                     id: 'requests' %>
               </div>
             </div>
@@ -119,68 +118,23 @@
 
         <!-- Cartes de métriques (côté droit) -->
         <div style="width: 250px;">
-          <% 
+          <%
             top_ai_provider = @company.ai_providers
               .joins(:requests)
               .where(requests: { company_id: @company.id })
               .group('ai_providers.id')
               .order('COUNT(requests.id) DESC')
               .first
-            
+
             top_ai_count = top_ai_provider ? @company.requests.where(ai_provider: top_ai_provider).count : 0
           %>
-          
-          <!-- Carte 1: Volume total des visites -->
-          <div class="metric-card mb-3" style="height: auto; padding: 15px;">
-            <div class="metric-header">
-              <h3>Total Visits</h3>
-              <div class="metric-icon">
-                <i class="fi fi-tr-users"></i>
-              </div>
-            </div>
-            <div class="metric-value">
-              <span class="value"><%= @company.requests.count %></span>
-            </div>
-            <p class="metric-period">All time</p>
-          </div>
 
-          <!-- Carte 2: Volume total de visites issues des IA -->
-          <div class="metric-card mb-3" style="height: auto; padding: 15px;">
-            <div class="metric-header">
-              <h3>AI-Driven Visits</h3>
-              <div class="metric-icon">
-                <i class="fi fi-tr-robot"></i>
-              </div>
-            </div>
-            <div class="metric-value">
-              <span class="value"><%= @company.requests.where.not(ai_provider_id: nil).count %></span>
-              <span class="change positive">
-                <i class="fi fi-tr-arrow-up"></i>
-                <%= ((@company.requests.where.not(ai_provider_id: nil).count.to_f / @company.requests.count) * 100).round(1) %>%
-              </span>
-            </div>
-            <p class="metric-period">of total visits</p>
-          </div>
+          <%= turbo_stream_from "requests" %>
 
-          <!-- Carte 3: IA d'où proviennent le plus de visiteurs -->
-          <div class="metric-card" style="height: auto; padding: 15px;">
-            <div class="metric-header">
-              <h3>Top AI Source</h3>
-              <div class="metric-icon">
-                <i class="fi fi-tr-chart-network"></i>
-              </div>
-            </div>
-            <div class="metric-value">
-              <span class="value"><%= top_ai_provider&.name&.capitalize || "None" %></span>
-            </div>
-            <p class="metric-period"><%= top_ai_count %> visits</p>
-          </div>
+          <%= render "requests", company: @company, top_ai_provider: top_ai_provider, top_ai_count: top_ai_count %>
+
         </div>
       </div>
-    </turbo-frame>
-    
-    <div class="text-center mb-4">
-      <h5><strong>Total <%= @ai_provider&.name || "All AI Providers" %> Requests:</strong> <span class="badge bg-primary"> <%= @requests.count %> </span></h5>
     </div>
 
     <div class="text-center mt-4">

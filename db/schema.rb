@@ -68,20 +68,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_17_091131) do
 
   create_table "geo_scorings", force: :cascade do |t|
     t.integer "score"
-    t.integer "frequency_score"
-    t.integer "position_score"
-    t.integer "link_score"
+    t.boolean "mentioned", default: false
+    t.integer "position"
+    t.string "url"
+    t.text "ai_responses", default: [], array: true
     t.bigint "keyword_id", null: false
     t.bigint "ai_provider_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json "ai_responses", default: []
-    t.boolean "url_presence"
-    t.string "url_value"
-    t.integer "reference_score"
-    t.boolean "mentioned", default: false
-    t.integer "position"
-    t.string "url"
     t.index ["ai_provider_id"], name: "index_geo_scorings_on_ai_provider_id"
     t.index ["keyword_id"], name: "index_geo_scorings_on_keyword_id"
   end

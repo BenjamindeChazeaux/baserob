@@ -55,4 +55,5 @@ class GeoScoringsController < ApplicationController
       url_presence_score: geo_scorings.where.not(url: nil).count.fdiv(geo_scorings.count) * 100
     }
   end
+
 end
