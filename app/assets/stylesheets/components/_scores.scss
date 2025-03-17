@@ -1,0 +1,13 @@
+.score-circle {
+  &.score-low {
+    background: var(--danger-color);
+  }
+
+  &.score-medium {
+    background: var(--warning-color);
+  }
+
+  &.score-high {
+    background: var(--success-color);
+  }
+}
