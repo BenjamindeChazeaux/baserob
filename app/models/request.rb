@@ -9,8 +9,25 @@ class Request < ApplicationRecord
 
   before_validation :set_ai_provider
   after_create :broadcast_request
+  after_create_commit :broadcast_requests
 
   private
+
+  def broadcast_requests
+
+    top_ai_provider = self.company.ai_providers
+      .joins(:requests)
+      .where(requests: { company_id: self.company.id })
+      .group('ai_providers.id')
+      .order('COUNT(requests.id) DESC')
+      .first
+
+    top_ai_count = top_ai_provider ? self.company.requests.where(ai_provider: top_ai_provider).count : 0
+    broadcast_replace_to "requests",
+                        partial: "requests/requests",
+                        target: "requests_list",
+                        locals: { company: self.company, top_ai_count: top_ai_count, top_ai_provider: top_ai_provider }
+  end
 
   def set_ai_provider
     ai_provider = AiProvider.find_by_referrer(self.referrer)

@@ -2,7 +2,8 @@ class CreateGeoScorings < ActiveRecord::Migration[7.1]
   def change
     create_table :geo_scorings do |t|
       t.integer :score
-      t.boolean :mentioned
+      t.boolean :mentioned, default: false
+      #Ex:- :default =>''
       t.integer :position
       t.string :url
       t.text :ai_responses, array: true, default: []
