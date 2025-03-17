@@ -65,6 +65,22 @@
             }
           }
         <% end %>
+        
+        // Script pour les flip cards
+        console.log("DOM loaded in layout, initializing flip cards");
+        
+        // Sélectionner toutes les cartes
+        const cards = document.querySelectorAll(".action-card");
+        console.log("Found " + cards.length + " cards in layout");
+        
+        // Ajouter l'écouteur d'événement à chaque carte
+        cards.forEach(function(card) {
+          card.addEventListener("click", function() {
+            console.log("Card clicked in layout");
+            this.classList.toggle("flip");
+            console.log("Toggled flip class in layout");
+          });
+        });
       });
     </script>
   </body>
