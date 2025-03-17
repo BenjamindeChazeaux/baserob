@@ -1,4 +1,4 @@
-<div class="dashboard-container" 
+<div class="dashboard-container"
     data-controller="quick-start"
     data-quick-start-is-opened-value="<%= @needs_company_setup %>">
     <%= render "shared/quick_start_modal" %>
@@ -32,8 +32,8 @@
           </div>
           <h3>Quick tracking setup</h3>
           <p>Generate your tracking dashboard in one click from your own data</p>
-          <a href="#" class="card-action" 
-          data-action="click->quick-start#openModal" 
+          <a href="#" class="card-action"
+          data-action="click->quick-start#openModal"
           id="openModalButton"
           style="font-size: 1.5em;">
             <i class="fi fi-rr-angle-square-right"></i>
@@ -69,6 +69,8 @@
             <canvas id="geoChart" height="120"></canvas>
           </div>
           <a href="<%= geo_scorings_path %>" class="card-action">
+
+            <%= pie_chart @company.requests.where.not(ai_provider_id: nil).count, donut: true %>
             See details
             <i class="fas fa-arrow-right"></i>
           </a>
