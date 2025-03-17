@@ -5,17 +5,17 @@ class GeoScoring < ApplicationRecord
 
   before_save :calculate_position, :calculate_score
 
-  private
-
   def calculate_score
-    score = if mentioned?
-      position.nil? ? 0 : (100 - (position.to_f / ai_responses.length * 100)).round(2)
+    self.score = if mentioned?
+      position.nil? ? 0 : (1 - (position.to_f / ai_responses.length) * 100).round(2)
     else
       0
     end
 
-    self.score = score
+    self.score
   end
+
+  private
 
   def calculate_position
     position = ai_responses.index do |element|

@@ -27,6 +27,7 @@
       </div>
     </header>
 
+
     <% if @keywords.present? && @selected_keyword.present? %>
       <div class="dashboard-sections">
         <!-- Overview section -->
@@ -40,14 +41,13 @@
               <h3><%= @selected_keyword.content %></h3>
             </div>
 
-            <!-- Average score card -->
-            <div class="action-card">
-              <div class="card-header">
-                <h3>Global Score</h3>
-              </div>
-              <p>Average score across providers</p>
-            </div>
+        <div class="action-card">
+          <div class="card-header">
+            <h3>Global Score</h3>
           </div>
+          <p><%= @global_score.round %>%</p>
+        </div>
+        </div>
         </section>
 
         <!-- Results section -->
@@ -66,7 +66,7 @@
                   <div class="score-circle <%= score_color_class(provider_data[:score]) %>">
                     <span class="score-value"><%= provider_data[:score].round %>%</span>
                   </div>
-                  <p class="score-label">Global score</p>
+                  <p class="score-label">Score</p>
                 </div>
               </div>
             <% end %>

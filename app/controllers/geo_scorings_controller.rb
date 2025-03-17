@@ -6,10 +6,26 @@ class GeoScoringsController < ApplicationController
 
   def index
     if @selected_keyword
-      @geo_scorings_data = calculate_provider_data(@company, @selected_keyword)
+      geo_scorings = GeoScoring.where(keyword: @selected_keyword)
+
+      grouped_scores = geo_scorings.group_by(&:ai_provider).map do |provider, scorings|
+        scores = scorings.flat_map { |scoring| 10.times.map { scoring.score || 0 } }
+        average_score = (scores.sum.to_f / scores.size).round(2)
+
+        {
+          name: provider.name,
+          score: average_score
+        }
+      end
+
+      @geo_scorings_data = grouped_scores
+      @global_score = (@geo_scorings_data.map { |data| data[:score] }.sum / @geo_scorings_data.size).round(2)
+    else
+      @geo_scorings_data = []
+      @global_score = 0
     end
   end
-
+  
   def history
     @history_scores = GeoScoring.where(keyword: @selected_keyword).order(created_at: :asc)
 
