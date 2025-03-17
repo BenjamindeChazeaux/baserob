@@ -1,0 +1,177 @@
+<!-- Selected Card -->
+<div class="action-card">
+  <h2>Keyword</h2>
+  <div class="content">
+    <h3><%= local_assigns.fetch(:selected_keyword, OpenStruct.new(content: 'No keyword selected')).content %></h3>
+    <div id="providers_count">
+      <p><i class="fas fa-robot"></i> Analyzed on <%= provider_data&.size || 0 %> AI</p>
+    </div>
+  </div>
+</div>
+
+<!-- Results Section -->
+<section class="results-section">
+  <div class="section-header">
+    <h2>Results by AI Provider</h2>
+    <p>Detailed score analysis</p>
+  </div>
+
+  <div id="provider_results" class="quick-actions">
+    <% if local_assigns[:status] == "analysis_started" %>
+      <div class="analysis-progress">
+        <div class="progress-spinner">
+          <i class="fas fa-circle-notch fa-spin"></i>
+        </div>
+        <p>Analyse en cours pour "<%= selected_keyword.content %>"...</p>
+        <div class="progress-bar">
+          <div class="progress-bar-inner"></div>
+        </div>
+      </div>
+    <% elsif local_assigns[:status] == "analysis_failed" %>
+      <div class="analysis-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>Une erreur est survenue : <%= local_assigns[:error] %></p>
+        <button onclick="retryAnalysis()" class="retry-button">
+          <i class="fas fa-redo"></i> Réessayer
+        </button>
+      </div>
+    <% elsif provider_data&.any? %>
+      <% provider_data.each do |provider| %>
+        <%= render 'provider_card', provider: provider %>
+      <% end %>
+    <% else %>
+      <div class="no-results">
+        <i class="fas fa-info-circle"></i>
+        <p>Aucun résultat disponible pour ce mot-clé.</p>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<style>
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .provider-card {
+    animation: fadeIn 0.3s ease-out;
+    background: white;
+    border-radius: var(--card-radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .analysis-progress {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: var(--card-radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    grid-column: 1 / -1;
+  }
+
+  .progress-spinner {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .progress-bar {
+    width: 100%;
+    max-width: 300px;
+    height: 4px;
+    background: var(--primary-light);
+    border-radius: 2px;
+    margin: 1rem auto 0;
+    overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    width: 30%;
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 2px;
+    animation: progress 2s ease-in-out infinite;
+  }
+
+  .analysis-error {
+    text-align: center;
+    padding: 2rem;
+    background: #FEF2F2;
+    border-radius: var(--card-radius);
+    color: var(--danger-color);
+    grid-column: 1 / -1;
+  }
+
+  .analysis-error i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .retry-button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .retry-button:hover {
+    background: #DC2626;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 2rem;
+    background: var(--primary-light);
+    border-radius: var(--card-radius);
+    color: var(--text-secondary);
+    grid-column: 1 / -1;
+  }
+
+  .no-results i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes progress {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .quick-actions {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<%= javascript_tag do %>
+  function retryAnalysis() {
+    const path = '<%= geo_scorings_path(keyword_id: selected_keyword&.id) %>';
+    Turbo.visit(path);
+  }
+<% end %>

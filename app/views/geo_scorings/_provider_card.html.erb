@@ -1,0 +1,120 @@
+<!-- Provider Card -->
+<div class="action-card provider-card" data-provider="<%= provider[:name].downcase %>">
+  <div class="card-header">
+    <h3><%= provider[:name].capitalize %></h3>
+  </div>
+  <div class="score-display">
+    <div class="score-circle <%= score_color_class(provider[:global_score]) %>">
+      <span class="score-value"><%= provider[:global_score].round %>%</span>
+    </div>
+    <p class="score-label">Score global</p>
+  </div>
+  <div class="metrics-grid">
+    <div class="metric">
+      <span class="metric-label">Position</span>
+      <span class="metric-value"><%= provider[:position_score].round(2) %>%</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">Mentions</span>
+      <span class="metric-value"><%= provider[:reference_score].round(2) %>%</span>
+    </div>
+    <div class="metric">
+      <span class="metric-label">URL</span>
+      <span class="metric-value <%= provider[:url_presence] ? 'text-success' : 'text-danger' %>">
+        <%= provider[:url_presence] ? "100%" : "0%" %>
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .provider-card {
+    background: white;
+    border-radius: var(--card-radius);
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .card-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+  }
+
+  .card-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+  }
+
+  .score-display {
+    text-align: center;
+  }
+
+  .score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    background: var(--primary-color);
+    color: white;
+  }
+
+  .score-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .score-label {
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .metric-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .metric-value {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .text-success {
+    color: var(--success-color);
+  }
+
+  .text-danger {
+    color: var(--danger-color);
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

@@ -1,0 +1,33 @@
+<!-- Global Score Card -->
+<div class="action-card">
+  <h2>Global Score</h2>
+  <div class="content">
+    <% if provider_data.present? %>
+      <div class="big-score"><%= global_score&.round(2) || 0 %>%</div>
+      <p>Average score across <%= provider_data&.size || 0 %> providers</p>
+    <% else %>
+      <div class="score-loading">
+        <i class="fas fa-circle-notch fa-spin"></i>
+        <p>Calcul en cours...</p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<style>
+  .score-loading {
+    text-align: center;
+    padding: 1rem 0;
+  }
+
+  .score-loading i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .score-loading p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+</style>

@@ -1,0 +1,79 @@
+<%# app/views/shared/_flash.html.erb %>
+<% if notice %>
+  <div class="flash-message notice" data-controller="flash" data-flash-target="message">
+    <div class="flash-content">
+      <i class="fas fa-info-circle"></i>
+      <%= notice %>
+    </div>
+    <button data-action="flash#dismiss" class="flash-dismiss">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+<% end %>
+
+<% if alert %>
+  <div class="flash-message alert" data-controller="flash" data-flash-target="message">
+    <div class="flash-content">
+      <i class="fas fa-exclamation-circle"></i>
+      <%= alert %>
+    </div>
+    <button data-action="flash#dismiss" class="flash-dismiss">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+<% end %>
+
+<style>
+  .flash-message {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: var(--card-radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .flash-message.notice {
+    background-color: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    color: #1E40AF;
+  }
+
+  .flash-message.alert {
+    background-color: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #991B1B;
+  }
+
+  .flash-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .flash-dismiss {
+    background: none;
+    border: none;
+    color: currentColor;
+    opacity: 0.7;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: opacity 0.2s;
+  }
+
+  .flash-dismiss:hover {
+    opacity: 1;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(-1rem);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+</style>
