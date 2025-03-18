@@ -1,4 +1,3 @@
-# Nettoyage de la base de données
 CompanyAiProvider.destroy_all
 CompetitorScore.destroy_all
 GeoScoring.destroy_all
@@ -8,7 +7,36 @@ Keyword.destroy_all
 AiProvider.destroy_all
 User.destroy_all
 Company.destroy_all
-puts "🚀 Seed destroyed"
+puts "===> Seed destroyed"
+
+# Vérification et initialisation des fournisseurs d'IA
+puts "Vérification des fournisseurs d'IA..."
+AiProvider::SERVICES.each do |provider_name|
+  provider = AiProvider.find_or_create_by(name: provider_name)
+  puts "  - #{provider_name}: #{provider.new_record? ? 'créé' : 'existant'}"
+end
+puts "Les fournisseurs d'IA sont prêts.\n\n"
+
+# Vérifie la connexion aux API si l'option est activée
+if ENV['TEST_API_CONNECTIONS'] == 'true'
+  puts "Vérification des connexions API..."
+  test_keyword = "Meilleure formation en intelligence artificielle en ligne"
+
+  AiProvider.all.each do |provider|
+    print "  - Test de #{provider.name}... "
+    begin
+      response = provider.analyze(test_keyword)
+      if response.is_a?(Array) && response.any?
+        puts "OK (#{response.size} réponses)"
+      else
+        puts "ATTENTION (réponse vide ou invalide)"
+      end
+    rescue => e
+      puts "ÉCHEC (#{e.message})"
+    end
+  end
+  puts "\n"
+end
 
 # Création des entreprises
 companies = Company.create!([
@@ -18,7 +46,7 @@ companies = Company.create!([
   { name: "Spotify", domain: "https://www.spotify.com" },
   { name: "GitHub", domain: "https://www.github.com" }
 ])
-puts "🏢 Company created"
+puts "===> Company created"
 
 company = Company.first
 
@@ -30,7 +58,7 @@ users = User.create!([
   { email: "yannick@gmail.com", password: "password4", company: company },
   { email: "test@test.com", password: "azerty", company: company }
 ])
-puts "👥 Users created"
+puts "===> Users created"
 
 # Création des AI Providers
 ai_providers = AiProvider.create!([
@@ -38,13 +66,13 @@ ai_providers = AiProvider.create!([
   { name: "anthropic" },
   { name: "perplexity" }
 ])
-puts "🤖 AI Providers created"
+puts "===> AI Providers created"
 
 # Association des AI Providers à l'entreprise
 ai_providers.each do |provider|
   CompanyAiProvider.create!(company: company, ai_provider: provider)
 end
-puts "🔗 AI Providers linked to company"
+puts "===> AI Providers linked to company"
 
 # Création des requêtes sur 3 jours
 end_time = Time.now - 10.minutes
@@ -64,11 +92,11 @@ end_time = Time.now - 10.minutes
         created_at: created_time,
         referrer: referrer
       )
-      puts "request n°#{Request.count} created"
+      puts "===> request n°#{Request.count} created"
     end
   end
 end
-puts "requests created"
+puts "===> requests created"
 
 
 # Création des mots-clés
@@ -77,9 +105,9 @@ keywords = Keyword.create!([
   { content: "Meilleur bootcamp de Machine Learning ?", company: company },
   { content: "Top écoles pour apprendre la Data Science", company: company }
 ])
-puts "🔍 Keywords created"
+puts "===> Keywords created"
 
-# ✅ Simulation des requêtes sur 3 jours
+# Crearion des requêtes sur 3 jours
 end_time = Time.now - 10.minutes
 (Date.new(2024, 9, 1)..end_time.to_date).each do |date|
   max_hour = date == end_time.to_date ? end_time.hour : 23
@@ -97,13 +125,13 @@ end_time = Time.now - 10.minutes
         created_at: created_time,
         referrer: referrer
       )
-      puts "📡 Request n°#{Request.count} created"
+      puts "===> Request n°#{Request.count} created"
     end
   end
 end
-puts "✅ Requests created"
+puts "===> Requests created"
 
-# ✅ Simulation des scores sur 3 jours pour chaque mot-clé et chaque AI Provider
+# creation de scores sur 3 jours pour chaque mot-clé et chaque AI Provider
 start_date = 3.days.ago.to_date
 end_date = Date.today
 
@@ -128,16 +156,16 @@ end_date = Date.today
         ai_provider: provider,
         position_score: position_score,
         frequency_score: frequency_score,
-        url_presence: url_present ? 100 : 0,  # ✅ Correction ici
+        url_presence: url_present ? 100 : 0,
         url_score: url_score,
         ai_responses: ai_responses,
-        created_at: date.to_time + rand(0..23).hours # Simule des requêtes à différentes heures
+        created_at: date.to_time + rand(0..23).hours
       )
     end
   end
 end
 
-puts "📊 GeoScoring data created for 3 days!"
+puts "===> GeoScoring data created for 3 days!"
 
 
 

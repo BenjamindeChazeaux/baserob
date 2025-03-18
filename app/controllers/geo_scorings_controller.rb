@@ -7,30 +7,27 @@ class GeoScoringsController < ApplicationController
   def index
     @geo_scorings_data = calculate_provider_data
     @global_score = calculate_global_score(@geo_scorings_data)
-    @requests_by_date_and_ai_provider = {} # Données vides pour le graphique, à remplir ultérieurement
+    @requests_by_date_and_ai_provider = {} 
   end
 
   private
 
-  # 1️⃣ Initialiser l'entreprise
+  # 1️ Initialiser l'entreprise
   def set_company
     @company = Company.find_by(id: params[:company_id]) || Company.first
-    logger.debug "Company loaded: #{@company&.name}"
   end
 
-  # 2️⃣ Charger les mots-clés liés à l'entreprise
+  # 2️ Charger les mots-clés liés à l'entreprise
   def set_keywords
     @keywords = @company.keywords
-    logger.debug "Keywords loaded: #{@keywords.pluck(:content)}"
   end
 
-  # 3️⃣ Définir le mot-clé sélectionné
+  # 3️ Définir le mot-clé sélectionné
   def set_selected_keyword
     @selected_keyword = @keywords.find_by(id: params[:keyword_id]) || @keywords.first
-    logger.debug "Selected Keyword: #{@selected_keyword&.content}"
   end
 
-  # 4️⃣ Calcul des scores par AI Provider
+  # 4️ Calcul des scores par AI Provider
   def calculate_provider_data
     return [] unless @selected_keyword
 
@@ -43,7 +40,7 @@ class GeoScoringsController < ApplicationController
       url_presence = current_geo_scoring&.url_presence || false
 
       # Calcul du score global
-      score = position_score * 0.5 + reference_score * 0.3 + (url_presence ? 100 : 0) * 0.2
+      score = position_score * 0.5 + reference_score * 0.3
 
       {
         name: provider.name,
@@ -55,7 +52,7 @@ class GeoScoringsController < ApplicationController
     end
   end
 
-  # 5️⃣ Calcul du Global Score
+  # 5️ Calcul du Global Score
   def calculate_global_score(providers)
     return 0 if providers.empty?
 
@@ -63,7 +60,6 @@ class GeoScoringsController < ApplicationController
     (total_score / providers.size).round
   end
 
-  # Helper pour déterminer la classe de couleur du score
   helper_method :score_color_class
   def score_color_class(score)
     case score

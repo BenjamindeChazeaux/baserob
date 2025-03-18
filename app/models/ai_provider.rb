@@ -6,6 +6,40 @@ class AiProvider < ApplicationRecord
   has_many :geo_scorings
   validates :name, presence: true, uniqueness: true, inclusion: { in: SERVICES }
 
+  # Renvoie un tableau de réponses pour un mot-clé donné
+  def analyze(keyword_content)
+    # Détermine la classe de service d'IA à utiliser
+    service_class = case name
+                    when 'openai'
+                      Ai::Models::OpenAi
+                    when 'anthropic'
+                      Ai::Models::Anthropic
+                    when 'perplexity'
+                      Ai::Models::Perplexity
+                    else
+                      raise "Fournisseur d'IA non supporté: #{name}"
+                    end
+
+    # Appelle le service d'IA et récupère le résultat
+    response = service_class.new(keyword_content).call
+
+    # Traitement de la réponse
+    begin
+      # Si la réponse est une chaîne JSON, on tente de la parser
+      if response.is_a?(String) && response.start_with?('[') && response.end_with?(']')
+        JSON.parse(response)
+      elsif response.is_a?(Array)
+        response
+      else
+        # Si ce n'est pas un format attendu, on tente de normaliser
+        [response.to_s]
+      end
+    rescue JSON::ParserError => e
+      Rails.logger.error("Erreur de parsing JSON pour #{name}: #{e.message}")
+      [response.to_s]
+    end
+  end
+
   def self.find_by_referrer(referrer)
     ai_provider = AiProvider.all.find { |ai_provider| referrer.include?(ai_provider.name) }
 
