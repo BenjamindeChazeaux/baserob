@@ -50,7 +50,7 @@
                 </div>
                 <div class="score-display">
                   <div class="score-circle success">
-                    <span class="score-value">85%</span>
+                    <span class="score-value">%</span>
                   </div>
                   <p class="score-label">Global score</p>
                 </div>
@@ -71,7 +71,7 @@
           </div>
           <div class="cards-grid">
             <% @geo_scorings_data.each do |provider_data| %>
-              <div class="action-card" data-controller="flip-card"> 
+              <div class="action-card" data-controller="flip-card">
                 <div class="card-front">
                   <div class="card-header">
                     <h3><%= provider_data[:name].capitalize %></h3>
@@ -162,7 +162,7 @@
             </div>
             <div class="card-body">
               <div class="chart-container" style="height: 490px;">
-                <%= line_chart @requests_by_date_and_ai_provider, 
+                <%= line_chart @requests_by_date_and_ai_provider,
                     curve: false,
                     points: false,
                     height: "450px",
@@ -201,8 +201,8 @@
                         crosshairs: true
                       }
                     },
-                    xtitle: "Time", 
-                    ytitle: "Visits", 
+                    xtitle: "Time",
+                    ytitle: "Visits",
                     id: 'requests' %>
               </div>
             </div>
