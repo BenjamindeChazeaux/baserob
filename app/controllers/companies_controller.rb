@@ -15,19 +15,19 @@ class CompaniesController < ApplicationController
 
   def create
     @company = current_user.build_company(company_params)
-    
+
     respond_to do |format|
       if @company.save
         current_user.update(company: @company)
         format.json { render json: { success: true, message: 'Company created successfully' } }
       else
-        format.json do 
+        format.json do
           render json: {
-            success: false, 
-            message: @company.errors.full_messages.join(', '), 
+            success: false,
+            message: @company.errors.full_messages.join(', '),
             formHTML: render_to_string(partial: 'companies/form', locals: { company: @company }, formats: [:html])
-          }, 
-          status: :unprocessable_entity 
+          },
+          status: :unprocessable_entity
         end
       end
     end
@@ -39,12 +39,12 @@ class CompaniesController < ApplicationController
 
   def update
     @company = current_user.company
-    
+
     respond_to do |format|
       if @company.update(company_params)
         # Mettre à jour le statut "needs_setup" de l'utilisateur
         current_user.update(needs_setup: false)
-        
+
         format.json { render json: { success: true, message: 'Company updated successfully' } }
       else
         format.json { render json: { success: false, message: @company.errors.full_messages.join(', ') }, status: :unprocessable_entity }
@@ -63,4 +63,5 @@ class CompaniesController < ApplicationController
   def company_params
     params.require(:company).permit(:name, :domain)
   end
+
 end

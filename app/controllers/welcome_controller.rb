@@ -1,6 +1,20 @@
 class WelcomeController < ApplicationController
+
   def index
     @company = Company.new
+
+
+    if current_user&.company.present?
+      real_company = current_user.company
+      @total_requests_count = real_company.requests.count
+      @ai_requests_count = real_company.requests.where.not(ai_provider_id: nil).count
+    else
+      real_company = nil
+      @total_requests_count = 0
+      @ai_requests_count = 0
+    end
+    # @non_ai_requests_count = real_company.requests.count - @ai_requests_count
+
   end
 
   def show
@@ -10,19 +24,4 @@ class WelcomeController < ApplicationController
     render 'pages/home'
   end
 
-  def ai_analytics
-    render 'ai_analytics/index'
-  end
-
-  def geo_scoring
-    render 'geo_scorings/index'
-  end
-
-  def website_crawling
-    render 'website_crawling/index'
-  end
-
-  def settings
-    render 'settings/index'
-  end
 end

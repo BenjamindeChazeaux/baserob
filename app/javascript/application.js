@@ -3,7 +3,6 @@ import "@hotwired/turbo-rails"
 import "controllers"
 import "@popperjs/core"
 import "bootstrap"
-import "flip_cards"
 
 import "Chart.bundle"
 import "chartkick"
