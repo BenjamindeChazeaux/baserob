@@ -6,7 +6,7 @@ class Company < ApplicationRecord
   has_many :ai_providers, through: :company_ai_providers
   has_many :keywords
   
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: false
   validates :domain, presence: true, format: { with: URI::DEFAULT_PARSER.make_regexp }
   before_validation :generate_token
 

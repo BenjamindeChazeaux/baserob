@@ -35,30 +35,57 @@
 
             <!-- Global score card -->
             <div class="action-card" data-controller="flip-card">
-              <div class="card-back">
-                <div class="card-header">
-                  <h3>Global Score</h3>
-                </div>
-                <p>Average score across providers</p>
-                <div>
-                  <%= render 'score_details', position_score: 78, frequency_score: 65, link_score: 92 %>
-                </div>
-              </div>
               <div class="card-front">
                 <div class="card-header">
-                  <h3>Score Details</h3>
+                  <h3>Global Score</h3>
+                  <i class="fas fa-chart-pie"></i>
                 </div>
                 <div class="score-display">
                   <div class="score-circle success">
                     <span class="score-value">85%</span>
                   </div>
-                  <p class="score-label">Global score</p>
-                </div>
-                <div class="details-content">
-                  <p>This represents the average performance across all AI providers.</p>
-                  <p>Click again to return to the front.</p>
+                  <p class="score-label">Performance across all AI providers</p>
                 </div>
               </div>
+              <div class="card-back">
+                <div class="card-header">
+                  <h3>Score Details</h3>
+                  <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="details-content">
+                  <p>Breakdown of your global score across all key metrics.</p>
+                  
+                  <div class="metric-row">
+                    <div class="metric-label">Position score</div>
+                    <div class="metric-value positive">78%</div>
+                  </div>
+                  <div class="score-progress">
+                    <div class="progress-fill high" style="width: 78%;"></div>
+                  </div>
+                  
+                  <div class="metric-row">
+                    <div class="metric-label">Frequency score</div>
+                    <div class="metric-value">65%</div>
+                  </div>
+                  <div class="score-progress">
+                    <div class="progress-fill medium" style="width: 65%;"></div>
+                  </div>
+                  
+                  <div class="metric-row">
+                    <div class="metric-label">Link score</div>
+                    <div class="metric-value positive">92%</div>
+                  </div>
+                  <div class="score-progress">
+                    <div class="progress-fill high" style="width: 92%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="action-card">
+              <div class="card-header">
+                <h3>GEO Scoring</h3>
+              </div>
+              <p>Analyze, track, and optimize brand presence on AI search engines thanks to your Generative Engine Optimization score</p>
             </div>
           </div>
         </section>
@@ -87,17 +114,44 @@
                 <div class="card-back">
                   <div class="card-header">
                     <h3>Details for <%= provider_data[:name].capitalize %></h3>
+                    <img src="<%= asset_path("#{provider_data[:name].downcase}_logo.png") %>" alt="<%= provider_data[:name] %> logo" class="provider-logo">
                   </div>
                   <div class="details-content">
-                    <p>This score is based on several factors, including position, frequency, and link building.</p>
+                    <p>This score is based on multiple factors that determine your brand visibility.</p>
+                    
+                    <div class="metric-row">
+                      <div class="metric-label">Position score</div>
+                      <div class="metric-value <%= provider_data[:position_score].to_i >= 70 ? 'positive' : '' %>">
+                        <%= provider_data[:position_score] ? "#{provider_data[:position_score]}%" : "N/A" %>
+                      </div>
+                    </div>
+                    <div class="score-progress">
+                      <div class="progress-fill <%= provider_data[:position_score] ? (provider_data[:position_score] >= 70 ? 'high' : (provider_data[:position_score] >= 40 ? 'medium' : 'low')) : 'low' %>" 
+                           style="width: <%= provider_data[:position_score] || 0 %>%;"></div>
+                    </div>
+                    
+                    <div class="metric-row">
+                      <div class="metric-label">Reference score</div>
+                      <div class="metric-value <%= provider_data[:reference_score].to_i >= 70 ? 'positive' : '' %>">
+                        <%= provider_data[:reference_score] ? "#{provider_data[:reference_score]}%" : "N/A" %>
+                      </div>
+                    </div>
+                    <div class="score-progress">
+                      <div class="progress-fill <%= provider_data[:reference_score] ? (provider_data[:reference_score] >= 70 ? 'high' : (provider_data[:reference_score] >= 40 ? 'medium' : 'low')) : 'low' %>" 
+                           style="width: <%= provider_data[:reference_score] || 0 %>%;"></div>
+                    </div>
+                    
+                    <div class="metric-row">
+                      <div class="metric-label">URL presence</div>
+                      <div class="metric-value <%= provider_data[:url_presence] ? 'positive' : 'negative' %>">
+                        <% if provider_data[:url_presence] %>
+                          <i class="fas fa-check"></i> Yes
+                        <% else %>
+                          <i class="fas fa-times"></i> No
+                        <% end %>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                   <ul>
-                    <li><strong>Position score</strong>: <%= provider_data[:position_score] %>%</li>
-                    <li><strong>Reference score</strong>: <%= provider_data[:reference_score] %>%</li>
-                    <li><strong>URL presence</strong>: <%= provider_data[:url_presence] ? "Yes" : "No" %></li>
-                  </ul>
-                </div>
                 </div>
               </div>
             <% end %>
