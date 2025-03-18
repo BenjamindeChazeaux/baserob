@@ -28,6 +28,7 @@
             <%= f.input :ai_provider,
                         collection: AiProvider.all,
                         include_blank: "All AI Providers",
+                        selected: params.dig(:search, :ai_provider),
                         wrapper_html: {
                           class: 'modern-search-bar'
                         },
@@ -45,6 +46,7 @@
                           ['6 Months', '6_months']
                         ],
                         include_blank: "Select Time",
+                        selected: params.dig(:search, :timeline),
                         wrapper_html: {
                           class:'modern-search-bar'
                         },
@@ -65,7 +67,7 @@
         <div style="flex: 1; min-width: 0;">
           <div class="card hoverable">
             <div class="card-header">
-              <h3>Requests Over Time</h3>
+              <h3>Visits Over Time</h3>
             </div>
             <div class="card-body">
               <div class="chart-container" style="height: 490px;">

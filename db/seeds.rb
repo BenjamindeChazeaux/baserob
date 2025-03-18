@@ -59,6 +59,28 @@ end_time = Time.now - 10.minutes
 (Date.new(2024, 9, 1)..end_time.to_date).each do |date|
   max_hour = date == end_time.to_date ? end_time.hour : 23
   ["https://www.chatgpt.com", "http://www.claude.ai", "http://www.perplexity.ai"].each do |referrer|
+    rand(5).times do |i|
+      created_time = date.to_time + rand(max_hour + 1).hours
+
+      next if created_time > end_time
+
+      Request.create!(
+        domain: ["https://www.lewagon.com", "https://www.airbnb.com", "https://www.uber.com", "https://www.github.com"].sample,
+        path: ["/learn", "/repos"],
+        user_agent: "Mozilla/5.0",
+        company: company,
+        created_at: created_time,
+        referrer: referrer
+      )
+      puts "request n°#{Request.count} created"
+    end
+  end
+end
+
+end_time = Time.now - 10.minutes
+(Date.new(2024, 9, 1)..end_time.to_date).each do |date|
+  max_hour = date == end_time.to_date ? end_time.hour : 23
+  ["https://www.google.com", "https://le-wagon-bar.vercel.app/"].each do |referrer|
     rand(5..15).times do |i|
       created_time = date.to_time + rand(max_hour + 1).hours
 
