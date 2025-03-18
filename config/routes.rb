@@ -56,3 +56,4 @@ Rails.application.routes.draw do
   resource :companies, only: [:create, :update]
 
 end
+
