@@ -3,6 +3,7 @@ import "@hotwired/turbo-rails"
 import "controllers"
 import "@popperjs/core"
 import "bootstrap"
+
 import "Chart.bundle"
 import "chartkick"
 // import Highcharts from 'highcharts';
