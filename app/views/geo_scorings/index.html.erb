@@ -16,7 +16,7 @@
           <%= form_with url: geo_scorings_path, method: :get, local: true, class: "search-form" do |f| %>
             <%= f.select :keyword_id,
                         options_from_collection_for_select(@keywords, :id, :content, @selected_keyword&.id),
-                        { include_blank: "Search for a keyword..." },
+                        { include_blank: "Search for a prompt..." },
                         {
                           class: "search-input modern-input",
                           onchange: "this.form.submit()"
@@ -32,71 +32,186 @@
         <!-- Overview section -->
         <section class="info-section">
           <div class="cards-grid">
+
             <!-- Global score card -->
-            <div class="action-card">
-              <div class="card-front">
+            <div class="action-card" data-controller="flip-card">
+              <div class="card-back">
                 <div class="card-header">
                   <h3>Global Score</h3>
                 </div>
+                <p>Average score across providers</p>
+                <div>
+                  <%= render 'score_details', position_score: 78, frequency_score: 65, link_score: 92 %>
+                </div>
+              </div>
+              <div class="card-front">
+                <div class="card-header">
+                  <h3>Score Details</h3>
+                </div>
                 <div class="score-display">
-                  <div class="score-circle <%= score_color_class(@global_score) %>">
-                    <span class="score-value"><%= @global_score %>%</span>
-                    <% if @global_trend %>
-                      <span class="trend-indicator"><%= @global_trend %></span>
-                    <% end %>
+                  <div class="score-circle success">
+                    <span class="score-value">85%</span>
                   </div>
-                  <p class="score-label">Average positioning score</p>
+                  <p class="score-label">Global score</p>
+                </div>
+                <div class="details-content">
+                  <%# <p>This represents the average performance across all AI providers.</p> %>
+                  <p>Click again to return to the front.</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Results section -->
+
         <section class="results-section">
           <div class="section-header">
             <h2>Results by AI Provider</h2>
             <p>Detailed score analysis</p>
           </div>
           <div class="cards-grid">
-            <% @providers.each do |provider| %>
-              <div class="action-card">
+            <% @geo_scorings_data.each do |provider_data| %>
+              <div class="action-card" data-controller="flip-card">
                 <div class="card-front">
                   <div class="card-header">
-                    <h3><%= provider[:name].capitalize %></h3>
-                    <img src="<%= asset_path("#{provider[:name].downcase}_logo.png") %>" alt="<%= provider[:name] %> logo" class="provider-logo">
+                    <h3><%= provider_data[:name].capitalize %></h3>
+                    <img src="<%= asset_path("#{provider_data[:name].downcase}_logo.png") %>" alt="<%= provider_data[:name] %> logo" class="provider-logo">
                   </div>
                   <div class="score-display">
-                    <div class="score-circle <%= score_color_class(provider[:global_score]) %>">
-                      <span class="score-value"><%= provider[:global_score] %>%</span>
-                      <% if provider[:trends][:global_score] %>
-                        <span class="trend-indicator"><%= provider[:trends][:global_score] %></span>
-                      <% end %>
+                    <div class="score-circle <%= score_color_class(provider_data[:score]) %>">
+                      <span class="score-value"><%= provider_data[:score].round %>%</span>
                     </div>
-                    <p class="score-label">Global Score</p>
+                    <p class="score-label">Global score</p>
                   </div>
                 </div>
                 <div class="card-back">
                   <div class="card-header">
-                    <h3>Details for <%= provider[:name].capitalize %></h3>
+                    <h3>Details for <%= provider_data[:name].capitalize %></h3>
                   </div>
                   <div class="details-content">
-                    <ul>
-                      <li><strong>Position Score:</strong> <%= provider[:position_score] %>%
-                        <% if provider[:trends][:position_score] %> <%= provider[:trends][:position_score] %> <% end %></li>
-                      <li><strong>URL Score:</strong> <%= provider[:url_score] %>%
-                        <% if provider[:trends][:url_score] %> <%= provider[:trends][:url_score] %> <% end %></li>
-                      <li><strong>Frequency Score:</strong> <%= provider[:frequency_score] %>%
-                        <% if provider[:trends][:frequency_score] %> <%= provider[:trends][:frequency_score] %> <% end %></li>
-                    </ul>
+                    <p>This score is based on several factors, including position, frequency, and link building.</p>
                   </div>
+                  <div>
+                   <ul>
+                    <li><strong>Position score</strong>: <%= provider_data[:position_score] %>%</li>
+                    <li><strong>Reference score</strong>: <%= provider_data[:reference_score] %>%</li>
+                    <li><strong>URL presence</strong>: <%= provider_data[:url_presence] ? "Yes" : "No" %></li>
+                  </ul>
+                </div>
                 </div>
               </div>
             <% end %>
           </div>
         </section>
+
+        <!-- Filtres de recherche -->
+      <div class="mt-2"
+           data-controller="requests-stream"
+           data-requests-stream-company-id-value="<%= @company.id%>">
+        <%= simple_form_for :search,
+                            url: requests_path,
+                            method: :get,
+                            html: {
+                              class: 'form-inline w-100',
+                              data: {
+                                requests_stream_target: 'form',
+                                turbo_frame: 'request-chart'
+                              }
+                            } do |f| %>
+          <div class="d-flex gap-2">
+            <%= f.input :ai_provider,
+                        collection: AiProvider.all,
+                        include_blank: "All AI Providers",
+                        wrapper_html: {
+                          class: 'modern-search-bar'
+                        },
+                        input_html: {
+                          class:'form-control',
+                          value: params.dig(:search, :ai_provider),
+                          data: { action: 'change->requests-stream#submitForm' }
+                        } %>
+            <%= f.input :timeline,
+                        collection: [
+                          ['Today', 'today'],
+                          ['1 Week', '1_week'],
+                          ['1 Month', '1_month'],
+                          ['3 Months', '3_months'],
+                          ['6 Months', '6_months']
+                        ],
+                        include_blank: "Select Time",
+                        wrapper_html: {
+                          class:'modern-search-bar'
+                        },
+                        input_html: {
+                          class:'form-control',
+                          value: params.dig(:search, :timeline),
+                          data: { action: 'change->requests-stream#submitForm' }
+                        } %>
+          </div>
+        <% end %>
       </div>
+
+        <!-- Graphique et métriques -->
+    <turbo-frame id="request-chart">
+      <div style="display: flex; gap: 20px;">
+        <!-- Graphique (côté gauche) -->
+        <div style="flex: 1; min-width: 0;">
+          <div class="card hoverable">
+            <div class="card-header">
+              <h3>Requests Over Time</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-container" style="height: 490px;">
+                <%= line_chart @requests_by_date_and_ai_provider,
+                    curve: false,
+                    points: false,
+                    height: "450px",
+                    colors: ["#d88c9a", "#f2d0a9", "#f1e3d3", "#99c1b9", "#8e7dbe", "#EC4899"],
+                    library: {
+                      chart: {
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: 2
+                      },
+                      title: {
+                        text: nil
+                      },
+                      legend: {
+                        align: 'center',
+                        verticalAlign: 'bottom',
+                        layout: 'horizontal',
+                        symbolHeight: 12,
+                        symbolWidth: 12,
+                        symbolRadius: 6
+                      },
+                      xAxis: {
+                        labels: {
+                          style: {
+                            fontSize: '12px'
+                          }
+                        }
+                      },
+                      yAxis: {
+                        title: {
+                          text: 'Number of Visits'
+                        },
+                        min: 0
+                      },
+                      tooltip: {
+                        shared: true,
+                        crosshairs: true
+                      }
+                    },
+                    xtitle: "Time",
+                    ytitle: "Visits",
+                    id: 'requests' %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     <% else %>
+      <!-- Empty state -->
       <div class="empty-state">
         <div class="empty-state-content">
           <i class="fas fa-search"></i>
@@ -107,17 +222,3 @@
     <% end %>
   </div>
 </div>
-
-<style>
-  .trend-indicator {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-left: 10px;
-  }
-
-  .score-circle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-</style>

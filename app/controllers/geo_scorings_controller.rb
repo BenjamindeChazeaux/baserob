@@ -5,16 +5,16 @@ class GeoScoringsController < ApplicationController
   before_action :set_selected_keyword, only: [:index]
 
   def index
-    @providers = calculate_provider_data
-    @global_score = calculate_global_score(@providers)
-    @global_trend = calculate_trend(@previous_global_score, @global_score)
+    @geo_scorings_data = calculate_provider_data
+    @global_score = calculate_global_score(@geo_scorings_data)
+    @requests_by_date_and_ai_provider = {} # Données vides pour le graphique, à remplir ultérieurement
   end
 
   private
 
   # 1️⃣ Initialiser l'entreprise
   def set_company
-    @company = Company.find_by(id: 120) || Company.first
+    @company = Company.find_by(id: params[:company_id]) || Company.first
     logger.debug "Company loaded: #{@company&.name}"
   end
 
@@ -30,54 +30,47 @@ class GeoScoringsController < ApplicationController
     logger.debug "Selected Keyword: #{@selected_keyword&.content}"
   end
 
-  # 4️⃣ Calcul des scores par AI Provider avec Global Score
+  # 4️⃣ Calcul des scores par AI Provider
   def calculate_provider_data
     return [] unless @selected_keyword
 
     @company.ai_providers.map do |provider|
       current_geo_scoring = GeoScoring.find_by(keyword_id: @selected_keyword.id, ai_provider_id: provider.id)
-      previous_geo_scoring = GeoScoring.previous_scoring(@selected_keyword.id, provider.id)
 
       # Calcul des scores
-      global_score = current_geo_scoring&.calculate_global_score || 0
+      position_score = current_geo_scoring&.position_score || 0
+      reference_score = current_geo_scoring&.frequency_score || 0
+      url_presence = current_geo_scoring&.url_presence || false
+
+      # Calcul du score global
+      score = position_score * 0.5 + reference_score * 0.3 + (url_presence ? 100 : 0) * 0.2
 
       {
-        id: provider.id,
         name: provider.name,
-        global_score: global_score, # ✅ Ajout du Global Score
-        position_score: current_geo_scoring&.position_score || 0,
-        url_score: current_geo_scoring&.calculate_url_score || 0,
-        frequency_score: current_geo_scoring&.frequency_score || 0,
-        trends: calculate_trends(previous_geo_scoring, current_geo_scoring)
+        score: score,
+        position_score: position_score,
+        reference_score: reference_score,
+        url_presence: url_presence
       }
     end
   end
 
-  # 5️⃣ Calcul du Global Score Moyenne (pour tous les providers)
+  # 5️⃣ Calcul du Global Score
   def calculate_global_score(providers)
     return 0 if providers.empty?
 
-    total_score = providers.sum { |provider| provider[:global_score].to_f }
+    total_score = providers.sum { |provider| provider[:score].to_f }
     (total_score / providers.size).round
   end
 
-  # 6️⃣ Calcul des tendances pour tous les scores
-  def calculate_trends(previous, current)
-    return { global_score: nil, position_score: nil, url_score: nil, frequency_score: nil } unless previous && current
-
-    {
-      global_score: calculate_trend(previous.calculate_global_score, current.calculate_global_score),
-      position_score: calculate_trend(previous.position_score, current.position_score),
-      url_score: calculate_trend(previous.calculate_url_score, current.calculate_url_score),
-      frequency_score: calculate_trend(previous.frequency_score, current.frequency_score)
-    }
-  end
-
-  # 7️⃣ Calcul d'une tendance entre deux valeurs
-  def calculate_trend(previous_value, current_value)
-    return nil if previous_value.nil? || current_value.nil?
-    return "➡️" if previous_value == current_value
-    return "🔼" if current_value > previous_value
-    return "🔽" if current_value < previous_value
+  # Helper pour déterminer la classe de couleur du score
+  helper_method :score_color_class
+  def score_color_class(score)
+    case score
+    when 80..100 then "success"
+    when 60..79 then "info"
+    when 40..59 then "warning"
+    else "danger"
+    end
   end
 end
