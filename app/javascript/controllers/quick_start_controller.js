@@ -294,10 +294,6 @@ export default class extends Controller {
     // Afficher une notification de succès
     this.showNotification('success', 'Dashboard Created!', 'Your new dashboard has been set up successfully.')
     
-    // Recharger la page après un court délai
-    setTimeout(() => {
-      window.location.reload()
-    }, 1000)
   }
   
   // ===== GESTION DU SCRIPT =====
