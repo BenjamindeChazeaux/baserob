@@ -9,6 +9,8 @@ export default class extends Controller {
   }
 
   connect() {
+    console.log("coucou");
+    
     this.channel = createConsumer().subscriptions.create(
       { channel: `CompanyChannel`, id: this.companyIdValue },
       {
