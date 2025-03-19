@@ -3,7 +3,10 @@
   <div class="score-item">
     <span class="score-name">Position score :</span>
     <span class="score-value <%= position_score <= 2 ? 'success' : (position_score <= 4 ? 'warning' : 'danger') %>">
-      <%= position_score %>
+      <%= position_score %>%
+    </span>
+    <span>
+      <%= @selected_keyword.global_position_score_trend %>
     </span>
   </div>
   <div class="score-item">
@@ -11,11 +14,17 @@
     <span class="score-value <%= frequency_score >= 75 ? 'success' : (frequency_score >= 50 ? 'warning' : 'danger') %>">
       <%= frequency_score %>%
     </span>
+    <span>
+      <%= @selected_keyword.global_mention_score_trend %>
+    </span>
   </div>
   <div class="score-item">
     <span class="score-name">Link score :</span>
     <span class="score-value <%= link_score >= 75 ? 'success' : (link_score >= 50 ? 'warning' : 'danger') %>">
       <%= link_score %>%
+    </span>
+    <span>
+      <%= @selected_keyword.global_url_presence_score_trend %>
     </span>
   </div>
 </div>

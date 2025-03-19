@@ -8,6 +8,8 @@ class GeoScoringsController < ApplicationController
     if @selected_keyword
       @geo_scorings_data = calculate_provider_data(@company, @selected_keyword)
     end
+
+    
   end
 
   def history

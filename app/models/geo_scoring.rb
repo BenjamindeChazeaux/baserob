@@ -5,7 +5,7 @@ class GeoScoring < ApplicationRecord
 
   before_save :calculate_position, :calculate_score
 
-  private
+  # private
 
   def calculate_score
     score = if mentioned?
