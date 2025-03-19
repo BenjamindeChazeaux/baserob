@@ -66,7 +66,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_17_221336) do
 
   create_table "geo_scorings", force: :cascade do |t|
     t.integer "score"
-    t.boolean "mentioned"
+    t.boolean "mentioned", default: false
     t.integer "position"
     t.string "url"
     t.text "ai_responses", default: [], array: true

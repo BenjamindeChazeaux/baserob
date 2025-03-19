@@ -48,28 +48,21 @@ class GeoScoringsController < ApplicationController
   end
 
   # 4️⃣ Calcul des scores par AI Provider
-  def calculate_provider_data
-    return [] unless @selected_keyword
-
-    @company.ai_providers.map do |provider|
-      current_geo_scoring = GeoScoring.find_by(keyword_id: @selected_keyword.id, ai_provider_id: provider.id)
-
-      # Calcul des scores
-      position_score = current_geo_scoring&.position_score || 0
-      reference_score = current_geo_scoring&.frequency_score || 0
-      url_presence = current_geo_scoring&.url_presence || false
-
-      # Calcul du score global
-      score = position_score * 0.5 + reference_score * 0.3 + (url_presence ? 100 : 0) * 0.2
-
-      {
-        name: provider.name,
-        score: score,
-        position_score: position_score,
-        reference_score: reference_score,
-        url_presence: url_presence
-      }
+  def calculate_provider_data(company, keyword)
+    @company.ai_providers.map do |ai_provider|
+      calculate_keyword_for_ai_provider_score(keyword, ai_provider)
     end
+  end
+
+  def calculate_keyword_for_ai_provider_score(keyword, ai_provider)
+    geo_scorings = GeoScoring.where(keyword: keyword, ai_provider: ai_provider)
+    {
+      name: ai_provider.name,
+      score: geo_scorings.average(:score).to_f,
+      mention_score: geo_scorings.where(mentioned: true).count.fdiv(geo_scorings.count) * 100,
+      position_score: geo_scorings.average(:position).to_f,
+      url_presence_score: geo_scorings.where.not(url: nil).count.fdiv(geo_scorings.count) * 100
+    }
   end
 
   # 5️⃣ Calcul du Global Score
