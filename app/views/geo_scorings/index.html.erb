@@ -41,7 +41,10 @@
                 </div>
                 <p>Average score across providers</p>
                 <div>
-                  <%= render 'score_details', position_score: 78, frequency_score: 65, link_score: 92 %>
+                  <%= render 'score_details',
+                    position_score: (@geo_scorings_data.map { |el| el[:position_score] }.sum /  @geo_scorings_data.size).round,
+                    frequency_score: (@geo_scorings_data.map { |el| el[:mention_score] }.sum /  @geo_scorings_data.size).round,
+                    link_score: (@geo_scorings_data.map { |el| el[:url_presence_score] }.sum /  @geo_scorings_data.size).round %>
                 </div>
               </div>
               <div class="card-front">
@@ -50,7 +53,7 @@
                 </div>
                 <div class="score-display">
                   <div class="score-circle success">
-                    <span class="score-value">85%</span>
+                    <span class="score-value"><%= (@geo_scorings_data.map { |el| el[:score] }.sum /  @geo_scorings_data.size).round %> %</span>
                   </div>
                   <p class="score-label">Global score</p>
                 </div>
@@ -71,7 +74,8 @@
           </div>
           <div class="cards-grid">
             <% @geo_scorings_data.each do |provider_data| %>
-              <div class="action-card" data-controller="flip-card"> 
+              <%# raise %>
+              <div class="action-card" data-controller="flip-card">
                 <div class="card-front">
                   <div class="card-header">
                     <h3><%= provider_data[:name].capitalize %></h3>
@@ -93,9 +97,9 @@
                   </div>
                   <div>
                    <ul>
-                    <li><strong>Position score</strong>: <%= provider_data[:position_score] %>%</li>
-                    <li><strong>Reference score</strong>: <%= provider_data[:reference_score] %>%</li>
-                    <li><strong>URL presence</strong>: <%= provider_data[:url_presence] ? "Yes" : "No" %></li>
+                    <li><strong>Position score</strong>: <%= provider_data[:position_score] %></li>
+                    <li><strong>Reference score</strong>: <%= provider_data[:mention_score] %>%</li>
+                    <li><strong>URL presence</strong>: <%= provider_data[:url_presence_score] %>%</li>
                   </ul>
                 </div>
                 </div>
@@ -162,7 +166,7 @@
             </div>
             <div class="card-body">
               <div class="chart-container" style="height: 490px;">
-                <%= line_chart @requests_by_date_and_ai_provider, 
+                <%= line_chart @requests_by_date_and_ai_provider,
                     curve: false,
                     points: false,
                     height: "450px",
@@ -201,8 +205,8 @@
                         crosshairs: true
                       }
                     },
-                    xtitle: "Time", 
-                    ytitle: "Visits", 
+                    xtitle: "Time",
+                    ytitle: "Visits",
                     id: 'requests' %>
               </div>
             </div>
