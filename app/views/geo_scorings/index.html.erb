@@ -53,7 +53,12 @@
                 </div>
                 <div class="score-display">
                   <div class="score-circle success">
-                    <span class="score-value"><%= (@geo_scorings_data.map { |el| el[:score] }.sum /  @geo_scorings_data.size).round %> %</span>
+                    <span class="score-value">
+                      <%= (@geo_scorings_data.map { |el| el[:score] }.sum /  @geo_scorings_data.size).round %> %
+                    </span>
+                    <span>
+                      <%= @selected_keyword.global_score_trend %>
+                    </span>
                   </div>
                   <p class="score-label">Global score</p>
                 </div>
@@ -84,6 +89,7 @@
                   <div class="score-display">
                     <div class="score-circle <%= score_color_class(provider_data[:score]) %>">
                       <span class="score-value"><%= provider_data[:score].round %>%</span>
+                      <span><%= @selected_keyword.ai_provider_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span>
                     </div>
                     <p class="score-label">Global score</p>
                   </div>
@@ -97,9 +103,9 @@
                   </div>
                   <div>
                    <ul>
-                    <li><strong>Position score</strong>: <%= provider_data[:position_score] %></li>
-                    <li><strong>Reference score</strong>: <%= provider_data[:mention_score] %>%</li>
-                    <li><strong>URL presence</strong>: <%= provider_data[:url_presence_score] %>%</li>
+                    <li><strong>Position score</strong>: <%= provider_data[:position_score] %><span><%= @selected_keyword.ai_provider_position_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span></li>
+                    <li><strong>Reference score</strong>: <%= provider_data[:mention_score] %>%<span><%= @selected_keyword.ai_provider_mention_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span></li>
+                    <li><strong>URL presence</strong>: <%= provider_data[:url_presence_score] %>%<span><%= @selected_keyword.ai_provider_url_presence_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span></li>
                   </ul>
                 </div>
                 </div>
