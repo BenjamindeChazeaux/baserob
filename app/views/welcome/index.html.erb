@@ -2,7 +2,7 @@
     data-sidebar-target="sidebar"
     data-controller="quick-start"
     data-quick-start-is-opened-value="<%= @needs_company_setup %>">
-    <%= render "shared/quick_start_modal" %>
+    <%= render "welcome/quick_start_modal" %>
   <!-- Main Content -->
   <div class="main-content">
     <!-- Header -->
@@ -29,14 +29,13 @@
         <!-- Quick start Card -->
         <div class="action-card">
           <div class="card-header">
-            <div class="card-badge">New</div>
-          </div>
           <h3>Quick tracking setup</h3>
+          </div>
           <p>Generate your tracking dashboard in one click from your own data</p>
           <a href="#" class="card-action"
           data-action="click->quick-start#openModal"
           id="openModalButton"
-          style="font-size: 1.5em;">
+          style="font-size: 1.5em; position: absolute; bottom: 15px; left: 10%; transform: translateX(-50%);">
             <i class="fi fi-rr-angle-square-right"></i>
           </a>
         </div>
@@ -44,10 +43,9 @@
         <!-- Quick Start GEO Scoring Card -->
         <div class="action-card">
           <div class="card-header">
-            <div class="card-badge">New</div>
-          </div>
           <h3>GEO Scoring</h3>
-          <p>Configure the AI requests and LLM you want to watch</p>
+          </div>
+          <p>Analyze, track, and optimize brand presence on AI search engines thanks to your Generative Engine Optimization score</p>
           <div class="url-input">
             <input type="url" placeholder="Configure your first AI prompt">
             <a href="<%= geo_scorings_path %>" class="btn-secondary">
@@ -55,7 +53,8 @@
               Score
             </a>
           </div>
-          <a href="<%= geo_scorings_path %>" class="card-action">
+          <a href="<%= geo_scorings_path %>" class="card-action" 
+          style="font-size: 1em; position: absolute; bottom: 20px; left: 28%; transform: translateX(-50%);">
             Advanced configuration
             <i class="fas fa-arrow-right"></i>
           </a>
@@ -64,15 +63,16 @@
         <!-- GEO Scoring Card -->
         <div class="action-card">
           <div class="card-header">
-          </div>
           <h3>AI Analytics</h3>
+          </div>
           <div class="geo-preview">
             <%= pie_chart({
               "Total Visits" => @total_requests_count,
               "AI-Driven Visits" => @ai_requests_count
               }, donut: true, height: "150px", colors: ["#0E2954", "#84A7A1"]) %>
           </div>
-          <a href="<%= requests_index_path %>" class="card-action">
+          <a href="<%= requests_index_path %>" class="card-action" 
+          style="font-size: 1em; position: absolute; bottom: 20px; left: 17%; transform: translateX(-50%);">
             See details
             <i class="fas fa-arrow-right"></i>
           </a>

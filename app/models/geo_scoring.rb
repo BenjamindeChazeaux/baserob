@@ -1,7 +1,7 @@
 class GeoScoring < ApplicationRecord
-  attr_accessor :prompt
-  belongs_to :ai_provider
+  # Associations
   belongs_to :keyword
+  belongs_to :ai_provider
 
   before_save :calculate_position, :calculate_score
 
