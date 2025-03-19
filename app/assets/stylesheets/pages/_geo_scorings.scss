@@ -250,6 +250,99 @@
   }
 }
 
+.chart-section {
+  margin-top: $spacing-xl;
+  
+  .search-filters {
+    background: white;
+    border-radius: $border-radius-lg;
+    box-shadow: $card-shadow;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    
+    .filters-header {
+      margin-bottom: $spacing-md;
+      
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: $spacing-xs;
+        color: $text-primary;
+      }
+      
+      p {
+        color: $text-secondary;
+        font-size: 0.9rem;
+        margin: 0;
+      }
+    }
+    
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: $spacing-md;
+    }
+  }
+  
+  .chart-container-wrapper {
+    background: white;
+    border-radius: $border-radius-lg;
+    box-shadow: $card-shadow;
+    margin-bottom: $spacing-xl;
+    overflow: hidden;
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: $spacing-md $spacing-lg;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      
+      h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0;
+        color: $text-primary;
+      }
+      
+      .chart-actions {
+        display: flex;
+        gap: $spacing-sm;
+        
+        .btn-icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          border: none;
+          background: rgba(0, 0, 0, 0.03);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          
+          i {
+            color: $text-secondary;
+            font-size: 0.9rem;
+          }
+          
+          &:hover {
+            background: rgba($primary-color, 0.1);
+            
+            i {
+              color: $primary-color;
+            }
+          }
+        }
+      }
+    }
+    
+    .card-body {
+      padding: $spacing-lg;
+    }
+  }
+}
+
 // Responsive
 @media (max-width: $breakpoint-md) {
   .dashboard-container {
