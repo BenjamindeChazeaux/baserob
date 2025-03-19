@@ -35,6 +35,23 @@
 
             <!-- Global score card -->
             <div class="action-card" data-controller="flip-card">
+              <div class="card-back">
+                <div class="card-header">
+                  <h3>Global Score</h3>
+                </div>
+                <p>Average score across providers</p>
+                <div>
+                  <%
+                    overall_position_score = (@geo_scorings_data.map { |el| el[:score] }.sum /  @geo_scorings_data.size).round
+                    overall_mention_score = (@geo_scorings_data.map { |el| el[:mention_score] }.sum /  @geo_scorings_data.size).round
+                    overall_url_presence_score = (@geo_scorings_data.map { |el| el[:url_presence_score] }.sum /  @geo_scorings_data.size).round
+                  %>
+                  <%= render 'score_details',
+                    position_score: overall_position_score,
+                    frequency_score: overall_mention_score,
+                    link_score: overall_url_presence_score %>
+                </div>
+              </div>
               <div class="card-front">
                 <div class="card-header">
                   <h3>Global Score</h3>
@@ -42,7 +59,15 @@
                 </div>
                 <div class="score-display">
                   <div class="score-circle success">
-                    <span class="score-value">85%</span>
+                    <span class="score-value">
+                      <%
+                        overall_score = overall_position_score * 0.3 + overall_mention_score * 0.5 + overall_url_presence_score * 0.2
+                      %>
+                      <%= overall_score.round %> %
+                    </span>
+                    <span>
+                      <%= @selected_keyword.global_score_trend %>
+                    </span>
                   </div>
                   <p class="score-label">Performance across all AI providers</p>
                 </div>
@@ -54,7 +79,7 @@
                 </div>
                 <div class="details-content">
                   <p>Breakdown of your global score across all key metrics.</p>
-                  
+
                   <div class="metric-row">
                     <div class="metric-label">Frequency score</div>
                     <div class="metric-value positive">78%</div>
@@ -62,7 +87,7 @@
                   <div class="score-progress">
                     <div class="progress-fill high" style="width: 78%;"></div>
                   </div>
-                  
+
                   <div class="metric-row">
                     <div class="metric-label">Position score</div>
                     <div class="metric-value">65%</div>
@@ -70,7 +95,7 @@
                   <div class="score-progress">
                     <div class="progress-fill medium" style="width: 65%;"></div>
                   </div>
-                  
+
                   <div class="metric-row">
                     <div class="metric-label">Link score</div>
                     <div class="metric-value positive">92%</div>
@@ -207,7 +232,11 @@
                   </div>
                   <div class="score-display">
                     <div class="score-circle <%= score_color_class(provider_data[:score]) %>">
-                      <span class="score-value"><%= provider_data[:score].round %>%</span>
+                      <%
+                        overall_score = provider_data[:score] * 0.3 + provider_data[:mention_score] * 0.5 + provider_data[:url_presence_score] * 0.2
+                      %>
+                      <span class="score-value"><%= overall_score.round %>%</span>
+                      <span><%= @selected_keyword.ai_provider_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span>
                     </div>
                     <p class="score-label">Global score</p>
                   </div>
@@ -219,7 +248,7 @@
                   </div>
                   <div class="details-content">
                     <p>This score is based on multiple factors that determine your brand visibility.</p>
-                    
+
                     <div class="metric-row">
                       <div class="metric-label">Frequency score</div>
                       <div class="metric-value <%= provider_data[:frequency_score].to_i >= 70 ? 'positive' : '' %>">
@@ -238,11 +267,25 @@
                       </div>
                     </div>
                     <div class="score-progress">
-                      <div class="progress-fill <%= provider_data[:position_score] ? (provider_data[:position_score] >= 70 ? 'high' : (provider_data[:position_score] >= 40 ? 'medium' : 'low')) : 'low' %>" 
+                      <div class="progress-fill <%= provider_data[:position_score] ? (provider_data[:position_score] >= 70 ? 'high' : (provider_data[:position_score] >= 40 ? 'medium' : 'low')) : 'low' %>"
                            style="width: <%= provider_data[:position_score] || 0 %>%;"></div>
                     </div>
-                    
+
                     <div class="metric-row">
+<<<<<<< HEAD
+=======
+                      <div class="metric-label">Reference score</div>
+                      <div class="metric-value <%= provider_data[:reference_score].to_i >= 70 ? 'positive' : '' %>">
+                        <%= provider_data[:reference_score] ? "#{provider_data[:reference_score]}%" : "N/A" %>
+                      </div>
+                    </div>
+                    <div class="score-progress">
+                      <div class="progress-fill <%= provider_data[:reference_score] ? (provider_data[:reference_score] >= 70 ? 'high' : (provider_data[:reference_score] >= 40 ? 'medium' : 'low')) : 'low' %>"
+                           style="width: <%= provider_data[:reference_score] || 0 %>%;"></div>
+                    </div>
+
+                    <div class="metric-row">
+>>>>>>> master
                       <div class="metric-label">URL presence</div>
                       <div class="metric-value <%= provider_data[:url_presence] ? 'positive' : 'negative' %>">
                         <% if provider_data[:url_presence] %>
@@ -253,6 +296,13 @@
                       </div>
                     </div>
                   </div>
+                  <div>
+                   <ul>
+                    <li><strong>Position score</strong>: <%= provider_data[:score] %><span><%= @selected_keyword.ai_provider_position_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span></li>
+                    <li><strong>Reference score</strong>: <%= provider_data[:mention_score] %>%<span><%= @selected_keyword.ai_provider_mention_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span></li>
+                    <li><strong>URL presence</strong>: <%= provider_data[:url_presence_score] %>%<span><%= @selected_keyword.ai_provider_url_presence_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span></li>
+                  </ul>
+                </div>
                 </div>
               </div>
             <% end %>

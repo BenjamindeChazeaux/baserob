@@ -5,9 +5,26 @@ class GeoScoringsController < ApplicationController
   before_action :set_selected_keyword, only: [:index]
 
   def index
-    @geo_scorings_data = calculate_provider_data
-    @global_score = calculate_global_score(@geo_scorings_data)
-    @requests_by_date_and_ai_provider = {} # Données vides pour le graphique, à remplir ultérieurement
+    if @selected_keyword
+      @geo_scorings_data = calculate_provider_data(@company, @selected_keyword)
+    end
+
+
+  end
+
+  def history
+    @history_scores = GeoScoring.where(keyword: @selected_keyword).order(created_at: :asc)
+
+    respond_to do |format|
+      format.html { render partial: "history", locals: { history_scores: @history_scores } }
+      format.json { render json: @history_scores }
+    end
+  end
+
+  def new
+    @geo_scoring = GeoScoring.new
+    @ai_providers = AiProvider.all
+    @keywords = Keyword.all
   end
 
   private
