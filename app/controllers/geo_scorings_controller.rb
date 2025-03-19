@@ -7,52 +7,59 @@ class GeoScoringsController < ApplicationController
   def index
     @geo_scorings_data = calculate_provider_data
     @global_score = calculate_global_score(@geo_scorings_data)
-    @requests_by_date_and_ai_provider = {} 
+    @requests_by_date_and_ai_provider = {}
   end
 
   private
 
-  # 1️ Initialiser l'entreprise
+  # Initialiser l'entreprise
   def set_company
     @company = Company.find_by(id: params[:company_id]) || Company.first
   end
 
-  # 2️ Charger les mots-clés liés à l'entreprise
+  # Charger les mots-clés liés à l'entreprise
   def set_keywords
     @keywords = @company.keywords
   end
 
-  # 3️ Définir le mot-clé sélectionné
+  # Définir le mot-clé sélectionné
   def set_selected_keyword
     @selected_keyword = @keywords.find_by(id: params[:keyword_id]) || @keywords.first
   end
 
-  # 4️ Calcul des scores par AI Provider
+  # Calcul des scores par AI Provider
   def calculate_provider_data
     return [] unless @selected_keyword
 
     @company.ai_providers.map do |provider|
       current_geo_scoring = GeoScoring.find_by(keyword_id: @selected_keyword.id, ai_provider_id: provider.id)
 
-      # Calcul des scores
+      # Récupérer les scores existants ou utiliser les valeurs par défaut
       position_score = current_geo_scoring&.position_score || 0
-      reference_score = current_geo_scoring&.frequency_score || 0
+      frequency_score = current_geo_scoring&.frequency_score || 0
       url_presence = current_geo_scoring&.url_presence || false
 
-      # Calcul du score global
-      score = position_score * 0.5 + reference_score * 0.3
+      # Si un score existe déjà, l'utiliser
+      score = if current_geo_scoring&.score.present?
+                current_geo_scoring.score
+              else
+                (
+                  position_score * GeoScoring::WEIGHTS[:position] +
+                  frequency_score * GeoScoring::WEIGHTS[:frequency]
+                ).round
+              end
 
       {
         name: provider.name,
         score: score,
         position_score: position_score,
-        reference_score: reference_score,
+        frequency_score: frequency_score,
         url_presence: url_presence
       }
     end
   end
 
-  # 5️ Calcul du Global Score
+  # Calcul du score global pour tous les fournisseurs
   def calculate_global_score(providers)
     return 0 if providers.empty?
 
@@ -60,6 +67,7 @@ class GeoScoringsController < ApplicationController
     (total_score / providers.size).round
   end
 
+  # Helper pour déterminer la classe de couleur du score
   helper_method :score_color_class
   def score_color_class(score)
     case score

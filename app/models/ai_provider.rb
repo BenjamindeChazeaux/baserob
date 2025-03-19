@@ -8,7 +8,6 @@ class AiProvider < ApplicationRecord
 
   # Renvoie un tableau de réponses pour un mot-clé donné
   def analyze(keyword_content)
-    # Détermine la classe de service d'IA à utiliser
     service_class = case name
                     when 'openai'
                       Ai::Models::OpenAi
@@ -25,13 +24,11 @@ class AiProvider < ApplicationRecord
 
     # Traitement de la réponse
     begin
-      # Si la réponse est une chaîne JSON, on tente de la parser
       if response.is_a?(String) && response.start_with?('[') && response.end_with?(']')
         JSON.parse(response)
       elsif response.is_a?(Array)
         response
       else
-        # Si ce n'est pas un format attendu, on tente de normaliser
         [response.to_s]
       end
     rescue JSON::ParserError => e

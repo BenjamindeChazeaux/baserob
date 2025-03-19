@@ -1,5 +1,5 @@
 <!-- Provider Card -->
-<div class="action-card provider-card" 
+<div class="action-card provider-card"
      data-provider="<%= provider[:name].downcase %>"
      data-controller="flip-card"
      data-action="click->flip-card#flip">
@@ -9,13 +9,13 @@
       <h3><%= provider[:name].capitalize %></h3>
     </div>
     <div class="score-display">
-      <div class="score-circle <%= score_color_class(provider[:global_score]) %>">
-        <span class="score-value"><%= provider[:global_score].round %>%</span>
+      <div class="score-circle <%= score_color_class(provider[:score]) %>">
+        <span class="score-value"><%= provider[:score].round %>%</span>
       </div>
       <p class="score-label">Score global</p>
     </div>
   </div>
-  
+
   <!-- Face arrière -->
   <div class="card-back">
     <div class="card-header">
@@ -25,7 +25,7 @@
       <p>Here are the details of the analysis for this AI provider:</p>
       <ul>
         <li><strong>Position score</strong>: <%= provider[:position_score].round(2) %>%</li>
-        <li><strong>Reference score</strong>: <%= provider[:reference_score].round(2) %>%</li>
+        <li><strong>Frequency score</strong>: <%= provider[:frequency_score].round(2) %>%</li>
         <li><strong>URL presence</strong>: <%= provider[:url_presence] ? "Yes" : "No" %></li>
       </ul>
       <p class="tip">Click again to return to the summary</p>
