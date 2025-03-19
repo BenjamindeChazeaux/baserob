@@ -121,7 +121,7 @@ company.ai_providers << perplexity
 company.ai_providers << anthropic
 
 # 4️⃣ Création d'un mot-clé de test
-# 4️⃣ Création de mots-clés de test
+
 keywords = Keyword.create!([
   { content: "Meilleure formation IA", company: company },
   { content: "Meilleur bootcamp de Machine Learning ?", company: company },
