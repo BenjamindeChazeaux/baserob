@@ -1,4 +1,3 @@
-# Nettoyage de la base de données
 CompanyAiProvider.destroy_all
 CompetitorScore.destroy_all
 GeoScoring.destroy_all
@@ -89,16 +88,8 @@ puts "Competitors created"
 
 keywords = Keyword.all
 
-# 2️⃣ Ajout de fournisseurs d'IA (OpenAI, Perplexity, Anthropic)
-openai = AiProvider.create!(name: "openai")
-perplexity = AiProvider.create!(name: "perplexity")
-anthropic = AiProvider.create!(name: "anthropic")
 
 puts "geo_scoring historiques créés"
-# 3️⃣ Associer ces AI Providers à l'entreprise
-company.ai_providers << openai
-company.ai_providers << perplexity
-company.ai_providers << anthropic
 
 # Création des geo_scorings actuels pour les scores des concurrents
 current_geo_scorings = []
@@ -107,15 +98,6 @@ puts "geo_scoring actuels créés"
 
 # Création des geo_scorings pour chaque mot-clé et fournisseur d'IA
 puts "Creating geo_scorings..."
-# 4️⃣ Création d'un mot-clé de test
-# 4️⃣ Création de mots-clés de test
-keywords = Keyword.create!([
-  { content: "Meilleure formation IA", company: company },
-  { content: "Meilleur bootcamp de Machine Learning ?", company: company },
-  { content: "Top écoles pour apprendre la Data Science", company: company },
-  { content: "Formation Cloud Computing la plus reconnue en 2025", company: company },
-  { content: "Comparaison des meilleures formations en automatisation des tâches", company: company }
-])
 
 urls = ['https://www.le-wagon-bar.vercel.app/', 'https://www.google.com/', nil]
 (Date.new(2024, 9, 1)..Date.today).each do |date|
@@ -133,61 +115,5 @@ urls = ['https://www.le-wagon-bar.vercel.app/', 'https://www.google.com/', nil]
     end
   end
 end
-puts "Keywords created"
 
 puts "Finished creating geo_scorings!"
-# 5️⃣ Génération de GeoScoring avec des scores fictifs pour chaque AI Provider
-# On prend uniquement le premier mot-clé pour tester
-keyword_1 = keywords.first  # ✅ Utiliser le premier mot-clé
-keyword_2 = keywords.second # ✅ Utiliser le second mot-clé pour plus de tests
-
-GeoScoring.create!(
-  keyword: keyword_1,  # ✅ Maintenant `keyword_1` est un seul objet
-  ai_provider: openai,
-  position_score: 75,
-  reference_score: 60,
-  url_presence: 80
-)
-
-GeoScoring.create!(
-  keyword: keyword_1,
-  ai_provider: perplexity,
-  position_score: 55,
-  reference_score: 70,
-  url_presence: 50
-)
-
-GeoScoring.create!(
-  keyword: keyword_1,
-  ai_provider: anthropic,
-  position_score: 90,
-  reference_score: 85,
-  url_presence: 95
-)
-
-# On ajoute aussi des données pour le deuxième mot-clé
-GeoScoring.create!(
-  keyword: keyword_2,
-  ai_provider: openai,
-  position_score: 65,
-  reference_score: 50,
-  url_presence: 70
-)
-
-GeoScoring.create!(
-  keyword: keyword_2,
-  ai_provider: perplexity,
-  position_score: 80,
-  reference_score: 75,
-  url_presence: 60
-)
-
-GeoScoring.create!(
-  keyword: keyword_2,
-  ai_provider: anthropic,
-  position_score: 95,
-  reference_score: 90,
-  url_presence: 85
-)
-
-puts "GeoScoring created"
