@@ -65,7 +65,7 @@ end_time = Time.now - 10.minutes
       next if created_time > end_time
 
       Request.create!(
-        domain: ["https://www.lewagon.com", "https://www.airbnb.com", "https://www.uber.com", "https://www.github.com"].sample,
+        domain: ["https://www.lewagon.com", "https://www.airbnb.com", "https://www.uber.com", "https://www.github.com","https://le-wagon-bar.vercel.app/"].sample,
         path: ["/learn", "/repos"],
         user_agent: "Mozilla/5.0",
         company: company,
@@ -87,7 +87,7 @@ end_time = Time.now - 10.minutes
       next if created_time > end_time
 
       Request.create!(
-        domain: ["https://www.lewagon.com", "https://www.airbnb.com", "https://www.uber.com", "https://www.github.com"].sample,
+        domain: ["https://www.lewagon.com", "https://le-wagon-bar.vercel.app/", "https://www.uber.com", "https://www.github.com"].sample,
         path: ["/learn", "/repos"],
         user_agent: "Mozilla/5.0",
         company: company,
