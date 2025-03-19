@@ -28,7 +28,7 @@
     </header>
 
     <% if @keywords.present? && @selected_keyword.present? %>
-      <div class="dashboard-sections">
+      <div class="dashboard-sections animate-fadeIn">
         <!-- Overview section -->
         <section class="info-section">
           <div class="cards-grid">
@@ -53,11 +53,10 @@
                   <i class="fas fa-chart-bar"></i>
                 </div>
                 <div class="details-content">
-
                   <p>Breakdown of your global score across all key metrics.</p>
                   
                   <div class="metric-row">
-                    <div class="metric-label">Position score</div>
+                    <div class="metric-label">Frequency score</div>
                     <div class="metric-value positive">78%</div>
                   </div>
                   <div class="score-progress">
@@ -65,7 +64,7 @@
                   </div>
                   
                   <div class="metric-row">
-                    <div class="metric-label">Frequency score</div>
+                    <div class="metric-label">Position score</div>
                     <div class="metric-value">65%</div>
                   </div>
                   <div class="score-progress">
@@ -82,15 +81,116 @@
                 </div>
               </div>
             </div>
-            <div class="action-card">
-              <div class="card-header">
-                <h3>GEO Scoring</h3>
+            <div class="action-card" data-controller="flip-card">
+              <div class="card-front">
+                <div class="card-header">
+                  <h3>GEO Scoring</h3>
+                  <i class="fas fa-headphones-alt ml-2"></i>
+                </div>
+                <div class="card-content">
+                  <div class="geo-metrics">
+                    <div class="geo-metric">
+                      <div class="metric-icon">
+                        <i class="fas fa-sort-amount-up"></i>
+                      </div>
+                      <div class="metric-text">
+                        <span class="metric-title">Frequency</span>
+                        <span class="metric-description">How often your brand appears in the AI search results</span>
+                      </div>
+                    </div>
+                    
+                    <div class="geo-metric">
+                      <div class="metric-icon">
+                        <i class="fas fa-sync-alt"></i>
+                      </div>
+                      <div class="metric-text">
+                        <span class="metric-title">Position</span>
+                        <span class="metric-description">Where your brand appears in the AI search results</span>
+                      </div>
+                    </div>
+                    
+                    <div class="geo-metric">
+                      <div class="metric-icon">
+                        <i class="fas fa-link"></i>
+                      </div>
+                      <div class="metric-text">
+                        <span class="metric-title">Link</span>
+                        <span class="metric-description">Direct links to your website in the AI search results</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p>Analyze, track, and optimize brand presence on AI search engines thanks to your Generative Engine Optimization score</p>
+              <div class="card-back">
+                <div class="card-header">
+                  <h3>Introduction to GEO</h3>
+                  <i class="fas fa-headphones-alt"></i>
+                </div>
+                <div class="details-content" data-controller="audio-player">
+                  <div class="geo-back-content">
+                    <div class="back-title-container">
+                      <div class="geo-back-icon">
+                        <i class="fas fa-podcast"></i>
+                      </div>
+                      <h4 class="geo-back-title">Learn about Generative Engine Optimization</h4>
+                    </div>
+                    
+                    <p class="geo-back-description">Discover how GEO Scoring can improve your brand's visibility in AI search results with our exclusive podcast.</p>
+                    
+                    <div class="audio-player">
+                      <audio data-audio-player-target="audio" src="/audio/Generative_Engine_Optimization.wav"></audio>
+                      <button class="audio-button" data-audio-player-target="playButton" data-action="click->audio-player#toggle">
+                        <i class="fas fa-play"></i>
+                      </button>
+                      <div class="audio-info">
+                        <span>Baserob's podcast - GEO 0 to 1</span>
+                        <div class="audio-time">
+                          <span data-audio-player-target="timer">0:00</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="podcast-features">
+                      <div class="podcast-feature">
+                        <div class="feature-icon">
+                          <i class="fas fa-search"></i>
+                        </div>
+                        <div class="feature-text">
+                          <span>Improve AI visibility</span>
+                        </div>
+                      </div>
+                      
+                      <div class="podcast-feature">
+                        <div class="feature-icon">
+                          <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-text">
+                          <span>Track performance</span>
+                        </div>
+                      </div>
+                      
+                      <div class="podcast-feature">
+                        <div class="feature-icon">
+                          <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="feature-text">
+                          <span>Optimization tips</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="geo-back-cta">
+                      <button class="btn btn-outline-primary flip-back" data-action="click->flip-card#flip">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        <span>Back to summary</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
-
 
         <section class="results-section">
           <div class="section-header">
@@ -99,7 +199,7 @@
           </div>
           <div class="cards-grid">
             <% @geo_scorings_data.each do |provider_data| %>
-              <div class="action-card" data-controller="flip-card">
+              <div class="action-card" data-controller="flip-card"> 
                 <div class="card-front">
                   <div class="card-header">
                     <h3><%= provider_data[:name].capitalize %></h3>
@@ -121,6 +221,17 @@
                     <p>This score is based on multiple factors that determine your brand visibility.</p>
                     
                     <div class="metric-row">
+                      <div class="metric-label">Frequency score</div>
+                      <div class="metric-value <%= provider_data[:frequency_score].to_i >= 70 ? 'positive' : '' %>">
+                        <%= provider_data[:frequency_score] ? "#{provider_data[:frequency_score]}%" : "N/A" %>
+                      </div>
+                    </div>
+                    <div class="score-progress">
+                      <div class="progress-fill <%= provider_data[:reference_score] ? (provider_data[:reference_score] >= 70 ? 'high' : (provider_data[:reference_score] >= 40 ? 'medium' : 'low')) : 'low' %>" 
+                           style="width: <%= provider_data[:reference_score] || 0 %>%;"></div>
+                    </div>
+
+                    <div class="metric-row">
                       <div class="metric-label">Position score</div>
                       <div class="metric-value <%= provider_data[:position_score].to_i >= 70 ? 'positive' : '' %>">
                         <%= provider_data[:position_score] ? "#{provider_data[:position_score]}%" : "N/A" %>
@@ -129,17 +240,6 @@
                     <div class="score-progress">
                       <div class="progress-fill <%= provider_data[:position_score] ? (provider_data[:position_score] >= 70 ? 'high' : (provider_data[:position_score] >= 40 ? 'medium' : 'low')) : 'low' %>" 
                            style="width: <%= provider_data[:position_score] || 0 %>%;"></div>
-                    </div>
-                    
-                    <div class="metric-row">
-                      <div class="metric-label">Reference score</div>
-                      <div class="metric-value <%= provider_data[:reference_score].to_i >= 70 ? 'positive' : '' %>">
-                        <%= provider_data[:reference_score] ? "#{provider_data[:reference_score]}%" : "N/A" %>
-                      </div>
-                    </div>
-                    <div class="score-progress">
-                      <div class="progress-fill <%= provider_data[:reference_score] ? (provider_data[:reference_score] >= 70 ? 'high' : (provider_data[:reference_score] >= 40 ? 'medium' : 'low')) : 'low' %>" 
-                           style="width: <%= provider_data[:reference_score] || 0 %>%;"></div>
                     </div>
                     
                     <div class="metric-row">
@@ -159,121 +259,46 @@
           </div>
         </section>
 
-        <!-- Filtres de recherche -->
-      <div class="mt-2"
-           data-controller="requests-stream"
-           data-requests-stream-company-id-value="<%= @company.id%>">
-        <%= simple_form_for :search,
-                            url: requests_path,
-                            method: :get,
-                            html: {
-                              class: 'form-inline w-100',
-                              data: {
-                                requests_stream_target: 'form',
-                                turbo_frame: 'request-chart'
-                              }
-                            } do |f| %>
-          <div class="d-flex gap-2">
-            <%= f.input :ai_provider,
-                        collection: AiProvider.all,
-                        include_blank: "All AI Providers",
-                        wrapper_html: {
-                          class: 'modern-search-bar'
-                        },
-                        input_html: {
-                          class:'form-control',
-                          value: params.dig(:search, :ai_provider),
-                          data: { action: 'change->requests-stream#submitForm' }
-                        } %>
-            <%= f.input :timeline,
-                        collection: [
-                          ['Today', 'today'],
-                          ['1 Week', '1_week'],
-                          ['1 Month', '1_month'],
-                          ['3 Months', '3_months'],
-                          ['6 Months', '6_months']
-                        ],
-                        include_blank: "Select Time",
-                        wrapper_html: {
-                          class:'modern-search-bar'
-                        },
-                        input_html: {
-                          class:'form-control',
-                          value: params.dig(:search, :timeline),
-                          data: { action: 'change->requests-stream#submitForm' }
-                        } %>
+        <!-- Charts and metrics -->
+        <section class="analytics-section">
+          <%= render partial: 'requests_chart' %>
+        </section>
+      </div>
+    <% else %>
+      <!-- Improved empty state -->
+      <div class="dashboard-welcome animate-fadeIn">
+        <div class="welcome-content">
+          <h2>Welcome to GEO Scoring Dashboard</h2>
+          <p>Track and analyze how your brand appears in AI-powered search results across multiple platforms. Start by selecting a keyword or creating a new one.</p>
+          <div class="welcome-actions">
+            <button class="btn btn-primary">Get started</button>
+            <button class="btn btn-outline-secondary">Learn more</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="empty-state-apple">
+        <div class="empty-state-icon animate-fadeIn">
+          <i class="fas fa-search"></i>
+        </div>
+        <h2 class="empty-state-title animate-fadeIn delay-1">Select a keyword to view analysis</h2>
+        <p class="empty-state-description animate-fadeIn delay-2">
+          Choose a keyword from the dropdown above to see detailed positioning analysis across different AI providers.
+          Your brand's performance in AI search results will be displayed here.
+        </p>
+        
+        <% if @keywords.present? %>
+          <div class="suggested-keywords animate-fadeIn delay-3">
+            <p style="width: 100%; margin-bottom: 10px; color: #6c757d;">Popular keywords:</p>
+            <% @keywords.limit(5).each do |keyword| %>
+              <%= link_to keyword.content, geo_scorings_path(keyword_id: keyword.id), class: "keyword-pill" %>
+            <% end %>
           </div>
         <% end %>
-      </div>
-
-        <!-- Graphique et métriques -->
-    <turbo-frame id="request-chart">
-      <div style="display: flex; gap: 20px;">
-        <!-- Graphique (côté gauche) -->
-        <div style="flex: 1; min-width: 0;">
-          <div class="card hoverable">
-            <div class="card-header">
-              <h3>Requests Over Time</h3>
-            </div>
-            <div class="card-body">
-              <div class="chart-container" style="height: 490px;">
-                <%= line_chart @requests_by_date_and_ai_provider,
-                    curve: false,
-                    points: false,
-                    height: "450px",
-                    colors: ["#d88c9a", "#f2d0a9", "#f1e3d3", "#99c1b9", "#8e7dbe", "#EC4899"],
-                    library: {
-                      chart: {
-                        backgroundColor: '#f8f9fa',
-                        borderRadius: 2
-                      },
-                      title: {
-                        text: nil
-                      },
-                      legend: {
-                        align: 'center',
-                        verticalAlign: 'bottom',
-                        layout: 'horizontal',
-                        symbolHeight: 12,
-                        symbolWidth: 12,
-                        symbolRadius: 6
-                      },
-                      xAxis: {
-                        labels: {
-                          style: {
-                            fontSize: '12px'
-                          }
-                        }
-                      },
-                      yAxis: {
-                        title: {
-                          text: 'Number of Visits'
-                        },
-                        min: 0
-                      },
-                      tooltip: {
-                        shared: true,
-                        crosshairs: true
-                      }
-                    },
-                    xtitle: "Time",
-                    ytitle: "Visits",
-                    id: 'requests' %>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    <% else %>
-      <!-- Empty state -->
-      <div class="empty-state">
-        <div class="empty-state-content">
-          <i class="fas fa-search"></i>
-          <h3>No keyword selected</h3>
-          <p>Please select a keyword in the search bar above to see the positioning analysis.</p>
-        </div>
       </div>
     <% end %>
   </div>
 </div>
+
+<!-- Partial for requests chart -->
+<% content_for :render_async %>
