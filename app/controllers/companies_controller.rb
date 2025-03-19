@@ -14,7 +14,8 @@ class CompaniesController < ApplicationController
   end
 
   def create
-    @company = current_user.build_company(company_params)
+    @company = Company.find_by(name: company_params[:name])
+    @company = current_user.build_company(company_params) if @company.nil?
 
     respond_to do |format|
       if @company.save
