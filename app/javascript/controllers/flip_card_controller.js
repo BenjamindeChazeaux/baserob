@@ -4,9 +4,15 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   connect() {
     console.log("Flip card controller connected");
+    
+    // On supprime le comportement par défaut (clic sur la carte entière)
+    this.element.removeAttribute("data-action");
   }
   
-  flip() {
+  flip(event) {
+    // Empêche la propagation si l'élément parent a aussi un data-action
+    event.stopPropagation();
+    
     this.element.classList.toggle("flip");
   }
 }
