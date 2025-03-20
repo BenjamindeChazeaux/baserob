@@ -123,7 +123,7 @@
                         <span class="metric-description">How often your brand appears in the AI search results</span>
                       </div>
                     </div>
-                    
+
                     <div class="geo-metric">
                       <div class="metric-icon">
                         <i class="fas fa-sync-alt"></i>
@@ -133,7 +133,7 @@
                         <span class="metric-description">Where your brand appears in the AI search results</span>
                       </div>
                     </div>
-                    
+
                     <div class="geo-metric">
                       <div class="metric-icon">
                         <i class="fas fa-link"></i>
@@ -159,9 +159,9 @@
                       </div>
                       <h4 class="geo-back-title">Learn about Generative Engine Optimization</h4>
                     </div>
-                    
+
                     <p class="geo-back-description">Discover how GEO Scoring can improve your brand's visibility in AI search results with our exclusive podcast.</p>
-                    
+
                     <div class="audio-player">
                       <audio data-audio-player-target="audio" src="/audio/Generative_Engine_Optimization.wav"></audio>
                       <button class="audio-button" data-audio-player-target="playButton" data-action="click->audio-player#toggle">
@@ -174,7 +174,7 @@
                         </div>
                       </div>
                     </div>
-                    
+
                     <div class="podcast-features">
                       <div class="podcast-feature">
                         <div class="feature-icon">
@@ -184,7 +184,7 @@
                           <span>Improve AI visibility</span>
                         </div>
                       </div>
-                      
+
                       <div class="podcast-feature">
                         <div class="feature-icon">
                           <i class="fas fa-chart-line"></i>
@@ -193,7 +193,7 @@
                           <span>Track performance</span>
                         </div>
                       </div>
-                      
+
                       <div class="podcast-feature">
                         <div class="feature-icon">
                           <i class="fas fa-cog"></i>
@@ -203,7 +203,7 @@
                         </div>
                       </div>
                     </div>
-                    
+
                     <div class="geo-back-cta">
                       <button class="btn btn-outline-primary flip-back" data-action="click->flip-card#flip">
                         <i class="fas fa-arrow-left mr-2"></i>
@@ -224,7 +224,7 @@
           </div>
           <div class="cards-grid">
             <% @geo_scorings_data.each do |provider_data| %>
-              <div class="action-card" data-controller="flip-card"> 
+              <div class="action-card" data-controller="flip-card">
                 <div class="card-front">
                   <div class="card-header">
                     <h3><%= provider_data[:name].capitalize %></h3>
@@ -256,7 +256,7 @@
                       </div>
                     </div>
                     <div class="score-progress">
-                      <div class="progress-fill <%= provider_data[:mention_score].round >= 70 ? 'high' : (provider_data[:mention_score].round >= 40 ? 'medium' : 'low') %>" 
+                      <div class="progress-fill <%= provider_data[:mention_score].round >= 70 ? 'high' : (provider_data[:mention_score].round >= 40 ? 'medium' : 'low') %>"
                            style="width: <%= provider_data[:mention_score].round %>%;"></div>
                     </div>
 
@@ -270,7 +270,7 @@
                       <div class="progress-fill <%= provider_data[:score].round >= 70 ? 'high' : (provider_data[:score].round >= 40 ? 'medium' : 'low') %>"
                            style="width: <%= provider_data[:score].round %>%;"></div>
                     </div>
-                    
+
                     <div class="metric-row">
                       <div class="metric-label">URL presence</div>
                       <div class="metric-value <%= provider_data[:url_presence_score].round > 0 ? 'positive' : 'negative' %>">
@@ -288,7 +288,7 @@
           </div>
         </section>
 
-        
+
     <% else %>
       <!-- Improved empty state -->
       <div class="dashboard-welcome animate-fadeIn">
@@ -301,7 +301,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="empty-state-apple">
         <div class="empty-state-icon animate-fadeIn">
           <i class="fas fa-search"></i>
@@ -311,7 +311,7 @@
           Choose a keyword from the dropdown above to see detailed positioning analysis across different AI providers.
           Your brand's performance in AI search results will be displayed here.
         </p>
-        
+
         <% if @keywords.present? %>
           <div class="suggested-keywords animate-fadeIn delay-3">
             <p style="width: 100%; margin-bottom: 10px; color: #6c757d;">Popular keywords:</p>
@@ -324,6 +324,3 @@
     <% end %>
   </div>
 </div>
-
-<style>
-
