@@ -1,24 +1,32 @@
 // @import "../config";
 
+
+
 .metrics-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: $spacing-lg;
-  margin-bottom: $spacing-xl;
+  margin-bottom: $spacing-sm;
 }
 
 .metric-card {
   background: $card-bg;
-  border-radius: 6px !important;
-  padding: $spacing-lg !important;
+  border-radius: 6px;
+  padding: $spacing-md;
   box-shadow: $card-shadow;
-  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
   
   .metric-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: $spacing-md;
+    align-items: center;
+    margin-bottom: $spacing-sm;
     
     h3 {
       font-size: $font-size-md;
@@ -29,14 +37,15 @@
     .metric-icon {
       width: 40px;
       height: 40px;
-      background: rgba($primary-color, 0.1);
-      border-radius: $border-radius-md;
+      background: linear-gradient(310deg, rgba($secondary-color, 0.6), $secondary-color);
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 4px 10px rgba($secondary-color, 0.2);
       
       i {
-        color: $primary-color;
+        color: white;
         font-size: $font-size-lg;
       }
     }
@@ -47,9 +56,11 @@
     align-items: baseline;
     
     .value {
-      font-size: $font-size-xxl;
-      font-weight: 600;
+      font-size: $font-size-xl;
+      font-weight: 700;
       color: $text-primary;
+      letter-spacing: -0.5px;
+      margin-right: $spacing-sm;
     }
     
     .change {
@@ -57,13 +68,18 @@
       font-size: $font-size-sm;
       display: flex;
       align-items: center;
+      font-weight: 600;
+      border-radius: 6px;
+      padding: 2px 8px;
       
       &.positive {
         color: $success-color;
+        background-color: rgba($success-color, 0.1);
       }
       
       &.negative {
         color: $danger-color;
+        background-color: rgba($danger-color, 0.1);
       }
       
       i {
@@ -76,13 +92,14 @@
   .metric-period {
     font-size: $font-size-sm;
     color: $text-secondary;
-    margin-top: $spacing-xs;
+    margin-top: 2px;
+    font-weight: 500;
   }
 }
 
 .table-card {
   background: $card-bg;
-  border-radius: $border-radius-lg;
+  border-radius: $border-radius-sm;
   padding: $spacing-lg;
   box-shadow: $card-shadow;
   
@@ -109,12 +126,45 @@
 
 @media (max-width: $breakpoint-lg) {
   .metrics-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .metrics-row {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: $breakpoint-md) {
   .metrics-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+// Styles pour les graphiques
+.charts-container {
+  display: flex;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.line-chart-container {
+  flex: 3; // 75% de l'espace
+}
+
+.donut-chart-container {
+  flex: 1; // 25% de l'espace
+}
+
+// Media query pour les écrans plus petits
+@media (max-width: $breakpoint-md) {
+  .charts-container {
+    flex-direction: column;
+  }
+  
+  .line-chart-container,
+  .donut-chart-container {
+    flex: 1 1 100%;
   }
 } 

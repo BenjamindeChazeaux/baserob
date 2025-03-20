@@ -3,6 +3,7 @@
   height: 120px;
   border-radius: 50%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -31,6 +32,66 @@
     color: white;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
+  
+  .trend-indicator {
+    position: absolute;
+    bottom: -8px;
+    right: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    &.up {
+      color: $success-color;
+    }
+    
+    &.down {
+      color: $danger-color;
+    }
+    
+    &.neutral {
+      color: $text-secondary;
+    }
+    
+    .trend-value {
+      position: absolute;
+      right: -5px;
+      top: -5px;
+      background: white;
+      border-radius: 10px;
+      padding: 2px 5px;
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      
+      &.up {
+        color: white;
+        background: $success-color;
+      }
+      
+      &.down {
+        color: white;
+        background: $danger-color;
+      }
+      
+      &.neutral {
+        color: $text-secondary;
+      }
+    }
+  }
 }
 
 .score-details {
@@ -54,7 +115,7 @@
     align-items: center;
     padding: $spacing-xs $spacing-sm;
     background: rgba(255, 255, 255, 0.7);
-    border-radius: $border-radius-md;
+    border-radius: $border-radius-sm;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     
     .score-name {

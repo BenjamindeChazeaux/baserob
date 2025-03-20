@@ -7,12 +7,12 @@
 
 // Variables
 $primary-color: #2563eb;
-$secondary-color: #7c3aed;
+$secondary-color: #599aaf;
 $text-color: #1f2937;
 $light-text: #6b7280;
 $background-color: linear-gradient(135deg, #2563eb, #7c3aed);
 $section-padding: 5rem 2rem;
-$border-radius: 8px;
+$border-radius: 6px;
 $transition-speed: 0.3s;
 
 // Conteneur principal
@@ -256,7 +256,7 @@ $transition-speed: 0.3s;
 .btn-primary {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  background-color: $primary-color;
+  background-color: $secondary-color;
   color: white;
   border-radius: 8px;
   text-decoration: none;
@@ -264,7 +264,7 @@ $transition-speed: 0.3s;
   transition: background-color $transition-speed ease-in-out, transform $transition-speed ease-in-out;
   
   &:hover {
-    background-color: darken($primary-color, 10%);
+    background-color: darken($secondary-color, 10%);
     transform: translateY(-3px);
   }
 } 

@@ -77,9 +77,8 @@ class GeoScoringsController < ApplicationController
   helper_method :score_color_class
   def score_color_class(score)
     case score
-    when 80..100 then "success"
-    when 60..79 then "info"
-    when 40..59 then "warning"
+    when 70..100 then "success"
+    when 40..69 then "warning"
     else "danger"
     end
   end

@@ -1,0 +1,67 @@
+// Modern Search Bar Component
+.search-bar-container {
+  display: flex;
+  justify-content: left;
+  margin: 20px 0;
+}
+
+.modern-search-bar {
+  position: relative;
+  width: 500px;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 16px rgba(30, 40, 90, 0.8);
+  }
+
+  .fas.fa-search {
+    color: rgba(30, 40, 90, 0.8);
+    margin-right: 10px;
+    font-size: 16px;
+  }
+
+  &::after {
+    content: '\f078';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    color: rgba(30, 40, 90, 0.8);
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 12px;
+  }
+
+  .search-form {
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 6px 0;
+    border: none;
+    font-weight: 500;
+    font-size: 15px;
+    color: #333;
+    background: transparent;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    text-overflow: ellipsis;
+
+    option {
+      font-weight: 500;
+      padding: 10px;
+    }
+  }
+} 

@@ -63,11 +63,19 @@
                   %>
                   <div class="score-circle <%= score_color_class(overall_score.round) %>">
                     <span class="score-value">
-                      <%= overall_score.round %> %
+                      <%= overall_score.round %>%
                     </span>
-                    <span>
-                      <%= @selected_keyword.global_score_trend %>
-                    </span>
+                    <% if @selected_keyword.global_score_trend.present? %>
+                      <% trend = @selected_keyword.global_score_trend %>
+                      <% trend_direction = trend.start_with?('↑') ? 'up' : (trend.start_with?('↓') ? 'down' : 'neutral') %>
+                      <% trend_value = trend.gsub(/[^\d-]/, '') %>
+                      <div class="trend-indicator <%= trend_direction %>">
+                        <i class="fas <%= trend_direction == 'up' ? 'fa-arrow-up' : (trend_direction == 'down' ? 'fa-arrow-down' : 'fa-minus') %>"></i>
+                        <% if trend_value.present? && trend_value != '0' %>
+                          <span class="trend-value <%= trend_direction %>"><%= trend_value %>%</span>
+                        <% end %>
+                      </div>
+                    <% end %>
                   </div>
                   <p class="score-label">Performance across all AI providers</p>
                 </div>
@@ -98,10 +106,10 @@
 
                   <div class="metric-row">
                     <div class="metric-label">Link score</div>
-                    <div class="metric-value positive">92%</div>
+                    <div class="metric-value positive">52%</div>
                   </div>
                   <div class="score-progress">
-                    <div class="progress-fill high" style="width: 92%;"></div>
+                    <div class="progress-fill high" style="width: 52%;"></div>
                   </div>
                 </div>
               </div>
@@ -174,42 +182,6 @@
                         </div>
                       </div>
                     </div>
-                    
-                    <div class="podcast-features">
-                      <div class="podcast-feature">
-                        <div class="feature-icon">
-                          <i class="fas fa-search"></i>
-                        </div>
-                        <div class="feature-text">
-                          <span>Improve AI visibility</span>
-                        </div>
-                      </div>
-                      
-                      <div class="podcast-feature">
-                        <div class="feature-icon">
-                          <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="feature-text">
-                          <span>Track performance</span>
-                        </div>
-                      </div>
-                      
-                      <div class="podcast-feature">
-                        <div class="feature-icon">
-                          <i class="fas fa-cog"></i>
-                        </div>
-                        <div class="feature-text">
-                          <span>Optimization tips</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="geo-back-cta">
-                      <button class="btn btn-outline-primary flip-back" data-action="click->flip-card#flip">
-                        <i class="fas fa-arrow-left mr-2"></i>
-                        <span>Back to summary</span>
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -236,7 +208,17 @@
                     %>
                     <div class="score-circle <%= score_color_class(overall_score.round) %>">
                       <span class="score-value"><%= overall_score.round %>%</span>
-                      <span><%= @selected_keyword.ai_provider_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span>
+                      <% if @selected_keyword.ai_provider_score_trend(AiProvider.find_by(name: provider_data[:name])).present? %>
+                        <% trend = @selected_keyword.ai_provider_score_trend(AiProvider.find_by(name: provider_data[:name])) %>
+                        <% trend_direction = trend.start_with?('↑') ? 'up' : (trend.start_with?('↓') ? 'down' : 'neutral') %>
+                        <% trend_value = trend.gsub(/[^\d-]/, '') %>
+                        <div class="trend-indicator <%= trend_direction %>">
+                          <i class="fas <%= trend_direction == 'up' ? 'fa-arrow-up' : (trend_direction == 'down' ? 'fa-arrow-down' : 'fa-minus') %>"></i>
+                          <% if trend_value.present? && trend_value != '0' %>
+                            <span class="trend-value <%= trend_direction %>"><%= trend_value %>%</span>
+                          <% end %>
+                        </div>
+                      <% end %>
                     </div>
                     <p class="score-label">Global score</p>
                   </div>
@@ -252,7 +234,16 @@
                     <div class="metric-row">
                       <div class="metric-label">Frequency score</div>
                       <div class="metric-value <%= provider_data[:mention_score].round >= 70 ? 'positive' : '' %>">
-                        <%= provider_data[:mention_score].round %>%<span><%= @selected_keyword.ai_provider_mention_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span>
+                        <%= provider_data[:mention_score].round %>%
+                        <% if @selected_keyword.ai_provider_mention_score_trend(AiProvider.find_by(name: provider_data[:name])).present? %>
+                          <% trend = @selected_keyword.ai_provider_mention_score_trend(AiProvider.find_by(name: provider_data[:name])) %>
+                          <% trend_direction = trend.start_with?('↑') ? 'up' : (trend.start_with?('↓') ? 'down' : 'neutral') %>
+                          <% trend_value = trend.gsub(/[^\d-]/, '') %>
+                          <span class="trend-badge <%= trend_direction %>">
+                            <i class="fas <%= trend_direction == 'up' ? 'fa-arrow-up' : (trend_direction == 'down' ? 'fa-arrow-down' : 'fa-minus') %>"></i>
+                            <%= trend_value.present? && trend_value != '0' ? "#{trend_value}%" : '' %>
+                          </span>
+                        <% end %>
                       </div>
                     </div>
                     <div class="score-progress">
@@ -263,7 +254,16 @@
                     <div class="metric-row">
                       <div class="metric-label">Position score</div>
                       <div class="metric-value <%= provider_data[:score].round >= 70 ? 'positive' : '' %>">
-                        <%= provider_data[:score].round %>%<span><%= @selected_keyword.ai_provider_position_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span>
+                        <%= provider_data[:score].round %>%
+                        <% if @selected_keyword.ai_provider_position_score_trend(AiProvider.find_by(name: provider_data[:name])).present? %>
+                          <% trend = @selected_keyword.ai_provider_position_score_trend(AiProvider.find_by(name: provider_data[:name])) %>
+                          <% trend_direction = trend.start_with?('↑') ? 'up' : (trend.start_with?('↓') ? 'down' : 'neutral') %>
+                          <% trend_value = trend.gsub(/[^\d-]/, '') %>
+                          <span class="trend-badge <%= trend_direction %>">
+                            <i class="fas <%= trend_direction == 'up' ? 'fa-arrow-up' : (trend_direction == 'down' ? 'fa-arrow-down' : 'fa-minus') %>"></i>
+                            <%= trend_value.present? && trend_value != '0' ? "#{trend_value}%" : '' %>
+                          </span>
+                        <% end %>
                       </div>
                     </div>
                     <div class="score-progress">
@@ -274,7 +274,16 @@
                     <div class="metric-row">
                       <div class="metric-label">URL presence</div>
                       <div class="metric-value <%= provider_data[:url_presence_score].round > 0 ? 'positive' : 'negative' %>">
-                      <%= provider_data[:url_presence_score].round %>%<span><%= @selected_keyword.ai_provider_url_presence_score_trend(AiProvider.find_by(name: provider_data[:name])) %></span>
+                      <%= provider_data[:url_presence_score].round %>%
+                      <% if @selected_keyword.ai_provider_url_presence_score_trend(AiProvider.find_by(name: provider_data[:name])).present? %>
+                        <% trend = @selected_keyword.ai_provider_url_presence_score_trend(AiProvider.find_by(name: provider_data[:name])) %>
+                        <% trend_direction = trend.start_with?('↑') ? 'up' : (trend.start_with?('↓') ? 'down' : 'neutral') %>
+                        <% trend_value = trend.gsub(/[^\d-]/, '') %>
+                        <span class="trend-badge <%= trend_direction %>">
+                          <i class="fas <%= trend_direction == 'up' ? 'fa-arrow-up' : (trend_direction == 'down' ? 'fa-arrow-down' : 'fa-minus') %>"></i>
+                          <%= trend_value.present? && trend_value != '0' ? "#{trend_value}%" : '' %>
+                        </span>
+                      <% end %>
                       </div>
                     </div>
                     <div class="score-progress">
@@ -324,6 +333,3 @@
     <% end %>
   </div>
 </div>
-
-<style>
-
