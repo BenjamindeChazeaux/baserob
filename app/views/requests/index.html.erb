@@ -24,12 +24,14 @@
                                 turbo_frame: 'request-chart'
                               }
                             } do |f| %>
+        
           <div class="filters-wrapper">
             <div class="filter-item">
               <i class="fas fa-robot filter-icon"></i>
               <%= f.input :ai_provider,
                           collection: AiProvider.all,
                           include_blank: "All AI Providers",
+                          selected: params.dig(:search, :ai_provider),
                           label: false,
                           wrapper_html: {
                             class: 'filter-wrapper'
@@ -52,6 +54,7 @@
                             ['6 Months', '6_months']
                           ],
                           include_blank: "Select Time Period",
+                           selected: params.dig(:search, :timeline),
                           label: false,
                           wrapper_html: {
                             class:'filter-wrapper'
@@ -74,6 +77,7 @@
         <div style="flex: 1; min-width: 0;">
           <div class="card hoverable">
             <div class="card-header">
+
               <h3>Visits over time</h3>
               <p>Total visits by source referrer (Google & AI provider)</p>
             </div>

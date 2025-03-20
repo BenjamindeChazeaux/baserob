@@ -1,0 +1,69 @@
+
+  <div class="main-content">
+    <header class="dashboard-header">
+      <div class="header-top">
+        <div class="welcome-text">
+          <h1>Contact us </h1>
+          <p class="date"></i> <%= Date.today.strftime("%A %d %B %Y") %></p>
+        </div>
+        </div>
+    </header>
+<div class="container-form">
+  <div class="d-flex">
+    <div class="text-advisor w-50">
+      <h3 class="fw-bold fs-24 d-block mb-5">Get help from our advisors</h3>
+
+      <div class="d-flex mb-5">
+        <img alt="✔" width="20" loading="lazy" src="https://www.lewagon.com/assets/v4/icons/check-white-purple-fill-921409daf3c5dc13207f5ffdb0f9fbeee10238c8441e85a819ac1d85f9ec1676.svg">
+        <p class="pl-3 mb-0">Understand our services</p>
+      </div>
+
+      <div class="d-flex mb-5">
+        <img alt="✔" width="20" loading="lazy" src="https://www.lewagon.com/assets/v4/icons/check-white-purple-fill-921409daf3c5dc13207f5ffdb0f9fbeee10238c8441e85a819ac1d85f9ec1676.svg">
+        <p class="pl-3 mb-0">Technical support</p>
+      </div>
+
+      <div class="d-flex mb-5">
+        <img alt="✔" width="20" loading="lazy" src="https://www.lewagon.com/assets/v4/icons/check-white-purple-fill-921409daf3c5dc13207f5ffdb0f9fbeee10238c8441e85a819ac1d85f9ec1676.svg">
+        <p class="pl-3 mb-0">Making an appointment</p>
+      </div>
+
+    </div>
+    <div class="form-contact w-50">
+      <%= simple_form_for @contact do |f| %>
+        <div class="form-group">
+          <%= f.input :first_name, label: "First Name" %>
+        </div>
+        <div class="form-group">
+          <%= f.input :last_name, label: "Last Name" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.input :email, label: "Email" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.input :phone, label: "Téléphone" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.input :message, label: "Messages", as: :text %>
+        </div>
+
+        <%= f.submit "Send", class: "btn btn-primary" %>
+      <% end %>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+</div>
