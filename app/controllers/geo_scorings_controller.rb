@@ -6,7 +6,7 @@ class GeoScoringsController < ApplicationController
 
   def index
     if @selected_keyword
-      @geo_scorings_data = calculate_provider_data(@company, @selected_keyword)
+      @geo_scorings_data = calculate_provider_data #(@company, @selected_keyword)
     end
 
 
@@ -51,9 +51,9 @@ class GeoScoringsController < ApplicationController
   end
 
   # 4️⃣ Calcul des scores par AI Provider
-  def calculate_provider_data(company, keyword)
+  def calculate_provider_data
     @company.ai_providers.map do |ai_provider|
-      calculate_keyword_for_ai_provider_score(keyword, ai_provider)
+      calculate_keyword_for_ai_provider_score(@selected_keyword, ai_provider)
     end
   end
 
