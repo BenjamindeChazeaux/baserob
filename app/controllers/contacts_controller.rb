@@ -7,7 +7,7 @@ class ContactsController < ApplicationController
     @contact = Contact.new(contact_params)
     if @contact.save
       #ContactMailer.deliver_now(@contact)
-      redirect_to welcome_index_path, notice: "Votre demande de contact a bien été prise en compte"
+      redirect_to welcome_index_path, notice: "Your request has been successfully sent"
     else
       render :new
     end

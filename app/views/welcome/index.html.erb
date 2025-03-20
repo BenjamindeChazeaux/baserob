@@ -33,6 +33,25 @@
           </a>
         </div>
 
+        <!-- AI Analytics Card -->
+        <div class="action-card">
+          <div class="card-header">
+          <h3>AI Analytics</h3>
+          </div>
+          <div class="geo-preview">
+            <%= pie_chart({
+              "Other Visits" => (@ai_not_requests_percentage * 100).round(0),
+              "AI-Driven Visits" => (@ai_requests_percentage * 100).round(0)
+            }, donut: true, height: "150px", colors: ["#0E2954", "#84A7A1"], suffix: "%") %>
+          </div>
+          <p> Total Visits <%= @total_requests_count %> </p>
+          <a href="<%= requests_index_path %>" class="card-action"
+          style="font-size: 1em; position: absolute; bottom: 20px; left: 17%; transform: translateX(-50%);">
+            See details
+            <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
         <!-- Quick Start GEO Scoring Card -->
         <div class="action-card">
           <div class="card-header">
@@ -52,25 +71,7 @@
             <i class="fas fa-arrow-right"></i>
           </a>
         </div>
-
-        <!-- AI Analytics Card -->
-        <div class="action-card">
-          <div class="card-header">
-          <h3>AI Analytics</h3>
-          </div>
-          <div class="geo-preview">
-            <%= pie_chart({
-              "Other Visits" => (@ai_not_requests_percentage * 100).round(0),
-              "AI-Driven Visits" => (@ai_requests_percentage * 100).round(0)
-            }, donut: true, height: "150px", colors: ["#0E2954", "#84A7A1"], suffix: "%") %>
-          </div>
-          <p> Total Visits <%= @total_requests_count %> </p>
-          <a href="<%= requests_index_path %>" class="card-action"
-          style="font-size: 1em; position: absolute; bottom: 20px; left: 17%; transform: translateX(-50%);">
-            See details
-            <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
+        
       </div>
     </section>
 
