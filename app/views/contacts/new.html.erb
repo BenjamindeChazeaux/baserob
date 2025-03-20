@@ -32,9 +32,7 @@
     <div class="form-contact w-50">
       <%= simple_form_for @contact do |f| %>
         <div class="form-group">
-          <%= f.input :first_name, label: "First Name" %>
-        </div>
-        <div class="form-group">
+
           <%= f.input :last_name, label: "Last Name" %>
         </div>
 
@@ -43,11 +41,12 @@
         </div>
 
         <div class="form-group">
-          <%= f.input :phone, label: "Téléphone" %>
+          <%= f.input :phone, label: "Telephone" %>
         </div>
 
         <div class="form-group">
-          <%= f.input :message, label: "Messages", as: :text %>
+          <%= f.input :appointment_date, as: :string, label: "Choose a date", input_html: { "data-controller": "datepicker" } %>
+
         </div>
 
         <%= f.submit "Send", class: "btn btn-primary" %>

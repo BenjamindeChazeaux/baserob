@@ -71,6 +71,7 @@
               "AI-Driven Visits" => (@ai_requests_percentage * 100).round(0)
             }, donut: true, height: "150px", colors: ["#0E2954", "#84A7A1"], suffix: "%") %>
           </div>
+          <p> Total Visits <%= @total_requests_count %> </p>
           <a href="<%= requests_index_path %>" class="card-action"
           style="font-size: 1em; position: absolute; bottom: 20px; left: 17%; transform: translateX(-50%);">
             See details
