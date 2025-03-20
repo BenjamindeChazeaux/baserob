@@ -72,82 +72,156 @@
 
     <!-- Graphique et métriques -->
     <div id="request-chart">
+      <%
+        top_ai_provider = @company.ai_providers
+          .joins(:requests)
+          .where(requests: { company_id: @company.id })
+          .group('ai_providers.id')
+          .order('COUNT(requests.id) DESC')
+          .first
 
-      <div style="display: flex; gap: 20px;">
-        <!-- Graphique (côté gauche) -->
-        <div style="flex: 1; min-width: 0;">
-          <div class="card hoverable">
-            <div class="card-header">
+        top_ai_count = top_ai_provider ? @company.requests.where(ai_provider: top_ai_provider).count : 0
+      %>
 
-              <h3>Visits over time</h3>
-              <p>Total visits by source referrer (Google & AI provider)</p>
+      <!-- Cartes métriques en ligne -->
+      
+      <div class="metrics-row">
+        <!-- Carte 1: Visites Totales -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <h3>Total Visits</h3>
+            <div class="metric-icon">
+              <i class="fas fa-users"></i>
             </div>
-            <div class="card-body">
-              <div class="chart-container" style="height: 490px;">
-                <%= line_chart @requests_by_date_and_ai_provider,
-                    curve: false,
-                    points: false,
-                    height: "450px",
-                    colors: ["#d88c9a", "#f2d0a9", "#f1e3d3", "#99c1b9", "#8e7dbe", "#EC4899"],
-                    library: {
-                      chart: {
-                        backgroundColor: '#f8f9fa',
-                        borderRadius: 2
-                      },
-                      title: {
-                        text: nil
-                      },
-                      legend: {
-                        align: 'center',
-                        verticalAlign: 'bottom',
-                        layout: 'horizontal',
-                        symbolHeight: 12,
-                        symbolWidth: 12,
-                        symbolRadius: 6
-                      },
-                      xAxis: {
-                        labels: {
-                          style: {
-                            fontSize: '12px'
-                          }
+          </div>
+          <div class="metric-value">
+            <span class="value"><%= @company.requests.count %></span>
+          </div>
+          <p class="metric-period">All time</p>
+        </div>
+
+        <!-- Carte 2: Visites depuis IA -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <h3>AI-Driven Visits</h3>
+            <div class="metric-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+          </div>
+          <div class="metric-value">
+            <span class="value"><%= @company.requests.where.not(ai_provider_id: nil).count %></span>
+          </div>
+          <p class="metric-period">of total visits</p>
+        </div>
+
+        <!-- Carte 3: Top IA Source -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <h3>Top AI Source</h3>
+            <div class="metric-icon">
+              <% if top_ai_provider %>
+                <img src="<%= asset_path("#{top_ai_provider.name.downcase}_logo.png") %>" alt="<%= top_ai_provider.name %> logo" class="provider-logo" style="width: 24px; height: 24px;">
+              <% else %>
+                <i class="fas fa-robot"></i>
+              <% end %>
+            </div>
+          </div>
+          <div class="metric-value">
+            <span class="value"><%= top_ai_provider&.name&.capitalize || "None" %></span>
+          </div>
+          <p class="metric-period"><%= top_ai_count %> visits</p>
+        </div>
+      </div>
+
+      <!-- Graphique principal -->
+      <div class="charts-container">
+        <!-- Line chart (75% de la largeur) -->
+        <div class="card hoverable mt-4 line-chart-container">
+          <div class="card-header">
+            <h3>Visits over time</h3>
+            <p>Total visits by source referrer (Google & AI provider)</p>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 350px;">
+              <%= line_chart @requests_by_date_and_ai_provider,
+                  curve: false,
+                  points: false,
+                  height: "350px",
+                  colors: ["#d88c9a", "#f2d0a9", "#f1e3d3", "#99c1b9", "#8e7dbe", "#EC4899"],
+                  library: {
+                    chart: {
+                      backgroundColor: '#f8f9fa',
+                      borderRadius: 2
+                    },
+                    title: {
+                      text: nil
+                    },
+                    legend: {
+                      align: 'center',
+                      verticalAlign: 'bottom',
+                      layout: 'horizontal',
+                      symbolHeight: 12,
+                      symbolWidth: 12,
+                      symbolRadius: 6
+                    },
+                    xAxis: {
+                      labels: {
+                        style: {
+                          fontSize: '12px'
                         }
-                      },
-                      yAxis: {
-                        title: {
-                          text: 'Number of Visits'
-                        },
-                        min: 0
-                      },
-                      tooltip: {
-                        shared: true,
-                        crosshairs: true
                       }
                     },
-                    xtitle: "Time",
-                    ytitle: "Visits",
-                    id: 'requests' %>
-              </div>
+                    yAxis: {
+                      title: {
+                        text: 'Number of Visits'
+                      },
+                      min: 0
+                    },
+                    tooltip: {
+                      shared: true,
+                      crosshairs: true
+                    }
+                  },
+                  xtitle: "Time",
+                  ytitle: "Visits",
+                  id: 'requests' %>
             </div>
           </div>
         </div>
-
-        <!-- Cartes de métriques (côté droit) -->
-        <div style="width: 250px;">
-          <%
-            top_ai_provider = @company.ai_providers
-              .joins(:requests)
-              .where(requests: { company_id: @company.id })
-              .group('ai_providers.id')
-              .order('COUNT(requests.id) DESC')
-              .first
-
-            top_ai_count = top_ai_provider ? @company.requests.where(ai_provider: top_ai_provider).count : 0
-          %>
-
-          <%= turbo_stream_from "requests" %>
-
-          <%= render "requests", company: @company, top_ai_provider: top_ai_provider, top_ai_count: top_ai_count %>
-
+        
+        <!-- Donut chart (25% de la largeur) -->
+        <div class="card hoverable mt-4 donut-chart-container">
+          <div class="card-header">
+            <h3>AI Providers Distribution</h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-container" style="height: 300px; display: flex; align-items: center; justify-content: center;">
+              <% 
+                # Calculer la répartition entre les fournisseurs d'IA
+                ai_provider_counts = @company.requests
+                  .joins(:ai_provider)
+                  .group('ai_providers.name')
+                  .count
+                  .transform_keys(&:capitalize)
+              %>
+              <%= pie_chart ai_provider_counts,
+                  donut: true,
+                  colors: ["#f2d0a9", "#f1e3d3","#d88c9a"],
+                  legend: true,
+                  library: {
+                    plotOptions: {
+                      pie: {
+                        innerSize: '60%',
+                        borderRadius: 5,
+                        dataLabels: {
+                          enabled: true,
+                          format: '<b>{point.name}</b>: {point.percentage:.1f}%'
+                        }
+                      }
+                    }
+                  } %>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -184,7 +258,7 @@
   }
 
   .dashboard-container .filter-icon {
-    color: #0A84FF !important;
+    color: $secondary-color;
     margin-right: 0.5rem !important;
     font-size: 1rem !important;
   }

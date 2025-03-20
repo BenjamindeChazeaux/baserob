@@ -75,7 +75,7 @@
     }
     
     .metrics-row {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
     
     .charts-container {
@@ -94,9 +94,9 @@
       padding: 1.5rem;
     }
     
-    .metrics-row {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    // .metrics-row {
+    //   grid-template-columns: repeat(3, 1fr);
+    // }
     
     .charts-container {
       grid-template-columns: 1fr;
@@ -151,7 +151,7 @@
   // Styles pour les grilles de métriques et graphiques
   .metrics-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     margin-bottom: 2rem;
     transition: grid-template-columns 0.3s ease;
@@ -212,7 +212,7 @@
   // Sections de contenu
   .content-section {
     background: $card-bg;
-    border-radius: $border-radius-lg;
+    border-radius: $border-radius-md;
     box-shadow: $card-shadow;
     padding: 2rem;
     margin-bottom: 2rem;

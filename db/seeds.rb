@@ -121,11 +121,22 @@ puts "geo_scoring actuels créés"
 # Création des geo_scorings pour chaque mot-clé et fournisseur d'IA
 puts "Creating geo_scorings..."
 
-urls = ['https://www.le-wagon-bar.vercel.app/', 'https://www.google.com/', nil]
+urls = [
+  'https://www.le-wagon-bar.vercel.app/', 
+  'https://www.le-wagon-bar.vercel.app/', 
+  'https://www.le-wagon-bar.vercel.app/', 
+  'https://www.le-wagon-bar.vercel.app/', 
+  'https://www.le-wagon-bar.vercel.app/', 
+  'https://www.le-wagon-bar.vercel.app/', 
+  'https://www.google.com/',
+  'https://www.google.com/',
+  'https://www.google.com/',
+  nil
+]
 (Date.new(2024, 9, 1)..Date.today).each do |date|
   company.keywords.each do |keyword|
     company.ai_providers.each do |ai_provider|
-      mention = (rand(10) % 2).even?
+      mention = rand(10) > 2
       GeoScoring.create!(
         keyword: keyword,
         ai_provider: ai_provider,

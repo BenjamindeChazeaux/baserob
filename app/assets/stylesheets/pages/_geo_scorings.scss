@@ -90,7 +90,7 @@
 
 .action-card {
   background: $card-bg;
-  border-radius: $border-radius-lg;
+  border-radius: $border-radius-md;
   padding: $spacing-lg;
   box-shadow: $card-shadow;
   transition: all 0.3s ease;
@@ -215,7 +215,7 @@
 
 .resource-card {
   background: $card-bg;
-  border-radius: $border-radius-lg;
+  border-radius: $border-radius-md;
   padding: $spacing-lg;
   display: flex;
   align-items: flex-start;
@@ -286,7 +286,7 @@
   
   .chart-container-wrapper {
     background: white;
-    border-radius: $border-radius-lg;
+    border-radius: $border-radius-md;
     box-shadow: $card-shadow;
     margin-bottom: $spacing-xl;
     overflow: hidden;
