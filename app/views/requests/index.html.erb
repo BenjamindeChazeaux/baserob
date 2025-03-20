@@ -83,54 +83,8 @@
         top_ai_count = top_ai_provider ? @company.requests.where(ai_provider: top_ai_provider).count : 0
       %>
 
-      <!-- Cartes métriques en ligne -->
-      
-      <div class="metrics-row">
-        <!-- Carte 1: Visites Totales -->
-        <div class="metric-card">
-          <div class="metric-header">
-            <h3>Total Visits</h3>
-            <div class="metric-icon">
-              <i class="fas fa-users"></i>
-            </div>
-          </div>
-          <div class="metric-value">
-            <span class="value"><%= @company.requests.count %></span>
-          </div>
-          <p class="metric-period">All time</p>
-        </div>
-
-        <!-- Carte 2: Visites depuis IA -->
-        <div class="metric-card">
-          <div class="metric-header">
-            <h3>AI-Driven Visits</h3>
-            <div class="metric-icon">
-              <i class="fas fa-robot"></i>
-            </div>
-          </div>
-          <div class="metric-value">
-            <span class="value"><%= @company.requests.where.not(ai_provider_id: nil).count %></span>
-          </div>
-          <p class="metric-period">of total visits</p>
-        </div>
-
-        <!-- Carte 3: Top IA Source -->
-        <div class="metric-card">
-          <div class="metric-header">
-            <h3>Top AI Source</h3>
-            <div class="metric-icon">
-              <% if top_ai_provider %>
-                <img src="<%= asset_path("#{top_ai_provider.name.downcase}_logo.png") %>" alt="<%= top_ai_provider.name %> logo" class="provider-logo" style="width: 24px; height: 24px;">
-              <% else %>
-                <i class="fas fa-robot"></i>
-              <% end %>
-            </div>
-          </div>
-          <div class="metric-value">
-            <span class="value"><%= top_ai_provider&.name&.capitalize || "None" %></span>
-          </div>
-          <p class="metric-period"><%= top_ai_count %> visits</p>
-        </div>
+          <%= turbo_stream_from "requests" %>
+          <%= render "requests", company: @company, top_ai_provider: top_ai_provider, top_ai_count: top_ai_count %>
       </div>
 
       <!-- Graphique principal -->
@@ -147,7 +101,7 @@
                   curve: false,
                   points: false,
                   height: "350px",
-                  colors: ["#d88c9a", "#f2d0a9", "#f1e3d3", "#99c1b9", "#8e7dbe", "#EC4899"],
+                  colors: ["#d88c9a", "#f6aa1c", "#9c6644", "#99c1b9", "#8e7dbe", "#EC4899"],
                   library: {
                     chart: {
                       backgroundColor: '#f8f9fa',
@@ -206,7 +160,7 @@
               %>
               <%= pie_chart ai_provider_counts,
                   donut: true,
-                  colors: ["#f2d0a9", "#f1e3d3","#d88c9a"],
+                  colors: ["#d88c9a", "#f6aa1c", "#9c6644"],
                   legend: true,
                   library: {
                     plotOptions: {
