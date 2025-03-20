@@ -1,3 +1,6 @@
+// Import des variables nécessaires
+@import "config/variables";
+
 // Devise styles
 .devise-container {
   display: flex;
@@ -51,7 +54,7 @@
       transition: border-color 0.2s ease;
       
       &:focus {
-        border-color: #4a6cf7;
+        border-color: $secondary-color;
         outline: none;
         box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
       }
@@ -65,7 +68,7 @@
       display: block;
       width: 100%;
       padding: 0.75rem 1rem;
-      background-color: #4a6cf7;
+      background-color: $secondary-color;
       color: white;
       border: none;
       border-radius: 8px;
@@ -85,7 +88,7 @@
     text-align: center;
     
     a {
-      color: #4a6cf7;
+      color: $secondary-color;
       text-decoration: none;
       font-size: 0.9rem;
       

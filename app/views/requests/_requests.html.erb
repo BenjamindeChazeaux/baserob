@@ -1,5 +1,5 @@
-<div id="requests_list" class="requests">
-  <div class="metric-card mb-3">
+<div id="requests_list" class="metrics-row">
+  <div class="metric-card">
     <div class="metric-header">
       <h3>Total Visits</h3>
       <div class="metric-icon">
@@ -13,7 +13,7 @@
   </div>
 
   <!-- Carte 2: Volume total de visites issues des IA -->
-  <div class="metric-card mb-3">
+  <div class="metric-card">
     <div class="metric-header">
       <h3>AI-Driven Visits</h3>
       <div class="metric-icon">
@@ -22,10 +22,6 @@
     </div>
     <div class="metric-value">
       <span class="value"><%= company.requests.where.not(ai_provider_id: nil).count %></span>
-      <span class="change positive">
-        <i class="fi fi-tr-arrow-up"></i>
-        <%= ((company.requests.where.not(ai_provider_id: nil).count.to_f / company.requests.count) * 100).round(1) %>%
-      </span>
     </div>
     <p class="metric-period">of total visits</p>
   </div>
@@ -36,7 +32,7 @@
       <h3>Top AI Source</h3>
       <div class="metric-icon">
         <% if top_ai_provider %>
-          <img src="<%= asset_path("#{top_ai_provider.name.downcase}_logo.png") %>" alt="<%= top_ai_provider.name %> logo" class="provider-logo">
+          <img src="<%= asset_path("#{top_ai_provider.name.downcase}_logo.png") %>" alt="<%= top_ai_provider.name %> logo" class="provider-logo" style="width: 24px; height: 24px;">
         <% else %>
           <i class="fi fi-tr-robot"></i>
         <% end %>

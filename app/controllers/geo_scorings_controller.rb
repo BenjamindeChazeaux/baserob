@@ -45,6 +45,9 @@ class GeoScoringsController < ApplicationController
   def set_selected_keyword
     @selected_keyword = @keywords.find_by(id: params[:keyword_id]) || @keywords.first
     logger.debug "Selected Keyword: #{@selected_keyword&.content}"
+    
+    # Définir si les tendances doivent être masquées
+    @hide_trends = @selected_keyword&.content == "Quelle est la meilleure formation pour apprendre à coder ?"
   end
 
   # 4️⃣ Calcul des scores par AI Provider
@@ -77,8 +80,8 @@ class GeoScoringsController < ApplicationController
   helper_method :score_color_class
   def score_color_class(score)
     case score
-    when 70..100 then "success"
-    when 40..69 then "warning"
+    when 60..100 then "success"
+    when 40..59 then "warning"
     else "danger"
     end
   end

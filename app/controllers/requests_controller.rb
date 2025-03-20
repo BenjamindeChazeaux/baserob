@@ -67,7 +67,7 @@ class RequestsController < ApplicationController
       format.turbo_stream do
         top_ai_provider, top_ai_count = get_top_ai_provider(@req)
         render turbo_stream: turbo_stream.replace(:requests, partial: "requests/requests",
-          target: "requests_list",
+          target: "score_requests",
           locals: { company: @req.company, top_ai_count: top_ai_count, top_ai_provider: top_ai_provider })
       end
       format.html { head :no_content }
