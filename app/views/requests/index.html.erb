@@ -24,37 +24,48 @@
                                 turbo_frame: 'request-chart'
                               }
                             } do |f| %>
-          <div class="d-flex gap-2">
-            <%= f.input :ai_provider,
-                        collection: AiProvider.all,
-                        include_blank: "All AI Providers",
-                        selected: params.dig(:search, :ai_provider),
-                        wrapper_html: {
-                          class: 'modern-search-bar'
-                        },
-                        input_html: {
-                          class:'form-control',
-                          value: params.dig(:search, :ai_provider),
-                          data: { action: 'change->requests-stream#submitForm' }
-                        } %>
-            <%= f.input :timeline,
-                        collection: [
-                          ['Today', 'today'],
-                          ['1 Week', '1_week'],
-                          ['1 Month', '1_month'],
-                          ['3 Months', '3_months'],
-                          ['6 Months', '6_months']
-                        ],
-                        include_blank: "Select Time",
-                        selected: params.dig(:search, :timeline),
-                        wrapper_html: {
-                          class:'modern-search-bar'
-                        },
-                        input_html: {
-                          class:'form-control',
-                          value: params.dig(:search, :timeline),
-                          data: { action: 'change->requests-stream#submitForm' }
-                        } %>
+
+        
+          <div class="filters-wrapper">
+            <div class="filter-item">
+              <i class="fas fa-robot filter-icon"></i>
+              <%= f.input :ai_provider,
+                          collection: AiProvider.all,
+                          include_blank: "All AI Providers",
+                          selected: params.dig(:search, :ai_provider),
+                          label: false,
+                          wrapper_html: {
+                            class: 'filter-wrapper'
+                          },
+                          input_html: {
+                            class:'filter-select',
+                            value: params.dig(:search, :ai_provider),
+                            data: { action: 'change->requests-stream#submitForm' }
+                          } %>
+            </div>
+            
+            <div class="filter-item">
+              <i class="fas fa-calendar-alt filter-icon"></i>
+              <%= f.input :timeline,
+                          collection: [
+                            ['Today', 'today'],
+                            ['1 Week', '1_week'],
+                            ['1 Month', '1_month'],
+                            ['3 Months', '3_months'],
+                            ['6 Months', '6_months']
+                          ],
+                          include_blank: "Select Time Period",
+                           selected: params.dig(:search, :timeline),
+                          label: false,
+                          wrapper_html: {
+                            class:'filter-wrapper'
+                          },
+                          input_html: {
+                            class:'filter-select',
+                            value: params.dig(:search, :timeline),
+                            data: { action: 'change->requests-stream#submitForm' }
+                          } %>
+            </div>
           </div>
         <% end %>
       </div>
@@ -67,6 +78,7 @@
         <div style="flex: 1; min-width: 0;">
           <div class="card hoverable">
             <div class="card-header">
+
               <h3>Visits over time</h3>
               <p>Total visits by source referrer (Google & AI provider)</p>
             </div>
