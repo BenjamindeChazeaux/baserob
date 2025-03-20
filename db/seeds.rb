@@ -62,7 +62,7 @@ keywords = Keyword.create!([
 
 puts "Keywords created"
 
-# 5️⃣ Génération de GeoScoring avec des scores fictifs pour chaque AI Provider
+# 5️ Génération de GeoScoring avec des scores fictifs pour chaque AI Provider
 # On prend uniquement le premier mot-clé pour tester
 keyword_1 = keywords.first  # ✅ Utiliser le premier mot-clé
 keyword_2 = keywords.second # ✅ Utiliser le second mot-clé pour plus de tests
