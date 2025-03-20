@@ -40,11 +40,11 @@ ai_providers = AiProvider.create!([
 
 companies = Company.all
 keywords = Keyword.create!([
-  { content: "Meilleure formation en intelligence artificielle en ligne", company: company },
-  { content: "Meilleur bootcamp de Machine Learning ?", company: company },
-  { content: "Top écoles pour apprendre la Data Science", company: company },
-  { content: "Formation Cloud Computing la plus reconnue en 2025", company: company },
-  { content: "Comparaison des meilleures formations en automatisation des tâches", company: company }
+  { content: "Quelle est la meilleure formation pour apprendre à coder ?", company: company },
+  { content: "Quel est le meilleur bootcamp de Machine Learning ?", company: company },
+  { content: "Quelles sont les meilleures écoles pour apprendre la Data Science ?", company: company },
+  { content: "Quelle est la formation Cloud Computing la plus reconnue en 2025 ?", company: company },
+  { content: "Fais moi une comparaison des meilleures formations en Data Analysis", company: company }
 ])
 puts "Keywords created"
 

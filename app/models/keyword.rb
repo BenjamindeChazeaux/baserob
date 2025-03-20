@@ -12,14 +12,19 @@ class Keyword < ApplicationRecord
     last_week_geo_scorings = geo_scorings.where(created_at: (14.days.ago..7.days.ago))
     current_week_geo_scorings = geo_scorings.where(created_at: (7.days.ago..Date.today))
 
-    last_week_score = last_week_geo_scorings.average(:score)
-    current_week_score = current_week_geo_scorings.average(:score)
+    last_week_mention_score = last_week_geo_scorings.where(mentioned: true).count.fdiv(geo_scorings.count) * 100
+    last_week_position_score = last_week_geo_scorings.average(:score).to_f
+    last_week_url_presence_score = last_week_geo_scorings.where.not(url: nil).count.fdiv(geo_scorings.count) * 100
+    current_week_mention_score = current_week_geo_scorings.where(mentioned: true).count.fdiv(geo_scorings.count) * 100
+    current_week_position_score = current_week_geo_scorings.average(:score).to_f
+    current_week_url_presence_score = current_week_geo_scorings.where.not(url: nil).count.fdiv(geo_scorings.count) * 100
 
-    ratio = (((current_week_score - last_week_score) / last_week_score) * 100).round
+    last_week_score = (last_week_mention_score + last_week_position_score + last_week_url_presence_score) / 3
+    current_week_score = (current_week_mention_score + current_week_position_score + current_week_url_presence_score) / 3
 
-    return "= #{ratio}" if last_week_score == current_week_score
-    return "↑ #{ratio}" if last_week_score < current_week_score
-    return "↓ #{ratio}" if last_week_score > current_week_score
+    return "=" if (last_week_score - current_week_score).abs < 0.02
+    return "↑" if last_week_score < current_week_score
+    return "↓" if last_week_score > current_week_score
   end
 
   def global_score_trend
