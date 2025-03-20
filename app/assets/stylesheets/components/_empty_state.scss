@@ -1,0 +1,206 @@
+.empty-state-apple {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 60vh;
+  padding: $spacing-xl;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(245, 247, 250, 0.8), rgba(255, 255, 255, 0.9));
+    z-index: -1;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba($primary-color, 0.05), rgba($primary-color, 0.1));
+    z-index: -1;
+  }
+  
+  .empty-state-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: $spacing-lg;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    
+    i {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, $primary-color, lighten($primary-color, 15%));
+      // -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  
+  .empty-state-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-md;
+    letter-spacing: -0.02em;
+  }
+  
+  .empty-state-description {
+    font-size: 1.1rem;
+    color: $text-secondary;
+    max-width: 500px;
+    margin: 0 auto $spacing-lg;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+  
+  .empty-state-actions {
+    display: flex;
+    gap: $spacing-md;
+    margin-top: $spacing-lg;
+    
+    .btn-primary {
+      padding: $spacing-sm $spacing-lg;
+      font-weight: 500;
+      border-radius: $border-radius-md;
+      letter-spacing: -0.01em;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+    
+    .btn-subtle {
+      padding: $spacing-sm $spacing-lg;
+      background: rgba($primary-color, 0.05);
+      color: $primary-color;
+      border: none;
+      font-weight: 500;
+      border-radius: $border-radius-md;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: rgba($primary-color, 0.1);
+        transform: translateY(-2px);
+      }
+    }
+  }
+  
+  .suggested-keywords {
+    margin-top: $spacing-xl;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $spacing-sm;
+    max-width: 600px;
+    
+    .keyword-pill {
+      padding: $spacing-xs $spacing-md;
+      background: white;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: $text-primary;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        background: rgba($primary-color, 0.05);
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+.dashboard-welcome {
+  background: white;
+  border-radius: $border-radius-lg;
+  box-shadow: $card-shadow;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-xl;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
+  .welcome-content {
+    max-width: 60%;
+    
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: $spacing-sm;
+      color: $text-primary;
+      letter-spacing: -0.02em;
+    }
+    
+    p {
+      color: $text-secondary;
+      font-size: 1.05rem;
+      margin-bottom: $spacing-md;
+      line-height: 1.6;
+    }
+    
+    .welcome-actions {
+      display: flex;
+      gap: $spacing-md;
+    }
+  }
+  
+  .welcome-illustration {
+    width: 35%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+}
+
+// Animation styles
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.1s;
+}
+
+.delay-2 {
+  animation-delay: 0.2s;
+}
+
+.delay-3 {
+  animation-delay: 0.3s;
+} 
