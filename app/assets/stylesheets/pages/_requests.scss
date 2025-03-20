@@ -9,9 +9,10 @@
 
 .metric-card {
   background: $card-bg;
-  border-radius: $border-radius-lg;
-  padding: $spacing-lg;
+  border-radius: 6px !important;
+  padding: $spacing-lg !important;
   box-shadow: $card-shadow;
+  overflow: hidden;
   
   .metric-header {
     display: flex;

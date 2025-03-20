@@ -48,9 +48,15 @@ class GeoScoringsController < ApplicationController
   end
 
   # 4️⃣ Calcul des scores par AI Provider
+<<<<<<< HEAD
   def calculate_provider_data
     @company.ai_providers.map do |ai_provider|
       calculate_keyword_for_ai_provider_score(@selected_keyword, ai_provider)
+=======
+  def calculate_provider_data(company, keyword)
+    @company.ai_providers.map do |ai_provider|
+      calculate_keyword_for_ai_provider_score(keyword, ai_provider)
+>>>>>>> master
     end
   end
 
