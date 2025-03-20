@@ -54,6 +54,5 @@ Rails.application.routes.draw do
   get 'ai_analytics', to: 'analytics#ai', as: :analytics_ai
 
   resource :companies, only: [:create, :update]
-
+  resources :contacts, only: [:new, :create]
 end
-

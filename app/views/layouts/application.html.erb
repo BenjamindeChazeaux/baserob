@@ -16,9 +16,11 @@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-bold-rounded/css/uicons-bold-rounded.css'>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= favicon_link_tag 'favicon.ico' %>
   </head>
 
   <body>
@@ -65,14 +67,14 @@
             }
           }
         <% end %>
-        
+
         // Script pour les flip cards
         console.log("DOM loaded in layout, initializing flip cards");
-        
+
         // Sélectionner toutes les cartes
         const cards = document.querySelectorAll(".action-card");
         console.log("Found " + cards.length + " cards in layout");
-        
+
         // Ajouter l'écouteur d'événement à chaque carte
         cards.forEach(function(card) {
           card.addEventListener("click", function() {
