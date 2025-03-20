@@ -280,20 +280,21 @@ export default class extends Controller {
   }
   
   /**
-   * Action finale lorsque l'utilisateur termine la configuration
+   * Termine la configuration et ferme la modal
    */
   finishSetup(event) {
     event.preventDefault()
     
-    // Mettre à jour l'état de configuration de la company
-    this.needsCompanySetup = false
-    
     // Fermer la modal
-    this.closeModal()
+    this.modalTarget.classList.remove('active')
+    // Réactiver le défilement de la page
+    document.body.style.overflow = ''
     
-    // Afficher une notification de succès
-    this.showNotification('success', 'Dashboard Created!', 'Your new dashboard has been set up successfully.')
+    // Afficher un message de succès
+    this.showNotification('success', 'Setup Complete', 'Your account has been successfully configured!')
     
+    // Recharger la page pour mettre à jour les données
+    window.location.reload()
   }
   
   // ===== GESTION DU SCRIPT =====
@@ -372,15 +373,32 @@ export default class extends Controller {
     .then(response => response.json())
     .then((data) => {
       if (data.success) {
-        // Passer à l'étape suivante
-        this.goToStep(3)
-        
-        // Afficher un message de succès
-        this.showNotification('success', 'Configuration saved successfully!')
-        
-        // Mettre à jour l'état
-        this.needsCompanySetup = false
-        
+        // Si nous sommes sur la dernière étape, recharger la page
+        if (this.currentStep === this.totalSteps) {
+          // Afficher un message de succès
+          this.showNotification('success', 'Setup Complete', 'Your account has been successfully configured!')
+          
+          // Mettre à jour l'état
+          this.needsCompanySetup = false
+          
+          // Fermer la modal
+          this.modalTarget.classList.remove('active')
+          document.body.style.overflow = '';
+          
+          // Recharger la page après un court délai
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        } else {
+          // Sinon, passer à l'étape suivante
+          this.goToStep(3)
+          
+          // Afficher un message de succès
+          this.showNotification('success', 'Configuration saved successfully!')
+          
+          // Mettre à jour l'état
+          this.needsCompanySetup = false
+        }
       } else {
         // Afficher un message d'erreur
         this.showNotification('error', 'Error', data.message || 'Problem saving configuration')
